@@ -41,6 +41,18 @@ else
   bad "font-stretch missing — the Archivo width axis was lost"
 fi
 
+echo "==> homepage nav anchors resolve"
+# The kit shipped #work, #notes and #team pointing at the wrong elements.
+missing=""
+for id in layers offers how-we-work keep team where; do
+  grep -q "id=$id\|id=\"$id\"" public/index.html 2>/dev/null || missing="$missing #$id"
+done
+if [ -n "$missing" ]; then
+  bad "nav anchors with no target:$missing"
+else
+  ok "all homepage section anchors resolve"
+fi
+
 echo "==> page weight"
 if [ -f public/index.html ]; then
   bytes=$(wc -c < public/index.html)

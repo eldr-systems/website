@@ -1,0 +1,20 @@
+{{- /* BRAND.md / README: "for a three-person firm the team is the product."
+       Photos are placeholders until the bench photo exists. */ -}}
+<section class="border-t-2 border-ink px-gutter py-section" id="team">
+  <div class="flex max-w-[44ch] flex-col gap-6">
+    <h2 class="display-lg text-h2">Three engineers in Budapest</h2>
+    <p class="text-lg leading-[1.55] text-body">You talk to the people who build it. There is no account manager.</p>
+  </div>
+  <div class="mt-14 grid gap-x-6 gap-y-10 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
+    {{ range .Site.Data.team }}
+    <div class="flex flex-col gap-4">
+      <img src="{{ .photo }}" alt="" width="240" height="300" loading="lazy"
+           class="w-full rounded-card border-2 border-ink bg-bone">
+      <div class="flex flex-col gap-1">
+        <span class="text-xl font-bold">{{ .name }}</span>
+        <span class="label-mono">{{ .role }} · {{ .title }}</span>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+</section>

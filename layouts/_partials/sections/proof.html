@@ -1,0 +1,21 @@
+{{- /* Pulls the three newest notes, so the section fills itself as write-ups
+       are published. Renders nothing at all when there are no notes — an
+       empty "Proof" heading is worse than no section. */ -}}
+{{ $notes := first 3 (where .Site.RegularPages "Section" "notes").ByDate.Reverse }}
+{{ with $notes }}
+<section class="border-t-2 border-ink px-gutter py-section" id="proof">
+  <div class="flex items-baseline justify-between gap-4">
+    <h2 class="display-lg text-h2">Proof</h2>
+    <a href="/notes/" class="label-mono">All notes →</a>
+  </div>
+  <div class="mt-14 grid gap-x-6 gap-y-10 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+    {{ range . }}
+    <article class="flex flex-col gap-3 border-t-2 border-ink pt-6">
+      <span class="label-mono">{{ .Date.Format "2006-01-02" }}</span>
+      <h3 class="display-md text-h3"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+      <p class="text-[0.9375rem] leading-normal text-body">{{ .Params.summary | default .Summary }}</p>
+    </article>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
