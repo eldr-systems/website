@@ -1,0 +1,26 @@
+{{- $c := .Site.Params.company -}}
+{{- $p := .Site.Params -}}
+<footer class="flex flex-wrap items-start justify-between gap-8 border-t-2 border-ink px-gutter pt-8 pb-12 font-mono text-label leading-[1.8] text-body">
+  <div class="flex items-start gap-4">
+    {{- /* Original mark — ink tile, bone glyph — per BRAND.md: "and in the footer". */ -}}
+    <svg viewBox="0 0 512 512" class="w-8 h-8 shrink-0" aria-hidden="true">
+      <rect width="512" height="512" rx="74.7" fill="#14161A"/>
+      <path fill="#F4F1EA" d="M412.52 279.08A158.22 158.22 0 1 0 366.48 369.25L334.24 336.21A112.05 112.05 0 0 1 146.35 279.08ZM146.35 232.92A112.05 112.05 0 0 1 365.65 232.92Z"/>
+      <circle cx="375.12" cy="319.8" r="23.08" fill="#E2632B"/>
+    </svg>
+    <div class="flex flex-col">
+      <span>{{ $c.legalName }}{{ with $c.seat }} · {{ . }}{{ end }} · Budapest, Hungary</span>
+      <span>Reg. no. {{ $c.regNo | default "—" }} · Tax no. {{ $c.taxNo | default "—" }} · EU VAT {{ $c.vatNo | default "—" }}</span>
+    </div>
+  </div>
+  <div class="flex flex-col items-start sm:items-end sm:text-right">
+    <span>
+      <a href="/privacy/">Privacy</a> ·
+      <a href="/company/">Company details</a> ·
+      {{ partial "cta-link.html" (dict "url" $p.linkedin "text" "LinkedIn") }} ·
+      <a href="{{ $p.github }}">GitHub</a> ·
+      {{ partial "cta-link.html" (dict "url" $p.youtube "text" "YouTube") }}
+    </span>
+    <span>No cookies. No analytics. No third-party requests.</span>
+  </div>
+</footer>

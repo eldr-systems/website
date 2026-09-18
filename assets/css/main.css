@@ -77,6 +77,34 @@
   color: var(--color-muted);
 }
 
+/* ---- Pills ---- */
+@utility pill-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.9rem 1.6rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  text-align: center;
+}
+@utility pill-ember {
+  @apply pill-base;
+  background: var(--color-ember);
+  color: var(--color-ink);
+}
+@utility pill-ink {
+  @apply pill-base;
+  background: var(--color-ink);
+  color: var(--color-bone);
+}
+@utility pill-outline {
+  @apply pill-base;
+  border: 2px solid var(--color-ink);
+  padding: 0.8rem 1.5rem;
+}
+
 @layer base {
   :root {
     /* The kit's icon SVGs reference these names. Aliasing them to the

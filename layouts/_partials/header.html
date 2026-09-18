@@ -1,0 +1,27 @@
+{{- /* Nav targets corrected from the kit: it pointed #work at the five-layers
+       section, #notes at The Keep's stat block and #team at the closing CTA.
+       No HU link — the Hungarian site is disabled, and a link to a page that
+       does not exist is worse than no link. */ -}}
+<header class="flex flex-wrap items-center justify-between gap-4 px-gutter py-5">
+  <a class="flex items-center gap-3.5 hover:no-underline" href="/">
+    {{- /* Inverse mark: bone tile, ink glyph, ember dot. On bone the tile
+           disappears and only the mark reads. BRAND.md: primary use. */ -}}
+    <svg viewBox="0 0 512 512" class="w-11 h-11 shrink-0" role="img" aria-label="Eldr Systems">
+      <rect width="512" height="512" rx="74.7" fill="#F4F1EA"/>
+      <path fill="#14161A" d="M412.52 279.08A158.22 158.22 0 1 0 366.48 369.25L334.24 336.21A112.05 112.05 0 0 1 146.35 279.08ZM146.35 232.92A112.05 112.05 0 0 1 365.65 232.92Z"/>
+      <circle cx="375.12" cy="319.8" r="23.08" fill="#E2632B"/>
+    </svg>
+    <span class="flex items-baseline gap-[7px]">
+      <span class="text-3xl font-[850] [font-stretch:120%] tracking-[-0.035em] leading-none">eldr</span>
+      <span class="label-mono">systems</span>
+    </span>
+  </a>
+  <nav class="flex flex-wrap items-center gap-[clamp(1rem,2vw,2rem)] text-[0.9375rem] font-medium" aria-label="Main">
+    <a href="/#offers">Offers</a>
+    <a href="/#layers">What we build</a>
+    <a href="/notes/">Notes</a>
+    <a href="/#keep">The Keep</a>
+    <a href="/#team">Team</a>
+    {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a call" "class" "pill-outline") }}
+  </nav>
+</header>

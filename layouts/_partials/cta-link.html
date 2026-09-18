@@ -1,0 +1,12 @@
+{{- /* Renders a link, or a non-clickable span when the URL param is unset.
+       The kit shipped href="[BOOKING LINK]", which a browser resolves as a
+       relative path and serves a 404. This degrades safely instead.
+       {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a call" "class" "pill-ember") }} */ -}}
+{{- $url := .url | default "" -}}
+{{- $text := .text -}}
+{{- $class := .class | default "" -}}
+{{- if $url -}}
+<a href="{{ $url }}" class="{{ $class }}">{{ $text }}</a>
+{{- else -}}
+<span class="{{ $class }} opacity-50 cursor-not-allowed" aria-disabled="true" title="Not yet available">{{ $text }}</span>
+{{- end -}}
