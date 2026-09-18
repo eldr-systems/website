@@ -22,6 +22,18 @@ else
   ok "no bracketed placeholders in href/src"
 fi
 
+echo "==> self-hosted fonts"
+if grep -rq 'fonts\.googleapis\.com\|fonts\.gstatic\.com' public/; then
+  bad "still requesting fonts from Google"
+else
+  ok "no third-party font requests"
+fi
+if ls public/fonts/*.woff2 >/dev/null 2>&1; then
+  ok "$(ls public/fonts/*.woff2 | wc -l) woff2 files served locally"
+else
+  bad "no local woff2 files"
+fi
+
 echo "==> page weight"
 if [ -f public/index.html ]; then
   bytes=$(wc -c < public/index.html)

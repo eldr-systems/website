@@ -27,6 +27,9 @@ enableRobotsTXT = true
     source = 'assets'
     target = 'assets'
   [[module.mounts]]
+    source = 'assets/fonts'
+    target = 'static/fonts'
+  [[module.mounts]]
     source = 'hugo_stats.json'
     target = 'assets/notwatching/hugo_stats.json'
     disableWatch = true
