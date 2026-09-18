@@ -3,3 +3,110 @@
 @import "./fonts.css";
 @import "tailwindcss";
 @source "hugo_stats.json";
+
+@theme {
+  /* ---- Colour. Ration the ember. ---- */
+  --color-ink:        #14161A;
+  --color-bone:       #F4F1EA;
+  --color-ember:      #E2632B;
+  --color-ember-dark: #C9551F;
+  --color-slate:      #5B6B7A;
+  --color-body:       #3A434C;
+  --color-muted:      #4E5A66;
+  --color-rule:       #C9C3B6;
+  --color-rule-dark:  #2B3036;
+  --color-on-ink:     #C9CFD5;
+  --color-muted-ink:  #9AA5AF;
+
+  --font-display: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  /* ---- Fluid scale: min at 390px viewport, max at 1440px. ---- */
+  --text-hero:  clamp(2.5rem, 1.30rem + 4.92vw, 4.625rem);   /* 40 -> 74 */
+  --text-h2:    clamp(1.875rem, 1.28rem + 2.43vw, 2.75rem);  /* 30 -> 44 */
+  --text-h3:    clamp(1.375rem, 1.10rem + 1.12vw, 1.75rem);  /* 22 -> 28 */
+  --text-cta:   clamp(2.75rem, 1.16rem + 6.51vw, 5rem);      /* 44 -> 80 */
+  --text-lead:  clamp(1.0625rem, 0.97rem + 0.38vw, 1.25rem); /* 17 -> 20 */
+  --text-label: 0.8125rem;
+
+  --spacing-gutter:  clamp(1.25rem, 0.30rem + 3.90vw, 5rem); /* 20 -> 80 */
+  --spacing-section: clamp(3.5rem, 2.36rem + 4.68vw, 5.5rem);/* 56 -> 88 */
+
+  --radius-card: 26px;
+  --container-page: 1440px;
+}
+
+/* ============================================================
+   Display type is Archivo with WIDTH + tight tracking, not weight
+   alone. BRAND.md: "Losing the width axis is the fastest way to
+   make this look like a generic template." Defined once here so a
+   section cannot silently drop it.
+   ============================================================ */
+
+@utility display-xl {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 112%;
+  letter-spacing: -0.035em;
+  line-height: 0.98;
+}
+@utility display-lg {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 112%;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+@utility display-md {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: 108%;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+@utility display-cta {
+  font-family: var(--font-display);
+  font-weight: 850;
+  font-stretch: 118%;
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+}
+@utility label-mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  color: var(--color-muted);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-ember);
+    outline-offset: 3px;
+  }
+  img, svg {
+    max-width: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

@@ -34,6 +34,13 @@ else
   bad "no local woff2 files"
 fi
 
+echo "==> brand typography"
+if grep -rq 'font-stretch' public/css/ 2>/dev/null; then
+  ok "Archivo width axis present in CSS"
+else
+  bad "font-stretch missing — the Archivo width axis was lost"
+fi
+
 echo "==> page weight"
 if [ -f public/index.html ]; then
   bytes=$(wc -c < public/index.html)
