@@ -36,6 +36,20 @@ else
   bad "no local woff2 files"
 fi
 
+echo "==> static assets published"
+# Declaring any module.mount targeting 'static' replaces Hugo's default
+# static mount. When that happened, CNAME silently stopped shipping and
+# the custom domain would have broken on deploy.
+for f in CNAME robots.txt logo/favicon.svg graphics/og-image.png graphics/portrait-placeholder.svg; do
+  if [ -f "public/$f" ]; then ok "$f"; else bad "$f missing from public/"; fi
+done
+# Every <img src> on the homepage must resolve to a real file.
+broken=""
+for src in $(grep -rhoE 'src="/[^"]+"' public/index.html 2>/dev/null | sed 's/src="//;s/"//' | sort -u); do
+  [ -f "public$src" ] || broken="$broken $src"
+done
+if [ -n "$broken" ]; then bad "img src with no file:$broken"; else ok "all homepage img src resolve"; fi
+
 echo "==> brand typography"
 if grep -rq 'font-stretch' public/css/ 2>/dev/null; then
   ok "Archivo width axis present in CSS"

@@ -8,8 +8,11 @@
   <div class="mt-14 grid gap-x-6 gap-y-10 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
     {{ range .Site.Data.team }}
     <div class="flex flex-col gap-4">
-      <img src="{{ .photo }}" alt="" width="240" height="300" loading="lazy"
-           class="w-full rounded-card border-2 border-ink bg-bone">
+      {{- /* aspect-square + object-cover: the circular placeholder fits
+             exactly, and real square headshots will crop rather than
+             distort when they replace it. */ -}}
+      <img src="{{ .photo }}" alt="" width="240" height="240" loading="lazy"
+           class="w-full aspect-square object-cover rounded-card border-2 border-ink bg-bone">
       <div class="flex flex-col gap-1">
         <span class="text-xl font-bold">{{ .name }}</span>
         <span class="label-mono">{{ .role }} · {{ .title }}</span>

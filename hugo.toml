@@ -23,9 +23,16 @@ enableRobotsTXT = true
     allow = ['^(dart-)?sass$', '^go$', '^git$', '^node$', '^npx$', '^postcss$', '^tailwindcss$']
 
 [module]
+  # Declaring ANY mount for a target component replaces Hugo's defaults for
+  # it. The 'static -> static' line below is the default, restated: without
+  # it the fonts mount silently replaces it and nothing in static/ ships —
+  # including CNAME, which would break the custom domain.
   [[module.mounts]]
     source = 'assets'
     target = 'assets'
+  [[module.mounts]]
+    source = 'static'
+    target = 'static'
   [[module.mounts]]
     source = 'assets/fonts'
     target = 'static/fonts'
