@@ -1,0 +1,37 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+{{- $siteTitle := .Site.Title -}}
+{{- $title := cond .IsHome (printf "%s — connected measurement devices, circuit board to dashboard" $siteTitle) (printf "%s — %s" .Title $siteTitle) -}}
+<title>{{ $title }}</title>
+<meta name="description" content="{{ .Description | default .Site.Params.description }}">
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="icon" href="/logo/favicon.svg" type="image/svg+xml">
+
+{{- /* PNG, not the SVG: LinkedIn, Slack and Facebook all reject SVG og:image. */ -}}
+<meta property="og:title" content="{{ cond .IsHome $siteTitle .Title }}">
+<meta property="og:description" content="{{ .Description | default .Site.Params.ogDescription }}">
+<meta property="og:type" content="{{ cond .IsPage "article" "website" }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:image" content="{{ "graphics/og-image.png" | absURL }}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="{{ $siteTitle }}">
+<meta name="twitter:card" content="summary_large_image">
+
+{{- /* Discovered late otherwise: the @font-face rules live inside main.css. */ -}}
+<link rel="preload" href="/fonts/archivo-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/ibm-plex-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+
+{{ with resources.Get "css/main.css" }}
+  {{ $opts := dict "minify" hugo.IsProduction }}
+  {{ with . | css.TailwindCSS $opts }}
+    {{ if hugo.IsProduction }}
+      {{ with . | fingerprint }}
+        <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
+      {{ end }}
+    {{ else }}
+      <link rel="stylesheet" href="{{ .RelPermalink }}">
+    {{ end }}
+  {{ end }}
+{{ end }}

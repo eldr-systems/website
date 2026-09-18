@@ -1,0 +1,4 @@
+{{- /* {{ partial "icon.html" (dict "name" "solar" "class" "w-16 h-16") }} */ -}}
+{{- $name := .name -}}
+{{- $class := .class | default "w-16 h-16" -}}
+<svg class="{{ $class }}" aria-hidden="true" focusable="false"><use href="#eldr-{{ $name }}"></use></svg>

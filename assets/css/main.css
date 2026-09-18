@@ -78,6 +78,14 @@
 }
 
 @layer base {
+  :root {
+    /* The kit's icon SVGs reference these names. Aliasing them to the
+       theme tokens means icons follow the palette instead of their own
+       hardcoded fallbacks. Override --eldr-ink on a dark surface to
+       invert an icon. */
+    --eldr-ink: var(--color-ink);
+    --eldr-ember: var(--color-ember);
+  }
   html {
     -webkit-text-size-adjust: 100%;
   }

@@ -1,17 +1,13 @@
 <!doctype html>
 <html lang="{{ .Site.Language.Lang | default "en" }}">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
-  {{ with resources.Get "css/main.css" }}
-    {{ $opts := dict "minify" hugo.IsProduction }}
-    {{ with . | css.TailwindCSS $opts }}
-      <link rel="stylesheet" href="{{ .RelPermalink }}">
-    {{ end }}
-  {{ end }}
-</head>
-<body class="bg-bone text-ink">
-  {{ block "main" . }}{{ end }}
+<head>{{ partial "head.html" . }}</head>
+<body class="bg-bone text-ink font-display">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 pill-ink">Skip to content</a>
+  {{ partial "sprite.html" . }}
+  <div class="mx-auto max-w-page">
+    {{ partial "header.html" . }}
+    <main id="main">{{ block "main" . }}{{ end }}</main>
+    {{ partial "footer.html" . }}
+  </div>
 </body>
 </html>

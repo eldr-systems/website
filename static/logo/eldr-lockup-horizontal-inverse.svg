@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 96" role="img" aria-label="Eldr Systems">
+  <g transform="translate(0,16) scale(0.125)">
+    <rect width="512" height="512" rx="74.7" fill="#F4F1EA"/>
+    <path fill="#14161A" d="M412.52 279.08A158.22 158.22 0 1 0 366.48 369.25L334.24 336.21A112.05 112.05 0 0 1 146.35 279.08ZM146.35 232.92A112.05 112.05 0 0 1 365.65 232.92Z"/>
+    <circle cx="375.12" cy="319.8" r="23.08" fill="#E2632B"/>
+  </g>
+  <text x="84" y="62" font-family="Archivo, 'Helvetica Neue', Helvetica, sans-serif" font-size="46" font-weight="850" letter-spacing="-1.6" fill="#14161A">eldr</text>
+  <text x="196" y="62" font-family="'IBM Plex Mono', ui-monospace, monospace" font-size="20" fill="#4E5A66">systems</text>
+</svg>

@@ -1,0 +1,3 @@
+{{- /* Inlined, not linked: the symbols fill with var(--eldr-ink) and
+       var(--eldr-ember), which only resolve when they share the document. */ -}}
+{{ with resources.Get "svg/sprite.svg" }}{{ .Content | safeHTML }}{{ end }}
