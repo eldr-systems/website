@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="{{ .Site.Language.Lang | default "en" }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }} — {{ .Site.Title }}{{ end }}</title>
+  {{ with resources.Get "css/main.css" }}
+    {{ $opts := dict "minify" hugo.IsProduction }}
+    {{ with . | css.TailwindCSS $opts }}
+      <link rel="stylesheet" href="{{ .RelPermalink }}">
+    {{ end }}
+  {{ end }}
+</head>
+<body class="bg-bone text-ink">
+  {{ block "main" . }}{{ end }}
+</body>
+</html>

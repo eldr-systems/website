@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eldr Systems — connected measurement devices, circuit board to dashboard</title>
+<meta name="description" content="Eldr Systems builds low-power connected measurement devices end to end: electronics, firmware, NB-IoT/LTE-M connectivity, cloud and data analysis. Budapest.">
+<link rel="icon" href="../logo/favicon.svg" type="image/svg+xml">
+
+<meta property="og:title" content="Eldr Systems">
+<meta property="og:description" content="Low-power cellular IoT and energy monitoring, engineered end to end by a small team in Budapest.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://eldrsystems.com/">
+<!-- <meta property="og:image" content="https://eldrsystems.com/og.png"> 1200x630, see graphics/ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   Eldr Systems homepage — direction G, "Graphic, built on the mark"
+   Single file on purpose: paste the <style> into your builder's
+   global CSS and the <body> sections into its HTML embed blocks.
+   Tokens are duplicated here so this file runs standalone.
+   ============================================================ */
+
+:root {
+  --ink:#14161A; --bone:#F4F1EA; --ember:#E2632B; --slate:#5B6B7A;
+  --body:#3A434C; --muted:#4E5A66; --rule:#C9C3B6; --rule-dark:#2B3036;
+  --on-ink:#C9CFD5; --muted-ink:#9AA5AF;
+
+  --font-display:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+
+  --t-hero:clamp(2.5rem,1.30rem + 4.92vw,4.625rem);
+  --t-h2:clamp(1.875rem,1.28rem + 2.43vw,2.75rem);
+  --t-h3:clamp(1.375rem,1.10rem + 1.12vw,1.75rem);
+  --t-cta:clamp(2.75rem,1.16rem + 6.51vw,5rem);
+  --t-lead:clamp(1.0625rem,0.97rem + 0.38vw,1.25rem);
+
+  --gutter:clamp(1.25rem,0.30rem + 3.90vw,5rem);
+  --section:clamp(3.5rem,2.36rem + 4.68vw,5.5rem);
+  --maxw:1440px;
+}
+
+*,*::before,*::after { box-sizing:border-box; }
+html { -webkit-text-size-adjust:100%; }
+body {
+  margin:0; background:var(--bone); color:var(--ink);
+  font-family:var(--font-display); font-size:1rem; line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+img,svg { max-width:100%; }
+a { color:inherit; text-decoration:none; }
+a:hover { text-decoration:underline; text-underline-offset:4px; }
+:focus-visible { outline:3px solid var(--ember); outline-offset:3px; }
+
+h1,h2,h3 {
+  margin:0; font-weight:800;
+  font-stretch:112%; letter-spacing:-0.03em;
+}
+h1 { font-size:var(--t-hero); line-height:0.98; letter-spacing:-0.035em; }
+h2 { font-size:var(--t-h2); }
+h3 { font-size:var(--t-h3); font-stretch:108%; line-height:1.05; letter-spacing:-0.02em; }
+p { margin:0; }
+
+.wrap { max-width:var(--maxw); margin-inline:auto; }
+.mono { font-family:var(--font-mono); font-size:0.8125rem; color:var(--muted); }
+.section { padding:var(--section) var(--gutter); border-top:2px solid var(--ink); }
+.section-head { display:flex; justify-content:space-between; align-items:baseline; gap:1rem; }
+
+/* pills ---------------------------------------------------- */
+.pill {
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:48px; padding:0.9rem 1.6rem; border-radius:999px;
+  font-weight:700; font-size:1.0625rem; text-align:center;
+}
+.pill:hover { text-decoration:none; }
+.pill--ember  { background:var(--ember); color:var(--ink); }
+.pill--ember:hover { background:#C9551F; }
+.pill--ink    { background:var(--ink); color:var(--bone); }
+.pill--ink:hover { background:#000; }
+.pill--outline{ border:2px solid var(--ink); padding:0.8rem 1.5rem; }
+.pill--outline:hover { background:var(--ink); color:var(--bone); }
+
+/* header --------------------------------------------------- */
+.site-header {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; padding:1.25rem var(--gutter); flex-wrap:wrap;
+}
+.brand { display:flex; align-items:center; gap:0.875rem; }
+.brand:hover { text-decoration:none; }
+.brand svg { width:44px; height:44px; flex-shrink:0; }
+.brand-type { display:flex; align-items:baseline; gap:7px; }
+.brand-name {
+  font-size:1.875rem; font-weight:850; font-stretch:120%;
+  letter-spacing:-0.035em; line-height:1;
+}
+.brand-sub { font-family:var(--font-mono); font-size:0.8125rem; color:var(--muted); }
+.site-nav {
+  display:flex; align-items:center; gap:clamp(1rem,2vw,2rem);
+  font-size:0.9375rem; font-weight:500; flex-wrap:wrap;
+}
+.site-nav a { padding:0.35rem 0; }
+
+/* hero ----------------------------------------------------- */
+.hero {
+  display:grid; grid-template-columns:repeat(12,minmax(0,1fr));
+  column-gap:24px; row-gap:3rem; align-items:center;
+  padding:2rem var(--gutter) var(--section);
+}
+.hero-copy { grid-column:1 / -1; display:flex; flex-direction:column; gap:2rem; }
+.hero-copy p { font-size:var(--t-lead); line-height:1.5; color:var(--body); max-width:34ch; }
+.hero-actions { display:flex; gap:0.75rem; flex-wrap:wrap; padding-top:0.5rem; }
+.hero-art { grid-column:1 / -1; display:flex; justify-content:center; }
+.hero-art svg { width:min(100%,600px); height:auto; }
+
+@media (min-width:900px) {
+  .hero-copy { grid-column:span 6; }
+  .hero-art  { grid-column:7 / span 6; justify-content:flex-end; }
+}
+
+/* five layers ---------------------------------------------- */
+.layers {
+  display:grid; gap:2rem 1.5rem; margin-top:3.5rem;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+}
+.layer { display:flex; flex-direction:column; gap:1rem; }
+.layer svg { width:72px; height:72px; }
+.layer-name { font-size:1.25rem; font-weight:700; }
+.layer p { font-size:0.9375rem; line-height:1.5; color:var(--body); }
+
+/* who it's for --------------------------------------------- */
+.audience { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); column-gap:24px; row-gap:2.5rem; }
+.audience-copy { grid-column:1 / -1; display:flex; flex-direction:column; gap:1.5rem; }
+.audience-copy p { font-size:1.125rem; line-height:1.55; color:var(--body); }
+.audience-list { grid-column:1 / -1; }
+@media (min-width:900px) {
+  .audience-copy { grid-column:span 5; }
+  .audience-list { grid-column:7 / span 6; }
+}
+.audience-list ul { list-style:none; margin:0; padding:0; }
+.audience-list li {
+  display:flex; justify-content:space-between; align-items:center; gap:1rem;
+  padding:1.25rem 0; border-top:1px solid var(--rule);
+  font-size:clamp(1.0625rem,0.85rem + 0.9vw,1.375rem); font-weight:600;
+}
+.audience-list li:first-child { border-top:2px solid var(--ink); }
+.audience-list li:last-child  { border-bottom:2px solid var(--ink); }
+.dot { width:10px; height:10px; border-radius:999px; background:var(--ink); flex-shrink:0; }
+.dot--ember { width:14px; height:14px; background:var(--ember); }
+
+/* offers ---------------------------------------------------- */
+.offers {
+  display:grid; gap:1.5rem; margin-top:3.5rem;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+}
+.offer {
+  display:flex; flex-direction:column; gap:1.25rem;
+  border:2px solid var(--ink); border-radius:26px; padding:2.25rem;
+}
+.offer svg { width:104px; height:104px; }
+.offer p { font-size:1rem; line-height:1.55; color:var(--body); flex-grow:1; }
+.offer-foot {
+  display:flex; justify-content:space-between; align-items:center; gap:1rem;
+  border-top:1px solid var(--rule); padding-top:1rem;
+}
+.offer-price { font-family:var(--font-mono); font-size:1rem; font-weight:500; }
+.offer--ink { background:var(--ink); color:var(--bone); border-color:var(--ink); }
+.offer--ink p { color:var(--on-ink); }
+.offer--ink .mono { color:var(--muted-ink); }
+.offer--ink .offer-foot { border-top-color:var(--rule-dark); }
+
+/* the keep -------------------------------------------------- */
+.keep { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); column-gap:24px; row-gap:2.5rem; align-items:center; }
+.keep-video {
+  grid-column:1 / -1; aspect-ratio:16/9; background:var(--ink); border-radius:26px;
+  display:flex; align-items:center; justify-content:center; padding:1rem;
+  font-family:var(--font-mono); font-size:0.875rem; color:var(--rule); text-align:center;
+}
+.keep-stat { grid-column:1 / -1; display:flex; flex-direction:column; gap:1.375rem; align-items:flex-start; }
+.keep-stat p { font-size:1rem; line-height:1.5; color:var(--body); max-width:38ch; }
+.stat-number {
+  font-family:var(--font-mono); font-size:clamp(2.5rem,1.7rem + 3.3vw,3.375rem);
+  font-weight:500; letter-spacing:-0.03em; line-height:1;
+}
+@media (min-width:900px) {
+  .keep-video { grid-column:span 7; height:380px; aspect-ratio:auto; }
+  .keep-stat  { grid-column:9 / span 4; }
+}
+
+/* closing cta ----------------------------------------------- */
+.cta {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:3rem; flex-wrap:wrap; padding:var(--section) var(--gutter);
+  border-top:2px solid var(--ink);
+}
+.cta h2 { font-size:var(--t-cta); line-height:0.96; font-weight:850; font-stretch:118%; letter-spacing:-0.04em; }
+.cta-copy { display:flex; flex-direction:column; gap:1.75rem; flex:1 1 20rem; }
+.cta-actions { display:flex; align-items:center; gap:1.25rem; flex-wrap:wrap; }
+.cta-actions span { font-size:1.0625rem; color:var(--body); }
+.cta-mark { width:clamp(120px,20vw,240px); height:auto; flex-shrink:0; }
+
+/* footer ---------------------------------------------------- */
+.site-footer {
+  padding:2rem var(--gutter) 3rem; border-top:2px solid var(--ink);
+  display:flex; justify-content:space-between; align-items:flex-start;
+  gap:2rem; flex-wrap:wrap;
+  font-family:var(--font-mono); font-size:0.8125rem; line-height:1.8; color:var(--body);
+}
+.footer-id { display:flex; align-items:flex-start; gap:1rem; }
+.footer-id svg { width:32px; height:32px; flex-shrink:0; }
+.footer-col { display:flex; flex-direction:column; }
+.footer-links { align-items:flex-start; }
+.footer-links a { display:inline-block; }
+@media (min-width:640px) { .footer-links { align-items:flex-end; text-align:right; } }
+
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:0.01ms !important; transition-duration:0.01ms !important; }
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+<!-- ==================== HEADER ==================== -->
+<header class="site-header">
+  <a class="brand" href="/">
+    <!-- inverse mark: bone tile, ink glyph, ember dot -->
+    <svg viewBox="0 0 512 512" role="img" aria-label="Eldr Systems">
+      <rect width="512" height="512" rx="74.7" fill="#F4F1EA"/>
+      <path fill="#14161A" d="M412.52 279.08A158.22 158.22 0 1 0 366.48 369.25L334.24 336.21A112.05 112.05 0 0 1 146.35 279.08ZM146.35 232.92A112.05 112.05 0 0 1 365.65 232.92Z"/>
+      <circle cx="375.12" cy="319.8" r="23.08" fill="#E2632B"/>
+    </svg>
+    <span class="brand-type">
+      <span class="brand-name">eldr</span>
+      <span class="brand-sub">systems</span>
+    </span>
+  </a>
+  <nav class="site-nav" aria-label="Main">
+    <a href="#offers">Offers</a>
+    <a href="#work">Work</a>
+    <a href="#notes">Notes</a>
+    <a href="#keep">The Keep</a>
+    <a href="#team">Team</a>
+    <a href="/hu/" class="mono" hreflang="hu">HU</a>
+    <a href="[BOOKING LINK]" class="pill pill--outline">Book a call</a>
+  </nav>
+</header>
+
+<!-- ==================== HERO ==================== -->
+<section class="hero">
+  <div class="hero-copy">
+    <span class="mono">Low-power cellular IoT · Budapest</span>
+    <h1>We build connected measurement devices, from circuit board to dashboard.</h1>
+    <p>Low-power cellular IoT and energy monitoring, engineered end to end by a small team in Budapest.</p>
+    <div class="hero-actions">
+      <a href="[BOOKING LINK]" class="pill pill--ember">Book a 20-minute call</a>
+      <a href="#offers" class="pill pill--outline">See our offers</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <svg viewBox="0 0 600 600" role="img" aria-label="The Eldr mark, opened out into a signal">
+      <path d="M388.9,544.4 A260,260 0 1 0 544.4,388.9" fill="none" stroke="#14161A" stroke-width="1.5" opacity="0.35"/>
+      <path d="M373.5,502.0 A215,215 0 1 0 502.0,373.5" fill="none" stroke="#14161A" stroke-width="2" opacity="0.6"/>
+      <path d="M358.1,459.7 A170,170 0 1 0 459.7,358.1" fill="none" stroke="#14161A" stroke-width="11"/>
+      <circle cx="420.2" cy="420.2" r="30" fill="#E2632B"/>
+      <circle cx="300" cy="300" r="13" fill="#14161A"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ==================== FIVE LAYERS ==================== -->
+<section class="section" id="work">
+  <div class="section-head">
+    <h2>Five layers. One team.</h2>
+  </div>
+  <div class="layers">
+    <div class="layer">
+      <svg viewBox="0 0 72 72" aria-hidden="true">
+        <path d="M44.4,59.3 A26,26 0 1 0 59.3,44.4" fill="none" stroke="#14161A" stroke-width="3.5"/>
+        <circle cx="54.4" cy="54.4" r="6.5" fill="#E2632B"/>
+        <rect x="27" y="27" width="18" height="18" fill="none" stroke="#14161A" stroke-width="3"/>
+      </svg>
+      <span class="layer-name">Sensor + PCB</span>
+      <p>Voltage, current and power, measured safely near mains.</p>
+    </div>
+    <div class="layer">
+      <svg viewBox="0 0 72 72" aria-hidden="true">
+        <path d="M44.4,59.3 A26,26 0 1 0 59.3,44.4" fill="none" stroke="#14161A" stroke-width="3.5"/>
+        <circle cx="54.4" cy="54.4" r="6.5" fill="#E2632B"/>
+        <line x1="24" y1="28" x2="48" y2="28" stroke="#14161A" stroke-width="3"/>
+        <line x1="24" y1="36" x2="40" y2="36" stroke="#14161A" stroke-width="3"/>
+        <line x1="24" y1="44" x2="44" y2="44" stroke="#14161A" stroke-width="3"/>
+      </svg>
+      <span class="layer-name">Firmware</span>
+      <p>Sleep budgets, power-saving modes and OTA updates.</p>
+    </div>
+    <div class="layer">
+      <svg viewBox="0 0 72 72" aria-hidden="true">
+        <path d="M44.4,59.3 A26,26 0 1 0 59.3,44.4" fill="none" stroke="#14161A" stroke-width="3.5"/>
+        <circle cx="54.4" cy="54.4" r="6.5" fill="#E2632B"/>
+        <path d="M40.6,47.3 A16,16 0 1 0 47.3,40.6" fill="none" stroke="#14161A" stroke-width="3"/>
+        <circle cx="36" cy="36" r="4" fill="#14161A"/>
+      </svg>
+      <span class="layer-name">NB-IoT / LTE-M</span>
+      <p>PSM and eDRX tuned for the operator and the site.</p>
+    </div>
+    <div class="layer">
+      <svg viewBox="0 0 72 72" aria-hidden="true">
+        <path d="M44.4,59.3 A26,26 0 1 0 59.3,44.4" fill="none" stroke="#14161A" stroke-width="3.5"/>
+        <circle cx="54.4" cy="54.4" r="6.5" fill="#E2632B"/>
+        <path d="M23,42 A13,13 0 0 1 49,42" fill="none" stroke="#14161A" stroke-width="3"/>
+        <line x1="21" y1="42" x2="51" y2="42" stroke="#14161A" stroke-width="3"/>
+      </svg>
+      <span class="layer-name">Cloud</span>
+      <p>Ingest, storage, alerts and a simple dashboard.</p>
+    </div>
+    <div class="layer">
+      <svg viewBox="0 0 72 72" aria-hidden="true">
+        <path d="M44.4,59.3 A26,26 0 1 0 59.3,44.4" fill="none" stroke="#14161A" stroke-width="3.5"/>
+        <circle cx="54.4" cy="54.4" r="6.5" fill="#E2632B"/>
+        <circle cx="28" cy="28" r="3.5" fill="#14161A"/><circle cx="40" cy="28" r="3.5" fill="#14161A"/>
+        <circle cx="28" cy="40" r="3.5" fill="#14161A"/>
+        <circle cx="40" cy="40" r="7" fill="none" stroke="#14161A" stroke-width="3"/>
+      </svg>
+      <span class="layer-name">Analytics</span>
+      <p>We find faults in your device data.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== WHO IT'S FOR ==================== -->
+<section class="section">
+  <div class="audience">
+    <div class="audience-copy">
+      <h2>For teams that measure things in the field</h2>
+      <p>You need remote monitoring and have no electronics or firmware team of your own.</p>
+    </div>
+    <div class="audience-list">
+      <ul>
+        <li><span>Solar and battery installers</span><span class="dot" aria-hidden="true"></span></li>
+        <li><span>EV-charger and heat-pump companies</span><span class="dot" aria-hidden="true"></span></li>
+        <li><span>Energy management startups</span><span class="dot" aria-hidden="true"></span></li>
+        <li><span>Building operators</span><span class="dot" aria-hidden="true"></span></li>
+        <li><span>Cellular devices with battery or connection trouble</span><span class="dot dot--ember" aria-hidden="true"></span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== OFFERS ==================== -->
+<section class="section" id="offers">
+  <div class="section-head">
+    <h2>Fixed price. Scoped in one call.</h2>
+  </div>
+  <div class="offers">
+
+    <article class="offer">
+      <svg viewBox="0 0 104 104" aria-hidden="true">
+        <path d="M64.2,85.7 A38,38 0 1 0 85.7,64.2" fill="none" stroke="#14161A" stroke-width="4"/>
+        <circle cx="78.9" cy="78.9" r="9" fill="#E2632B"/>
+        <rect x="38" y="38" width="28" height="28" rx="4" fill="none" stroke="#14161A" stroke-width="3.5"/>
+      </svg>
+      <span class="mono">4–8 weeks</span>
+      <h3>Proof-of-concept sprint</h3>
+      <p>A working connected measurement device, with source code, a dashboard and a measured battery-life estimate.</p>
+      <div class="offer-foot">
+        <span class="offer-price">from €[6,000]</span>
+        <a href="#">Details →</a>
+      </div>
+    </article>
+
+    <article class="offer offer--ink">
+      <svg viewBox="0 0 104 104" aria-hidden="true">
+        <path d="M64.2,85.7 A38,38 0 1 0 85.7,64.2" fill="none" stroke="#F4F1EA" stroke-width="4"/>
+        <circle cx="78.9" cy="78.9" r="9" fill="#E2632B"/>
+        <rect x="32" y="42" width="34" height="20" rx="3" fill="none" stroke="#F4F1EA" stroke-width="3.5"/>
+        <rect x="66" y="47" width="5" height="10" fill="#F4F1EA"/>
+        <rect x="36" y="46" width="10" height="12" fill="#E2632B"/>
+      </svg>
+      <span class="mono">1–2 weeks</span>
+      <h3>Battery and connectivity fixes</h3>
+      <p>Power traces, modem logs and a ranked fix plan for NB-IoT and LTE-M devices that drain or drop off.</p>
+      <div class="offer-foot">
+        <span class="offer-price">from €[3,000]</span>
+        <a href="#">Details →</a>
+      </div>
+    </article>
+
+    <article class="offer">
+      <svg viewBox="0 0 104 104" aria-hidden="true">
+        <path d="M64.2,85.7 A38,38 0 1 0 85.7,64.2" fill="none" stroke="#14161A" stroke-width="4"/>
+        <circle cx="78.9" cy="78.9" r="9" fill="#E2632B"/>
+        <circle cx="38" cy="38" r="4" fill="#14161A"/><circle cx="52" cy="38" r="4" fill="#14161A"/><circle cx="66" cy="38" r="4" fill="#14161A"/>
+        <circle cx="38" cy="52" r="4" fill="#14161A"/><circle cx="52" cy="52" r="8" fill="none" stroke="#14161A" stroke-width="3.5"/><circle cx="66" cy="52" r="4" fill="#14161A"/>
+        <circle cx="38" cy="66" r="4" fill="#14161A"/><circle cx="52" cy="66" r="4" fill="#14161A"/>
+      </svg>
+      <span class="mono">3–6 weeks</span>
+      <h3>Device data analytics</h3>
+      <p>Fault and anomaly detection on the data your inverters, chargers or heat pumps already send.</p>
+      <div class="offer-foot">
+        <span class="offer-price">from €[3,500]</span>
+        <a href="#">Details →</a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ==================== THE KEEP ==================== -->
+<section class="section" id="keep">
+  <div class="keep">
+    <div class="keep-video">[Demo video: The Keep by Eldr Systems, 2 min]</div>
+    <div class="keep-stat" id="notes">
+      <svg viewBox="0 0 360 80" role="img" aria-label="Current trace with three transmit bursts" style="width:100%;max-width:360px;height:auto;">
+        <polyline points="0,70 60,70 62,14 70,26 78,70 180,70 182,40 190,52 198,70 300,70 302,14 310,26 318,70 360,70" fill="none" stroke="#14161A" stroke-width="2"/>
+        <circle cx="62" cy="14" r="5.5" fill="#E2632B"/>
+      </svg>
+      <span class="stat-number">[X] µA</span>
+      <p>average current in PSM on The Keep, our own NB-IoT hub. Replace the trace with a real one.</p>
+      <a href="#" style="font-weight:700;font-size:1.0625rem;">Read the notes →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== CLOSING CTA ==================== -->
+<section class="cta" id="team">
+  <div class="cta-copy">
+    <h2>Tell us what you need to measure.</h2>
+    <div class="cta-actions">
+      <a href="[BOOKING LINK]" class="pill pill--ink">Book a 20-minute call</a>
+      <span>No pitch. Or email <a href="mailto:[VENCEL@ELDRSYSTEMS.COM]">[VENCEL@ELDRSYSTEMS.COM]</a>.</span>
+    </div>
+  </div>
+  <svg class="cta-mark" viewBox="0 0 512 512" role="img" aria-label="Eldr Systems mark">
+    <rect width="512" height="512" rx="74.7" fill="#E2632B"/>
+    <path fill="#14161A" d="M412.52 279.08A158.22 158.22 0 1 0 366.48 369.25L334.24 336.21A112.05 112.05 0 0 1 146.35 279.08ZM146.35 232.92A112.05 112.05 0 0 1 365.65 232.92Z"/>
+    <circle cx="375.12" cy="319.8" r="23.08" fill="#F4F1EA"/>
+  </svg>
+</section>
+
+<!-- ==================== FOOTER ==================== -->
+<footer class="site-footer">
+  <div class="footer-id">
+    <svg viewBox="0 0 512 512" aria-hidden="true">
+      <rect width="512" height="512" rx="74.7" fill="#14161A"/>
+      <path fill="#F4F1EA" d="M412.52 279.08A158.22 158.22 0 1 0 366.48 369.25L334.24 336.21A112.05 112.05 0 0 1 146.35 279.08ZM146.35 232.92A112.05 112.05 0 0 1 365.65 232.92Z"/>
+      <circle cx="375.12" cy="319.8" r="23.08" fill="#E2632B"/>
+    </svg>
+    <div class="footer-col">
+      <span>Eldr Systems Kft. · [REGISTERED SEAT], Budapest</span>
+      <span>Reg. no. [ ] · Tax no. [ ] · EU VAT [ ]</span>
+    </div>
+  </div>
+  <div class="footer-col footer-links">
+    <span><a href="/privacy">Privacy</a> · <a href="/company">Company details</a> · <a href="[LINKEDIN]">LinkedIn</a> · <a href="[GITHUB]">GitHub</a> · <a href="[YOUTUBE]">YouTube</a></span>
+    <span>No cookies. [X] kB.</span>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

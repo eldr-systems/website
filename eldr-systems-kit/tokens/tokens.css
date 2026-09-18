@@ -1,0 +1,50 @@
+/* Eldr Systems — design tokens
+   Paste into your builder's custom CSS / global stylesheet.
+   Every value below is used by page/index.html and by the SVGs in /icons. */
+
+:root {
+  /* ---- Colour ---- */
+  --eldr-ink:        #14161A;  /* text, dark surfaces, icon strokes */
+  --eldr-bone:       #F4F1EA;  /* page background */
+  --eldr-ember:      #E2632B;  /* accent — one element at a time, never two */
+  --eldr-slate:      #5B6B7A;  /* data, diagrams */
+
+  /* Derived greys, taken from the approved design */
+  --eldr-body:       #3A434C;  /* body copy on bone */
+  --eldr-muted:      #4E5A66;  /* mono labels, captions */
+  --eldr-rule:       #C9C3B6;  /* hairline rules on bone */
+  --eldr-rule-dark:  #2B3036;  /* hairline rules on ink */
+  --eldr-on-ink:     #C9CFD5;  /* body copy on ink */
+  --eldr-muted-ink:  #9AA5AF;  /* mono labels on ink */
+
+  /* ---- Type ---- */
+  --eldr-font-display: 'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --eldr-font-body:    'Archivo', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --eldr-font-mono:    'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+  /* Fluid scale — min at 390px viewport, max at 1440px */
+  --eldr-t-hero:    clamp(2.5rem, 1.30rem + 4.92vw, 4.625rem);  /* 40 → 74 */
+  --eldr-t-h2:      clamp(1.875rem, 1.28rem + 2.43vw, 2.75rem); /* 30 → 44 */
+  --eldr-t-h3:      clamp(1.375rem, 1.10rem + 1.12vw, 1.75rem); /* 22 → 28 */
+  --eldr-t-cta:     clamp(2.75rem, 1.16rem + 6.51vw, 5rem);     /* 44 → 80 */
+  --eldr-t-lead:    clamp(1.0625rem, 0.97rem + 0.38vw, 1.25rem);/* 17 → 20 */
+  --eldr-t-body:    1rem;
+  --eldr-t-label:   0.8125rem;
+
+  /* Display type is Archivo with width + tight tracking. Don't lose these. */
+  --eldr-display-weight:  800;
+  --eldr-display-width:   112%;
+  --eldr-display-track:  -0.03em;
+
+  /* ---- Layout ---- */
+  --eldr-gutter:   clamp(1.25rem, 0.30rem + 3.90vw, 5rem);  /* 20 → 80 */
+  --eldr-section:  clamp(3.5rem, 2.36rem + 4.68vw, 5.5rem); /* 56 → 88 */
+  --eldr-maxw:     1440px;
+  --eldr-col-gap:  24px;
+
+  /* ---- Shape ---- */
+  --eldr-radius-card:   26px;
+  --eldr-radius-pill:  999px;
+  --eldr-border:       2px solid var(--eldr-ink);
+  --eldr-hairline:     1px solid var(--eldr-rule);
+}

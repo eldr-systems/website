@@ -1,0 +1,61 @@
+baseURL = 'https://eldrsystems.com/'
+locale = 'en-GB'
+defaultContentLanguage = 'en'
+title = 'Eldr Systems'
+enableRobotsTXT = true
+
+# No tags or categories on this site.
+[taxonomies]
+
+[build]
+  [build.buildStats]
+    enable = true
+  [[build.cachebusters]]
+    source = 'assets/notwatching/hugo_stats\.json'
+    target = 'css'
+  [[build.cachebusters]]
+    source = '(postcss|tailwind)\.config\.js'
+    target = 'css'
+
+# Hugo shells out to the Tailwind CLI; it must be whitelisted explicitly.
+[security]
+  [security.exec]
+    allow = ['^(dart-)?sass$', '^go$', '^git$', '^node$', '^npx$', '^postcss$', '^tailwindcss$']
+
+[module]
+  [[module.mounts]]
+    source = 'assets'
+    target = 'assets'
+  [[module.mounts]]
+    source = 'hugo_stats.json'
+    target = 'assets/notwatching/hugo_stats.json'
+    disableWatch = true
+
+[languages]
+  [languages.en]
+    label = 'English'
+    weight = 1
+  [languages.hu]
+    label = 'Magyar'
+    weight = 2
+    disabled = true
+
+[params]
+  description = 'Eldr Systems builds low-power connected measurement devices end to end: electronics, firmware, NB-IoT/LTE-M connectivity, cloud and data analysis. Budapest.'
+  ogDescription = 'Low-power cellular IoT and energy monitoring, engineered end to end by a small team in Budapest.'
+  github = 'https://github.com/eldr-systems'
+
+  # Unset on purpose. Anything empty renders as a disabled control,
+  # never as a broken link. scripts/check.sh lists what is still empty.
+  bookingUrl = ''
+  email = ''
+  linkedin = ''
+  youtube = ''
+  phone = '+36 30 123 1234'
+
+  [params.company]
+    legalName = 'Eldr Systems Kft.'
+    seat = ''
+    regNo = ''
+    taxNo = ''
+    vatNo = ''

@@ -1,0 +1,162 @@
+[
+  {
+    "name": "sensor",
+    "label": "sensor",
+    "title": "Sensor board"
+  },
+  {
+    "name": "pcb",
+    "label": "pcb",
+    "title": "PCB traces"
+  },
+  {
+    "name": "device",
+    "label": "device",
+    "title": "Device enclosure"
+  },
+  {
+    "name": "firmware",
+    "label": "firmware",
+    "title": "Firmware"
+  },
+  {
+    "name": "ota",
+    "label": "ota",
+    "title": "OTA update"
+  },
+  {
+    "name": "nb-iot",
+    "label": "nb-iot",
+    "title": "Cellular signal"
+  },
+  {
+    "name": "operator",
+    "label": "operator",
+    "title": "Base station"
+  },
+  {
+    "name": "sim",
+    "label": "sim",
+    "title": "SIM card"
+  },
+  {
+    "name": "battery-ok",
+    "label": "battery ok",
+    "title": "Battery, full"
+  },
+  {
+    "name": "battery-low",
+    "label": "battery low",
+    "title": "Battery, low"
+  },
+  {
+    "name": "voltage",
+    "label": "voltage",
+    "title": "Voltage"
+  },
+  {
+    "name": "current",
+    "label": "current",
+    "title": "Current waveform"
+  },
+  {
+    "name": "meter",
+    "label": "meter",
+    "title": "Meter"
+  },
+  {
+    "name": "solar",
+    "label": "solar",
+    "title": "Solar panel"
+  },
+  {
+    "name": "ev-charger",
+    "label": "ev charger",
+    "title": "EV charger"
+  },
+  {
+    "name": "heat-pump",
+    "label": "heat pump",
+    "title": "Heat pump"
+  },
+  {
+    "name": "inverter",
+    "label": "inverter",
+    "title": "Inverter"
+  },
+  {
+    "name": "dist-box",
+    "label": "dist. box",
+    "title": "Distribution box"
+  },
+  {
+    "name": "cloud",
+    "label": "cloud",
+    "title": "Cloud"
+  },
+  {
+    "name": "storage",
+    "label": "storage",
+    "title": "Database"
+  },
+  {
+    "name": "dashboard",
+    "label": "dashboard",
+    "title": "Dashboard"
+  },
+  {
+    "name": "alert",
+    "label": "alert",
+    "title": "Alert"
+  },
+  {
+    "name": "anomaly",
+    "label": "anomaly",
+    "title": "Anomaly detection"
+  },
+  {
+    "name": "forecast",
+    "label": "forecast",
+    "title": "Forecast"
+  },
+  {
+    "name": "interval",
+    "label": "interval",
+    "title": "Reporting interval"
+  },
+  {
+    "name": "temperature",
+    "label": "temperature",
+    "title": "Temperature"
+  },
+  {
+    "name": "site",
+    "label": "site",
+    "title": "Site"
+  },
+  {
+    "name": "psm",
+    "label": "psm",
+    "title": "Power saving mode"
+  },
+  {
+    "name": "handover",
+    "label": "handover",
+    "title": "Handover documents"
+  },
+  {
+    "name": "book-a-call",
+    "label": "book a call",
+    "title": "Book a call"
+  },
+  {
+    "name": "fixed-scope",
+    "label": "fixed scope",
+    "title": "Fixed scope agreed"
+  },
+  {
+    "name": "team",
+    "label": "team",
+    "title": "Our team"
+  }
+]
