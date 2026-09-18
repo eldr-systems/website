@@ -1,0 +1,8 @@
+# ember: true marks the one secondary line. Exactly one entry may set it —
+# BRAND.md: one ember element per component, never two.
+- text: Solar and battery installers
+- text: EV-charger and heat-pump companies
+- text: Energy management startups
+- text: Building operators
+- text: Cellular devices with battery or connection trouble
+  ember: true

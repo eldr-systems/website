@@ -1,0 +1,17 @@
+# The five layers shown on the homepage. Icon names come from
+# eldr-systems-kit/icons/_index.json.
+- name: Sensor + PCB
+  line: Voltage, current and power, measured safely near mains.
+  icon: pcb
+- name: Firmware
+  line: Sleep budgets, power-saving modes and OTA updates.
+  icon: firmware
+- name: NB-IoT / LTE-M
+  line: PSM and eDRX tuned for the operator and the site.
+  icon: nb-iot
+- name: Cloud
+  line: Ingest, storage, alerts and a simple dashboard.
+  icon: cloud
+- name: Analytics
+  line: We find faults in your device data.
+  icon: anomaly

@@ -1,0 +1,18 @@
+# "How we work" — one of the four sections from BRAND.md that the kit's
+# design direction did not cover.
+- step: "01"
+  name: Call
+  line: Twenty minutes. You describe what you need to measure and where.
+  icon: book-a-call
+- step: "02"
+  name: Scoping document
+  line: Fixed scope, fixed price, named deliverables. Yours whether or not we build it.
+  icon: fixed-scope
+- step: "03"
+  name: Build, with weekly demos
+  line: Working hardware and real data every week, not a status report.
+  icon: interval
+- step: "04"
+  name: Handover
+  line: Source code, schematics, build instructions and documentation. No lock-in.
+  icon: handover
