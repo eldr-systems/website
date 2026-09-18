@@ -1,0 +1,14 @@
+{{ define "main" }}
+<article class="border-t-2 border-ink px-gutter py-section">
+  <div class="flex max-w-[68ch] flex-col gap-6">
+    <span class="label-mono">{{ .Params.duration }} · {{ .Params.price }}</span>
+    <h1 class="display-xl text-hero">{{ .Title }}</h1>
+    <p class="text-lead leading-normal text-body">{{ .Params.summary }}</p>
+    <div class="prose-eldr mt-4">{{ .Content }}</div>
+    <div class="mt-4 flex flex-wrap items-center gap-5 border-t border-rule pt-8">
+      {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a 20-minute call" "class" "pill-ember") }}
+      <a href="/#offers">All offers →</a>
+    </div>
+  </div>
+</article>
+{{ end }}

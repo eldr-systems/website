@@ -1,0 +1,19 @@
+{{ define "main" }}
+<section class="border-t-2 border-ink px-gutter py-section">
+  <h1 class="display-xl text-hero">{{ .Title }}</h1>
+  <div class="mt-14 grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+    {{ range .Pages.ByWeight }}
+    <article class="flex flex-col gap-5 rounded-card border-2 border-ink p-9">
+      {{ partial "icon.html" (dict "name" .Params.icon "class" "w-26 h-26") }}
+      <span class="label-mono">{{ .Params.duration }}</span>
+      <h2 class="display-md text-h3">{{ .Title }}</h2>
+      <p class="grow text-base leading-[1.55] text-body">{{ .Params.summary }}</p>
+      <div class="flex items-center justify-between gap-4 border-t border-rule pt-4">
+        <span class="font-mono text-base font-medium">{{ .Params.price }}</span>
+        <a href="{{ .RelPermalink }}">Details →</a>
+      </div>
+    </article>
+    {{ end }}
+  </div>
+</section>
+{{ end }}

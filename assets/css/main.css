@@ -77,6 +77,59 @@
   color: var(--color-muted);
 }
 
+/* ---- Markdown body copy ----
+   Hugo emits plain h2/p/ul from Markdown; this gives them brand styling
+   without pulling in the Tailwind typography plugin. */
+@utility prose-eldr {
+  & h2 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: 108%;
+    letter-spacing: -0.02em;
+    font-size: var(--text-h3);
+    line-height: 1.05;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  & h2:first-child { margin-top: 0; }
+  & p {
+    color: var(--color-body);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  & ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+  }
+  & li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--color-body);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+  & li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-ink);
+  }
+  & a {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  & strong { font-weight: 700; color: var(--color-ink); }
+  & code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+}
+
 /* ---- Pills ---- */
 @utility pill-base {
   display: inline-flex;
