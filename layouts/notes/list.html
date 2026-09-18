@@ -1,0 +1,19 @@
+{{ define "main" }}
+<section class="border-t-2 border-ink px-gutter py-section">
+  <div class="flex max-w-[44ch] flex-col gap-6">
+    <h1 class="display-xl text-hero">{{ .Title }}</h1>
+    <div class="text-lead leading-normal text-body">{{ .Content }}</div>
+  </div>
+  <div class="mt-14 flex flex-col">
+    {{ range .Pages.ByDate.Reverse }}
+    <article class="flex flex-col gap-3 border-t-2 border-ink py-8">
+      <span class="label-mono">{{ .Date.Format "2006-01-02" }} · {{ .ReadingTime }} min read</span>
+      <h2 class="display-md text-h3"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      <p class="max-w-[68ch] text-base leading-[1.55] text-body">{{ .Params.summary | default .Summary }}</p>
+    </article>
+    {{ else }}
+    <p class="label-mono">No notes published yet.</p>
+    {{ end }}
+  </div>
+</section>
+{{ end }}
