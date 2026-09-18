@@ -9,7 +9,9 @@ bad()  { printf '  FAIL  %s\n' "$1"; fail=1; }
 warn() { printf '  warn  %s\n' "$1"; }
 
 echo "==> build"
-if ! hugo --gc --minify --quiet; then
+# --cleanDestinationDir: without it, fingerprinted CSS from earlier builds
+# piles up in public/ and every size measurement below is wrong.
+if ! hugo --gc --minify --cleanDestinationDir --quiet; then
   echo "  FAIL  hugo build failed"; exit 1
 fi
 ok "hugo build"
@@ -93,9 +95,11 @@ if [ -f public/index.html ]; then
   html=$(wc -c < public/index.html)
   css=$(cat public/css/*.css 2>/dev/null | wc -c)
   fonts=$(cat public/fonts/*.woff2 2>/dev/null | wc -c)
+  # GitHub Pages serves gzip, so the compressed figure is what travels.
+  gz=$(( $(gzip -9c public/index.html | wc -c) + $(cat public/css/*.css | gzip -9c | wc -c) ))
+  ok "render-blocking, gzipped: $((gz / 1024)) kB (raw $(( (html + css) / 1024 )) kB)"
   # Fonts use font-display:swap, so they never block first paint.
-  ok "render-blocking (html + css): $(( (html + css) / 1024 )) kB"
-  ok "fonts, streamed after paint and then cached: $((fonts / 1024)) kB"
+  ok "fonts, streamed after paint then cached: $((fonts / 1024)) kB"
 fi
 
 echo
