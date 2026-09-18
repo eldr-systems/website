@@ -1,0 +1,22 @@
+<section class="grid grid-cols-12 items-center gap-x-6 gap-y-12 px-gutter pt-8 pb-section">
+  <div class="col-span-12 flex flex-col gap-8 lg:col-span-6">
+    <span class="label-mono">{{ .Params.eyebrow }}</span>
+    <h1 class="display-xl text-hero">{{ .Params.heading }}</h1>
+    <p class="max-w-[34ch] text-lead leading-normal text-body">{{ .Params.lead }}</p>
+    <div class="flex flex-wrap gap-3 pt-2">
+      {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a 20-minute call" "class" "pill-ember") }}
+      <a href="#offers" class="pill-outline">See our offers</a>
+    </div>
+  </div>
+  <div class="col-span-12 flex justify-center lg:col-start-7 lg:col-span-6 lg:justify-end">
+    {{- /* The mark opened out into a signal. Bespoke to the hero — not an
+           icon from the set. One ember dot. */ -}}
+    <svg viewBox="0 0 600 600" class="w-full max-w-[600px] h-auto" role="img" aria-label="The Eldr mark, opened out into a signal">
+      <path d="M388.9,544.4 A260,260 0 1 0 544.4,388.9" fill="none" stroke="#14161A" stroke-width="1.5" opacity="0.35"/>
+      <path d="M373.5,502.0 A215,215 0 1 0 502.0,373.5" fill="none" stroke="#14161A" stroke-width="2" opacity="0.6"/>
+      <path d="M358.1,459.7 A170,170 0 1 0 459.7,358.1" fill="none" stroke="#14161A" stroke-width="11"/>
+      <circle cx="420.2" cy="420.2" r="30" fill="#E2632B"/>
+      <circle cx="300" cy="300" r="13" fill="#14161A"/>
+    </svg>
+  </div>
+</section>

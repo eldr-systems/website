@@ -1,0 +1,19 @@
+{{- /* Reads content/offers/. Adding an offer file makes it appear here AND
+       generates its detail page. */ -}}
+<section class="border-t-2 border-ink px-gutter py-section" id="offers">
+  <h2 class="display-lg text-h2">Fixed price. Scoped in one call.</h2>
+  <div class="mt-14 grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(280px,1fr))]">
+    {{ range (where .Site.RegularPages "Section" "offers").ByWeight }}
+    <article class="flex flex-col gap-5 rounded-card border-2 border-ink p-9 {{ if .Params.emphasised }}bg-ink text-bone [--eldr-ink:var(--color-bone)]{{ end }}">
+      {{ partial "icon.html" (dict "name" .Params.icon "class" "w-26 h-26") }}
+      <span class="{{ if .Params.emphasised }}font-mono text-label text-muted-ink{{ else }}label-mono{{ end }}">{{ .Params.duration }}</span>
+      <h3 class="display-md text-h3">{{ .Title }}</h3>
+      <p class="grow text-base leading-[1.55] {{ if .Params.emphasised }}text-on-ink{{ else }}text-body{{ end }}">{{ .Params.summary }}</p>
+      <div class="flex items-center justify-between gap-4 border-t pt-4 {{ if .Params.emphasised }}border-rule-dark{{ else }}border-rule{{ end }}">
+        <span class="font-mono text-base font-medium">{{ .Params.price }}</span>
+        <a href="{{ .RelPermalink }}">Details →</a>
+      </div>
+    </article>
+    {{ end }}
+  </div>
+</section>

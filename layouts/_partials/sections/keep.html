@@ -1,0 +1,18 @@
+<section class="border-t-2 border-ink px-gutter py-section" id="keep">
+  <div class="grid grid-cols-12 items-center gap-x-6 gap-y-10">
+    <div class="col-span-12 flex aspect-video items-center justify-center rounded-card bg-ink p-4 text-center font-mono text-sm text-rule lg:col-span-7 lg:aspect-auto lg:h-[380px]">
+      [Demo video: The Keep by Eldr Systems, 2 min]
+    </div>
+    <div class="col-span-12 flex flex-col items-start gap-5 lg:col-start-9 lg:col-span-4">
+      {{- /* Placeholder trace. Replace with a real power-profiler capture —
+             BRAND.md: real photos and real traces only. */ -}}
+      <svg viewBox="0 0 360 80" class="w-full max-w-[360px] h-auto" role="img" aria-label="Current trace with three transmit bursts">
+        <polyline points="0,70 60,70 62,14 70,26 78,70 180,70 182,40 190,52 198,70 300,70 302,14 310,26 318,70 360,70" fill="none" stroke="#14161A" stroke-width="2"/>
+        <circle cx="62" cy="14" r="5.5" fill="#E2632B"/>
+      </svg>
+      <span class="font-mono text-[clamp(2.5rem,1.7rem+3.3vw,3.375rem)] font-medium tracking-[-0.03em] leading-none">{{ .Params.keepStat }}</span>
+      <p class="max-w-[38ch] text-base leading-normal text-body">{{ .Params.keepCaption }}</p>
+      <a href="/notes/" class="text-[1.0625rem] font-bold">Read the notes →</a>
+    </div>
+  </div>
+</section>
