@@ -53,6 +53,21 @@ else
   ok "all homepage section anchors resolve"
 fi
 
+echo "==> third-party requests"
+# The footer claims "No cookies. No analytics. No third-party requests."
+# BRAND.md: that line "only stays honest if the builder you pick doesn't
+# quietly add its own." This is what keeps it honest.
+# Destination links the visitor chooses to follow are not asset requests.
+ext=$(grep -rhoE '(src|href)="https?://[^"]+"' public/ 2>/dev/null \
+  | grep -vE 'eldrsystems\.com|github\.com|linkedin\.com|youtube\.com|schema\.org|w3\.org' \
+  | sort -u)
+if [ -n "$ext" ]; then
+  echo "$ext" | sed 's/^/        /'
+  bad "external asset requests found — the footer claim is no longer true"
+else
+  ok "no external asset requests"
+fi
+
 echo "==> unfilled placeholders"
 # Warnings, not failures: the site must stay buildable and deployable while
 # these are outstanding. The point is that they cannot be quietly forgotten.
@@ -75,8 +90,12 @@ fi
 
 echo "==> page weight"
 if [ -f public/index.html ]; then
-  bytes=$(wc -c < public/index.html)
-  ok "index.html $((bytes / 1024)) kB ($bytes bytes)"
+  html=$(wc -c < public/index.html)
+  css=$(cat public/css/*.css 2>/dev/null | wc -c)
+  fonts=$(cat public/fonts/*.woff2 2>/dev/null | wc -c)
+  # Fonts use font-display:swap, so they never block first paint.
+  ok "render-blocking (html + css): $(( (html + css) / 1024 )) kB"
+  ok "fonts, streamed after paint and then cached: $((fonts / 1024)) kB"
 fi
 
 echo
