@@ -53,6 +53,26 @@ else
   ok "all homepage section anchors resolve"
 fi
 
+echo "==> unfilled placeholders"
+# Warnings, not failures: the site must stay buildable and deployable while
+# these are outstanding. The point is that they cannot be quietly forgotten.
+# Note: --minify strips attribute quotes, so match aria-disabled bare.
+n=0
+flag() { warn "$1"; n=$((n + 1)); }
+grep -rq 'roleA\|roleB\|roleC'  public/ && flag "team titles still roleA/roleB/roleC"
+grep -rq '€\['                  public/ && flag "offer prices still bracketed"
+grep -rq '\[X\] µA'             public/ && flag "The Keep current figure not measured"
+grep -rq 'Demo video:'          public/ && flag "The Keep demo video not embedded"
+grep -rq 'portrait-placeholder' public/ && flag "team photos still placeholders"
+grep -rq 'Reg. no. —'           public/ && flag "Kft. registration details not filled"
+d=$(grep -rho 'aria-disabled' public/index.html 2>/dev/null | wc -l)
+[ "$d" -gt 0 ] && flag "$d disabled CTA(s) on the homepage — booking/social URLs unset"
+if [ "$n" -eq 0 ]; then
+  ok "no unfilled placeholders"
+else
+  echo "        $n outstanding — buildable, but not launch-ready"
+fi
+
 echo "==> page weight"
 if [ -f public/index.html ]; then
   bytes=$(wc -c < public/index.html)
