@@ -9,14 +9,31 @@
     </div>
   </div>
   <div class="col-span-12 flex justify-center lg:col-start-7 lg:col-span-6 lg:justify-end">
-    {{- /* The mark opened out into a signal. Bespoke to the hero — not an
-           icon from the set. One ember dot. */ -}}
-    <svg viewBox="0 0 600 600" class="w-full max-w-[600px] h-auto" role="img" aria-label="The Eldr mark, opened out into a signal">
-      <path d="M388.9,544.4 A260,260 0 1 0 544.4,388.9" fill="none" stroke="#14161A" stroke-width="1.5" opacity="0.35"/>
-      <path d="M373.5,502.0 A215,215 0 1 0 502.0,373.5" fill="none" stroke="#14161A" stroke-width="2" opacity="0.6"/>
-      <path d="M358.1,459.7 A170,170 0 1 0 459.7,358.1" fill="none" stroke="#14161A" stroke-width="11"/>
-      <circle cx="420.2" cy="420.2" r="30" fill="#E2632B"/>
-      <circle cx="300" cy="300" r="13" fill="#14161A"/>
-    </svg>
+    {{- /* Device on the ground, radio out to the cloud. Bespoke to the hero —
+           not an icon from the set. The device is the one ember element.
+           Labels are HTML in flow, not SVG <text>, so they keep the label
+           size at phone width instead of shrinking with the viewBox; the
+           viewBox is cropped to the cloud's top edge so "cloud" sits right
+           above it. */ -}}
+    <figure class="flex w-full max-w-[600px] flex-col gap-3">
+      <span class="label-mono pl-[81.7%]" aria-hidden="true">cloud</span>
+      <svg viewBox="0 100 600 470" class="h-auto w-full" role="img" aria-label="A device on the ground sending over NB-IoT or LTE-M to the cloud">
+        <g fill="none" stroke="var(--color-ink)" stroke-width="1.5">
+          {{- /* Signal: quarter-arcs centred on the device, ground to sky. */}}
+          <path d="M100,450 A70,70 0 0 1 170,520"/>
+          <path d="M100,380 A140,140 0 0 1 240,520"/>
+          <path d="M100,310 A210,210 0 0 1 310,520"/>
+          <path d="M100,240 A280,280 0 0 1 380,520"/>
+          <path d="M100,170 A350,350 0 0 1 450,520"/>
+          {{- /* Link: device centre to the near corner of the cloud. */}}
+          <path d="M100,520 L490,170" stroke-dasharray="2 5" stroke-linecap="round"/>
+          {{- /* Ground. */}}
+          <path d="M20,520 H580"/>
+        </g>
+        <rect x="490" y="100" width="70" height="70" rx="10" fill="var(--color-ink)"/>
+        <circle cx="100" cy="520" r="36" fill="var(--color-ember)"/>
+      </svg>
+      <figcaption class="label-mono pl-[3.3%]" aria-hidden="true">device · NB-IoT / LTE-M</figcaption>
+    </figure>
   </div>
 </section>
