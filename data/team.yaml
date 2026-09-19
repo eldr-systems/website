@@ -1,21 +1,20 @@
 # Names are written without Hungarian accents, as supplied. Deliberate —
 # do not "correct" them.
 #
-# title: roleA/roleB/roleC are placeholders pending a team discussion.
-# They are visibly wrong on purpose so they cannot ship unnoticed;
-# scripts/check.sh flags them on every build.
+# photo: path under assets/ — the team partial runs it through Hugo's
+# image pipeline (square crop, WebP).
 - name: Vencel Koczka
   role: Co-founder
-  title: roleA
+  title: Clients, cloud and data
   email: vencel@eldrsystems.com
-  photo: /graphics/portrait-placeholder.svg
+  photo: imgs/vencel_profile_picture.jpeg
 - name: Bence Schoblocher
   role: Co-founder
-  title: roleB
+  title: Firmware and connectivity
   email: bence@eldrsystems.com
-  photo: /graphics/portrait-placeholder.svg
+  photo: imgs/sobi_profile_picture.jpeg
 - name: Boldizsar Karancsi
   role: Co-founder
-  title: roleC
+  title: Electronics and production
   email: boldizsar@eldrsystems.com
-  photo: /graphics/portrait-placeholder.svg
+  photo: imgs/boldi_profile_picture.jpeg

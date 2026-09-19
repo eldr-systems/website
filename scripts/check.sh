@@ -40,7 +40,7 @@ echo "==> static assets published"
 # Declaring any module.mount targeting 'static' replaces Hugo's default
 # static mount. When that happened, CNAME silently stopped shipping and
 # the custom domain would have broken on deploy.
-for f in CNAME robots.txt logo/favicon.svg graphics/og-image.png graphics/portrait-placeholder.svg; do
+for f in CNAME robots.txt logo/favicon.svg graphics/og-image.png; do
   if [ -f "public/$f" ]; then ok "$f"; else bad "$f missing from public/"; fi
 done
 # Every <img src> on the homepage must resolve to a real file.
