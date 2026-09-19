@@ -38,7 +38,7 @@ Both fonts must render Hungarian **ő** and **ű**. Archivo and IBM Plex Mono bo
 
 - **Primary use on the site: the inverse mark** — bone tile, ink glyph, ember dot. On a bone background the tile disappears and only the mark reads.
 - Original (ink tile, bone glyph, ember dot) where it needs to sit against a light photo or a busy area, and in the footer.
-- Ember tile is the loud version. Used exactly once, at the closing CTA.
+- Ember tile (`logo/eldr-mark-ember.svg`) is the loud version. Not used on the site — the closing CTA carries the ember on its button instead.
 - Tile corner radius is 74.7 on a 512 box — 14.6%. Keep it when resizing.
 - Never a flame anywhere near The Keep. Never runes.
 

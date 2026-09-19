@@ -1,19 +1,13 @@
-{{- /* The ember tile appears here and NOWHERE else on the site.
-       BRAND.md: "Ember tile is the loud version. Used exactly once,
-       at the closing CTA." */ -}}
-<section class="flex flex-wrap items-center justify-between gap-12 border-t-2 border-ink px-gutter py-section">
-  <div class="flex flex-[1_1_20rem] flex-col gap-7">
-    <h2 class="display-cta text-cta">Tell us what you need to measure.</h2>
-    <div class="flex flex-wrap items-center gap-5">
-      {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a 20-minute call" "class" "pill-ink") }}
-      <span class="text-[1.0625rem] text-body">
-        No pitch.{{ with .Site.Params.email }} Or email <a href="mailto:{{ . }}" class="underline underline-offset-4">{{ . }}</a>.{{ end }}
-      </span>
-    </div>
+{{- /* Closing CTA. The ember tile used to sit here; it was dropped as
+       redundant with the header and footer marks. The ember now goes on
+       the button — still one ember element in the section, and the
+       closing ask stays the loudest thing on the page. */ -}}
+<section class="flex flex-col gap-7 border-t-2 border-ink px-gutter py-section">
+  <h2 class="display-cta max-w-[14ch] text-cta">Tell us what you need to measure.</h2>
+  <div class="flex flex-wrap items-center gap-5">
+    {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a 20-minute call" "class" "pill-ember") }}
+    <span class="text-[1.0625rem] text-body">
+      No pitch.{{ with .Site.Params.email }} Or email <a href="mailto:{{ . }}" class="underline underline-offset-4">{{ . }}</a>.{{ end }}
+    </span>
   </div>
-  <svg class="w-[clamp(120px,20vw,240px)] h-auto shrink-0" viewBox="0 0 512 512" role="img" aria-label="Eldr Systems mark">
-    <rect width="512" height="512" rx="74.7" fill="#E2632B"/>
-    <path fill="#14161A" d="M412.52 279.08A158.22 158.22 0 1 0 366.48 369.25L334.24 336.21A112.05 112.05 0 0 1 146.35 279.08ZM146.35 232.92A112.05 112.05 0 0 1 365.65 232.92Z"/>
-    <circle cx="375.12" cy="319.8" r="23.08" fill="#F4F1EA"/>
-  </svg>
 </section>

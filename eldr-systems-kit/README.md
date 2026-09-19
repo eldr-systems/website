@@ -20,7 +20,7 @@ tokens/tailwind.tokens.js      for theme.extend
 
 logo/eldr-mark-inverse.svg     ← primary
 logo/eldr-mark-primary.svg     the original
-logo/eldr-mark-ember.svg       loud version, closing CTA only
+logo/eldr-mark-ember.svg       loud version — not used on the site
 logo/eldr-mark-mono-*.svg      one-colour, for stamps and single-colour print
 logo/eldr-mark-transparent.svg no tile, for placing on photos
 logo/eldr-lockup-*.svg         mark + wordmark
