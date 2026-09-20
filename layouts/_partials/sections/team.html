@@ -18,6 +18,11 @@
         <span class="text-xl font-bold">{{ .name }}</span>
         <span class="label-mono">{{ .role }} · {{ .title }}</span>
       </div>
+      {{- /* BRAND.md: "show experience through specifics, not years." */ -}}
+      <p class="leading-[1.55] text-body">{{ .bio }}</p>
+      {{ with .linkedin }}
+      <a href="{{ . }}" class="label-mono underline underline-offset-4 self-start">LinkedIn</a>
+      {{ end }}
     </div>
     {{ end }}
   </div>

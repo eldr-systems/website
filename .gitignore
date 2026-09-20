@@ -4,3 +4,5 @@ resources/_gen/
 node_modules/
 hugo_stats.json
 .DS_Store
+# LinkedIn profile exports — source material only, contain personal emails
+assets/files/

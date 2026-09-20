@@ -3,18 +3,28 @@
 #
 # photo: path under assets/ — the team partial runs it through Hugo's
 # image pipeline (square crop, WebP).
+#
+# bio: one line of specifics, BRAND.md voice — degrees, past employers, named
+# tools. No current employers, no dates, no adjectives. Source: the LinkedIn
+# exports in assets/files/ (gitignored).
 - name: Vencel Koczka
   role: Co-founder
   title: Clients, cloud and data
+  bio: MSc Data Science, Uppsala University. Previously Ericsson and EPIC InnoLabs.
   email: vencel@eldrsystems.com
+  linkedin: https://www.linkedin.com/in/vencel-d%C3%A1vid-koczka-2aab8425a
   photo: imgs/vencel_profile_picture.jpeg
 - name: Bence Schoblocher
   role: Co-founder
   title: Firmware and connectivity
+  bio: MSc Computer Science, Aalborg University. C++ and 5G telecom. Previously Keysight Technologies, cellular systems R&D.
   email: bence@eldrsystems.com
+  linkedin: https://www.linkedin.com/in/bence-schoblocher
   photo: imgs/sobi_profile_picture.jpeg
 - name: Boldizsar Karancsi
   role: Co-founder
   title: Electronics and production
+  bio: BSc Electrical Engineering, BME. Two years automation engineering at Samsung SDI. Altium, EPLAN, Siemens and Mitsubishi PLC.
   email: boldizsar@eldrsystems.com
+  linkedin: https://www.linkedin.com/in/boldizs%C3%A1r-karancsi-83a014223
   photo: imgs/boldi_profile_picture.jpeg
