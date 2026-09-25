@@ -1,9 +1,17 @@
 {{ define "main" }}
 {{ partial "sections/hero.html" . }}
-{{ partial "sections/layers.html" . }}
+{{- /* The clock: the two weeks the visitor is buying. The spine runs from Day 0
+       to Day 44 and stops there, so the engagement reads as one object and
+       everything below it is context rather than more process. */ -}}
+{{ partial "sections/day0.html" . }}
+{{ partial "sections/week1.html" . }}
+{{ partial "sections/week2.html" . }}
+{{ partial "sections/day14.html" . }}
+{{ partial "sections/day44.html" . }}
+{{- /* The spine has ended. */ -}}
+{{ partial "sections/next.html" . }}
 {{ partial "sections/audience.html" . }}
-{{ partial "sections/offers.html" . }}
-{{ partial "sections/process.html" . }}
+{{ partial "sections/layers.html" . }}
 {{ partial "sections/keep.html" . }}
 {{ partial "sections/proof.html" . }}
 {{ partial "sections/team.html" . }}

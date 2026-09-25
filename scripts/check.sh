@@ -59,8 +59,9 @@ fi
 
 echo "==> homepage nav anchors resolve"
 # The kit shipped #work, #notes and #team pointing at the wrong elements.
+# #audit replaced #how-we-work: the two-week spine IS the process section now.
 missing=""
-for id in layers offers how-we-work keep team where; do
+for id in audit offers layers keep team where; do
   grep -q "id=$id\|id=\"$id\"" public/index.html 2>/dev/null || missing="$missing #$id"
 done
 if [ -n "$missing" ]; then
@@ -94,6 +95,8 @@ grep -rq 'roleA\|roleB\|roleC'  public/ && flag "team titles still roleA/roleB/r
 grep -rq '€\['                  public/ && flag "offer prices still bracketed"
 grep -rq '\[X\] µA'             public/ && flag "The Keep current figure not measured"
 grep -rq 'Demo video:'          public/ && flag "The Keep demo video not embedded"
+n_out=$(grep -ro '\[[a-z ]*outstanding\]' public/ | wc -l)
+[ "$n_out" -gt 0 ] && flag "$n_out Keep view artefact(s) outstanding"
 grep -rq 'portrait-placeholder' public/ && flag "team photos still placeholders"
 grep -rq 'Reg. no. —'           public/ && flag "Kft. registration details not filled"
 d=$(grep -rho 'aria-disabled' public/index.html 2>/dev/null | wc -l)

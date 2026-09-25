@@ -1,29 +1,31 @@
-{{- /* BRAND.md / README: "for a three-person firm the team is the product." */ -}}
+{{- /* A ruled roster, not three equal photo cards: the direction contract
+       refuses the "team row" shape by name. Portraits stay, at roster scale,
+       inside the same hairline language as every other list on this page. */ -}}
 <section class="border-t-2 border-ink px-gutter py-section" id="team">
   <div class="flex max-w-[44ch] flex-col gap-6">
     <h2 class="display-lg text-h2">Three engineers in Budapest</h2>
     <p class="text-lg leading-[1.55] text-body">You talk to the people who build it. There is no account manager.</p>
   </div>
-  <div class="mt-14 grid gap-x-6 gap-y-10 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
-    {{ range .Site.Data.team }}
-    <div class="flex flex-col gap-4">
-      {{- /* Fill crops to square so a non-square source cannot distort;
-             WebP roughly halves the JPEG weight. */ -}}
-      {{ with resources.Get .photo }}
-      {{ $photo := .Fill "400x400 webp q85" }}
-      <img src="{{ $photo.RelPermalink }}" alt="" width="400" height="400" loading="lazy"
-           class="w-full aspect-square object-cover rounded-card border-2 border-ink bg-bone">
+  <div class="mt-14">
+    {{ range $i, $m := .Site.Data.team }}
+    <article class="grid grid-cols-1 items-start gap-x-6 gap-y-5 py-8 sm:grid-cols-12 {{ if eq $i 0 }}border-t-2 border-ink{{ else }}border-t border-rule{{ end }} {{ if eq (add $i 1) (len $.Site.Data.team) }}border-b-2 border-b-ink{{ end }}">
+      {{ with resources.Get $m.photo }}
+      {{ $photo := .Fill "320x320 webp q85" }}
+      <img src="{{ $photo.RelPermalink }}" alt="" width="320" height="320" loading="lazy"
+           class="w-28 h-28 object-cover rounded-card border-2 border-ink bg-bone sm:col-span-2 sm:w-full sm:h-auto sm:aspect-square">
       {{ end }}
-      <div class="flex flex-col gap-1">
-        <span class="text-xl font-bold">{{ .name }}</span>
-        <span class="label-mono">{{ .role }} · {{ .title }}</span>
+      <div class="flex flex-col gap-1 sm:col-span-4">
+        <span class="text-xl font-bold">{{ $m.name }}</span>
+        <span class="label-mono">{{ $m.role }} · {{ $m.title }}</span>
       </div>
       {{- /* BRAND.md: "show experience through specifics, not years." */ -}}
-      <p class="leading-[1.55] text-body">{{ .bio }}</p>
-      {{ with .linkedin }}
-      <a href="{{ . }}" class="label-mono underline underline-offset-4 self-start">LinkedIn</a>
-      {{ end }}
-    </div>
+      <div class="flex flex-col items-start gap-3 sm:col-start-7 sm:col-span-6">
+        <p class="text-small leading-[1.6] text-body">{{ $m.bio }}</p>
+        {{ with $m.linkedin }}
+        <a href="{{ . }}" class="label-mono underline underline-offset-4">LinkedIn</a>
+        {{ end }}
+      </div>
+    </article>
     {{ end }}
   </div>
 </section>

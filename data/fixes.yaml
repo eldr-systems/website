@@ -1,0 +1,19 @@
+# The four places the current actually goes. These are the categories the audit
+# searches, NOT measured gains — a gain figure belongs to a specific fleet and is
+# produced by the audit. Do not put invented percentages in the `measured` field.
+- fault: PSM negotiated, not requested
+  detail: The network grants timers the firmware never asked for, and nobody logged the accept.
+  measured: T3412 and T3324 read back after attach
+  icon: psm
+- fault: The active window after each exchange
+  detail: The modem stays reachable doing nothing. Brief per cycle, constant across a year.
+  measured: Current through the full active timer
+  icon: interval
+- fault: A wake-up path nobody measured
+  detail: A sensor or rail held in a higher power mode than the firmware believes.
+  measured: Sleep current, every peripheral in its assumed state
+  icon: current
+- fault: Retries after a failed attach
+  detail: A bad attach can cost more than a week of successful reporting.
+  measured: Attach and reconnect in poor coverage
+  icon: operator

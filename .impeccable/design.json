@@ -1,0 +1,378 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-25T14:03:33Z",
+  "title": "Design System: Eldr Systems",
+  "extensions": {
+    "colorMeta": {
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#14161A",
+        "tonalRamp": [
+          "oklch(15% 0.008 260)",
+          "oklch(26% 0.008 260)",
+          "oklch(37% 0.008 260)",
+          "oklch(48% 0.008 260)",
+          "oklch(59% 0.008 260)",
+          "oklch(71% 0.008 260)",
+          "oklch(83% 0.008 260)",
+          "oklch(95% 0.008 260)"
+        ]
+      },
+      "bone": {
+        "role": "neutral",
+        "displayName": "Bone",
+        "canonical": "#F4F1EA",
+        "tonalRamp": [
+          "oklch(15% 0.012 85)",
+          "oklch(26% 0.012 85)",
+          "oklch(37% 0.012 85)",
+          "oklch(48% 0.012 85)",
+          "oklch(59% 0.012 85)",
+          "oklch(71% 0.012 85)",
+          "oklch(83% 0.012 85)",
+          "oklch(95% 0.012 85)"
+        ]
+      },
+      "ember": {
+        "role": "primary",
+        "displayName": "Ember",
+        "canonical": "#E2632B",
+        "tonalRamp": [
+          "oklch(15% 0.166 42)",
+          "oklch(26% 0.166 42)",
+          "oklch(37% 0.166 42)",
+          "oklch(48% 0.166 42)",
+          "oklch(59% 0.166 42)",
+          "oklch(71% 0.166 42)",
+          "oklch(83% 0.166 42)",
+          "oklch(95% 0.166 42)"
+        ]
+      },
+      "ember-dark": {
+        "role": "primary",
+        "displayName": "Ember Deep",
+        "canonical": "#C9551F",
+        "tonalRamp": [
+          "oklch(15% 0.163 41)",
+          "oklch(26% 0.163 41)",
+          "oklch(37% 0.163 41)",
+          "oklch(48% 0.163 41)",
+          "oklch(59% 0.163 41)",
+          "oklch(71% 0.163 41)",
+          "oklch(83% 0.163 41)",
+          "oklch(95% 0.163 41)"
+        ]
+      },
+      "slate": {
+        "role": "secondary",
+        "displayName": "Slate",
+        "canonical": "#5B6B7A",
+        "tonalRamp": [
+          "oklch(15% 0.028 243)",
+          "oklch(26% 0.028 243)",
+          "oklch(37% 0.028 243)",
+          "oklch(48% 0.028 243)",
+          "oklch(59% 0.028 243)",
+          "oklch(71% 0.028 243)",
+          "oklch(83% 0.028 243)",
+          "oklch(95% 0.028 243)"
+        ]
+      },
+      "body": {
+        "role": "neutral",
+        "displayName": "Body",
+        "canonical": "#3A434C"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#4E5A66"
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#C9C3B6"
+      },
+      "rule-dark": {
+        "role": "neutral",
+        "displayName": "Rule Dark",
+        "canonical": "#2B3036"
+      },
+      "on-ink": {
+        "role": "neutral",
+        "displayName": "On Ink",
+        "canonical": "#C9CFD5"
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#9AA5AF"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The single h1 on a page. Archivo 800 at width 112%."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings. The rhythm marker of the homepage."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card headings, note titles, Markdown h2."
+      },
+      "cta": {
+        "displayName": "CTA",
+        "purpose": "The closing ask only. Largest and widest type in the system."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "The paragraph under the h1, held to ~34 characters."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running prose, 34-44ch in sections."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Secondary body (15px): card lines, list detail, footnotes and navigation. One step below Body, never a primary paragraph."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Mono. Durations, dates, table keys, spine unit labels, the footer, every legal value."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ember-hand",
+        "value": "@keyframes ember-hand { 0%, 100% { background: var(--color-ink); transform: scale(1); } 50% { background: var(--color-ember); transform: scale(1.5); } }",
+        "purpose": "The travelling ember. The spine marker lights ember and scales to 1.5 as its band crosses mid-viewport, then returns to ink. The only motion in the system."
+      },
+      {
+        "name": "ember-hand-timeline",
+        "value": "animation-timeline: view(); animation-range: cover 42% cover 58%;",
+        "purpose": "Scroll-driven, not time-driven: the site ships no JavaScript. The band's own position in the viewport is the clock."
+      },
+      {
+        "name": "scroll-animation-guard",
+        "value": "@supports (animation-timeline: view()) and @media (prefers-reduced-motion: no-preference)",
+        "purpose": "Load-bearing, not polish. Without a view timeline the same animation fires once on load, so the @supports guard is what makes the static ink marker the fallback."
+      },
+      {
+        "name": "reduced-motion-guard",
+        "value": "@media (prefers-reduced-motion: reduce) { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }",
+        "purpose": "Applied globally in the base layer, so anything added later is covered by default."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      },
+      {
+        "name": "page-max",
+        "value": "1440px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Pill",
+      "kind": "button",
+      "refersTo": "pill-ember",
+      "description": "The booking call-to-action. The one ember element in whatever section it appears in.",
+      "html": "<a class=\"ds-pill-ember\" href=\"#\">Book a 20-minute call</a>",
+      "css": ".ds-pill-ember { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0.9rem 1.6rem; border-radius: 999px; font-family: Archivo, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 1.0625rem; text-align: center; text-decoration: none; background: var(--color-ember, #E2632B); color: var(--color-ink, #14161A); transition: background 0.15s ease; } .ds-pill-ember:hover { background: var(--color-ember-dark, #C9551F); } .ds-pill-ember:focus-visible { outline: 3px solid var(--color-ember, #E2632B); outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Pill",
+      "kind": "button",
+      "refersTo": "pill-outline",
+      "description": "The secondary action, and the header's booking control. 2px ink border, 1px tighter padding to compensate.",
+      "html": "<a class=\"ds-pill-outline\" href=\"#\">See our offers</a>",
+      "css": ".ds-pill-outline { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0.8rem 1.5rem; border-radius: 999px; border: 2px solid var(--color-ink, #14161A); font-family: Archivo, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 1.0625rem; text-decoration: none; color: var(--color-ink, #14161A); background: transparent; } .ds-pill-outline:hover { text-decoration: underline; text-underline-offset: 4px; } .ds-pill-outline:focus-visible { outline: 3px solid var(--color-ember, #E2632B); outline-offset: 3px; }"
+    },
+    {
+      "name": "Disabled Control",
+      "kind": "button",
+      "refersTo": "pill-outline",
+      "description": "How an unset link renders. Never an href to a bracketed placeholder: a span in the caller's own class, with an ember pill downgraded to an outline pill, full contrast kept, and the mono bracket outside the control so it cannot break the pill's shape.",
+      "html": "<span class=\"ds-disabled-wrap\"><span class=\"ds-pill-disabled\" aria-disabled=\"true\" title=\"Not yet published\">Book a call</span><span class=\"ds-pending\">[link pending]</span></span>",
+      "css": ".ds-disabled-wrap { display: inline-flex; flex-wrap: wrap; align-items: center; column-gap: 0.75rem; row-gap: 0.25rem; } .ds-pill-disabled { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0.8rem 1.5rem; border-radius: 999px; border: 2px solid var(--color-ink, #14161A); font-family: Archivo, Helvetica, Arial, sans-serif; font-weight: 700; font-size: 1.0625rem; color: var(--color-ink, #14161A); cursor: not-allowed; } .ds-pending { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 0.8125rem; color: var(--color-muted, #4E5A66); }"
+    },
+    {
+      "name": "Offer Card",
+      "kind": "card",
+      "refersTo": "card-offer",
+      "description": "Default card. Bone surface, 2px ink border, 26px radius, description set to grow so footer rows align across a row of cards.",
+      "html": "<article class=\"ds-card\"><span class=\"ds-card-label\">1-2 weeks</span><h3 class=\"ds-card-title\">Battery and connectivity fixes</h3><p class=\"ds-card-body\">Power traces, modem logs and a ranked fix plan for NB-IoT and LTE-M devices that drain or drop off.</p><div class=\"ds-card-foot\"><span class=\"ds-card-price\">from &euro;[3,000]</span><a class=\"ds-card-link\" href=\"#\">Details &rarr;</a></div></article>",
+      "css": ".ds-card { display: flex; flex-direction: column; gap: 1.25rem; padding: 2.25rem; border: 2px solid var(--color-ink, #14161A); border-radius: 26px; background: var(--color-bone, #F4F1EA); font-family: Archivo, Helvetica, Arial, sans-serif; max-width: 360px; } .ds-card-label { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 0.8125rem; color: var(--color-muted, #4E5A66); } .ds-card-title { font-weight: 800; font-stretch: 108%; letter-spacing: -0.02em; font-size: 1.75rem; line-height: 1.05; margin: 0; color: var(--color-ink, #14161A); } .ds-card-body { flex-grow: 1; font-size: 1rem; line-height: 1.55; margin: 0; color: var(--color-body, #3A434C); } .ds-card-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--color-rule, #C9C3B6); padding-top: 1rem; } .ds-card-price { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 1rem; font-weight: 500; } .ds-card-link { color: inherit; text-decoration: none; } .ds-card-link:hover { text-decoration: underline; text-underline-offset: 4px; }"
+    },
+    {
+      "name": "Offer Card, Emphasised",
+      "kind": "card",
+      "refersTo": "card-offer-emphasised",
+      "description": "Emphasis is inversion, not elevation. Ink surface, on-ink prose, muted-ink labels, rule-dark divider. No lift, no border change.",
+      "html": "<article class=\"ds-card-inv\"><span class=\"ds-card-inv-label\">1-2 weeks</span><h3 class=\"ds-card-inv-title\">Battery and connectivity fixes</h3><p class=\"ds-card-inv-body\">Power traces, modem logs and a ranked fix plan for NB-IoT and LTE-M devices that drain or drop off.</p><div class=\"ds-card-inv-foot\"><span class=\"ds-card-inv-price\">from &euro;[3,000]</span><a class=\"ds-card-inv-link\" href=\"#\">Details &rarr;</a></div></article>",
+      "css": ".ds-card-inv { display: flex; flex-direction: column; gap: 1.25rem; padding: 2.25rem; border: 2px solid var(--color-ink, #14161A); border-radius: 26px; background: var(--color-ink, #14161A); font-family: Archivo, Helvetica, Arial, sans-serif; max-width: 360px; } .ds-card-inv-label { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 0.8125rem; color: var(--color-muted-ink, #9AA5AF); } .ds-card-inv-title { font-weight: 800; font-stretch: 108%; letter-spacing: -0.02em; font-size: 1.75rem; line-height: 1.05; margin: 0; color: var(--color-bone, #F4F1EA); } .ds-card-inv-body { flex-grow: 1; font-size: 1rem; line-height: 1.55; margin: 0; color: var(--color-on-ink, #C9CFD5); } .ds-card-inv-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--color-rule-dark, #2B3036); padding-top: 1rem; color: var(--color-bone, #F4F1EA); } .ds-card-inv-price { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 1rem; font-weight: 500; } .ds-card-inv-link { color: inherit; text-decoration: none; } .ds-card-inv-link:hover { text-decoration: underline; text-underline-offset: 4px; }"
+    },
+    {
+      "name": "Ruled List",
+      "kind": "custom",
+      "refersTo": "nav-link",
+      "description": "The audience pattern, and one of the four ember points on the page: one 14px ember dot, every other bullet a 10px ink dot. First and last rows promoted to 2px ink to close the block.",
+      "html": "<ul class=\"ds-ruled\"><li><span>Solar and battery installers</span><span class=\"ds-dot\"></span></li><li><span>EV-charger and heat-pump companies</span><span class=\"ds-dot\"></span></li><li><span>Cellular devices with battery or connection trouble</span><span class=\"ds-dot ds-dot-ember\"></span></li></ul>",
+      "css": ".ds-ruled { list-style: none; margin: 0; padding: 0; font-family: Archivo, Helvetica, Arial, sans-serif; max-width: 460px; } .ds-ruled li { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--color-rule, #C9C3B6); padding: 1.25rem 0; font-size: 1.375rem; font-weight: 600; color: var(--color-ink, #14161A); } .ds-ruled li:first-child { border-top: 2px solid var(--color-ink, #14161A); } .ds-ruled li:last-child { border-bottom: 2px solid var(--color-ink, #14161A); } .ds-dot { flex-shrink: 0; width: 10px; height: 10px; border-radius: 999px; background: var(--color-ink, #14161A); } .ds-dot-ember { width: 14px; height: 14px; background: var(--color-ember, #E2632B); }"
+    },
+    {
+      "name": "Spec Row",
+      "kind": "custom",
+      "refersTo": "nav-link",
+      "description": "The definition-list pattern used for factual rows. Entirely mono: muted key on the left, ink value on the right.",
+      "html": "<dl class=\"ds-spec\"><div><dt>Based in</dt><dd>Budapest, Hungary</dd></div><div><dt>Hours</dt><dd>CET / CEST</dd></div><div><dt>Languages</dt><dd>English, Hungarian</dd></div></dl>",
+      "css": ".ds-spec { margin: 0; font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 0.8125rem; line-height: 1.8; max-width: 460px; } .ds-spec > div { display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--color-rule, #C9C3B6); padding: 1rem 0; } .ds-spec > div:first-child { border-top: 2px solid var(--color-ink, #14161A); } .ds-spec > div:last-child { border-bottom: 2px solid var(--color-ink, #14161A); } .ds-spec dt { color: var(--color-muted, #4E5A66); margin: 0; } .ds-spec dd { margin: 0; color: var(--color-ink, #14161A); }"
+    },
+    {
+      "name": "Logo Lockup",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Inverse mark - bone tile, ink glyph, ember dot - beside the wordmark. On bone the tile disappears and only the mark reads. Tile radius is 14.6% of the box and must scale proportionally.",
+      "html": "<a class=\"ds-logo\" href=\"#\"><svg viewBox=\"0 0 512 512\" role=\"img\" aria-label=\"Eldr Systems\"><rect width=\"512\" height=\"512\" rx=\"74.7\" fill=\"#F4F1EA\"/><path fill=\"#14161A\" d=\"M412.52 279.08A158.22 158.22 0 1 0 366.48 369.25L334.24 336.21A112.05 112.05 0 0 1 146.35 279.08ZM146.35 232.92A112.05 112.05 0 0 1 365.65 232.92Z\"/><circle cx=\"375.12\" cy=\"319.8\" r=\"23.08\" fill=\"#E2632B\"/></svg><span class=\"ds-logo-text\"><span class=\"ds-logo-word\">eldr</span><span class=\"ds-logo-sub\">systems</span></span></a>",
+      "css": ".ds-logo { display: inline-flex; align-items: center; gap: 0.875rem; text-decoration: none; color: var(--color-ink, #14161A); font-family: Archivo, Helvetica, Arial, sans-serif; } .ds-logo svg { width: 44px; height: 44px; flex-shrink: 0; } .ds-logo-text { display: flex; align-items: baseline; gap: 7px; } .ds-logo-word { font-size: 1.875rem; font-weight: 850; font-stretch: 120%; letter-spacing: -0.035em; line-height: 1; } .ds-logo-sub { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 0.8125rem; color: var(--color-muted, #4E5A66); }"
+    },
+    {
+      "name": "Ruled Offer Band",
+      "kind": "custom",
+      "refersTo": "nav-link",
+      "description": "Replaces the offer card grid. Statement column left, three rigid mono slots right, always duration then price then guarantee, so a reader compares down the column.",
+      "html": "<article class=\"ds-band\"><div class=\"ds-band-main\"><h3>Battery and connectivity audit</h3><p>Two weeks of measurement on your own devices, on a real operator network.</p><a href=\"#\">Details &rarr;</a></div><dl class=\"ds-band-spec\"><div><dt>Duration</dt><dd>2 weeks</dd></div><div><dt>Price</dt><dd>&euro;6,500</dd></div><div><dt>Guarantee</dt><dd>No fee if we find nothing</dd></div></dl></article>",
+      "css": ".ds-band { display: grid; grid-template-columns: 1fr; gap: 1.5rem; padding: 2.25rem 0; border-top: 2px solid var(--color-ink, #14161A); border-bottom: 2px solid var(--color-ink, #14161A); font-family: Archivo, Helvetica, Arial, sans-serif; } @media (min-width: 1024px) { .ds-band { grid-template-columns: 6fr 1fr 5fr; column-gap: 1.5rem; } .ds-band-spec { grid-column: 3; } } .ds-band h3 { margin: 0 0 1rem; font-weight: 800; font-stretch: 108%; letter-spacing: -0.02em; font-size: 1.75rem; line-height: 1.05; color: var(--color-ink, #14161A); } .ds-band p { margin: 0 0 1rem; max-width: 46ch; color: var(--color-body, #3A434C); line-height: 1.55; } .ds-band a { font-weight: 700; color: var(--color-ink, #14161A); text-decoration: none; } .ds-band a:hover { text-decoration: underline; text-underline-offset: 4px; } .ds-band a:focus-visible { outline: 3px solid var(--color-ember, #E2632B); outline-offset: 3px; } .ds-band-spec { margin: 0; font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 0.8125rem; line-height: 1.8; } .ds-band-spec > div { display: flex; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--color-rule, #C9C3B6); padding: 0.75rem 0; } .ds-band-spec dt { margin: 0; color: var(--color-muted, #4E5A66); } .ds-band-spec dd { margin: 0; text-align: right; color: var(--color-ink, #14161A); }"
+    },
+    {
+      "name": "Ruled Sequence",
+      "kind": "custom",
+      "refersTo": "nav-link",
+      "description": "An ordered chain rather than a row of equal tiles: mono ordinal, semibold name, small-step line, baseline-aligned across a 12-column grid.",
+      "html": "<ul class=\"ds-seq\"><li><span class=\"ds-seq-n\">01</span><span class=\"ds-seq-name\">Sensing</span><span class=\"ds-seq-line\">Getting a trustworthy number off the physical thing.</span></li><li><span class=\"ds-seq-n\">02</span><span class=\"ds-seq-name\">Hardware</span><span class=\"ds-seq-line\">Schematic, layout and a board that survives the field.</span></li><li><span class=\"ds-seq-n\">03</span><span class=\"ds-seq-name\">Firmware</span><span class=\"ds-seq-line\">Duty cycles, power states and OTA you can trust.</span></li></ul>",
+      "css": ".ds-seq { list-style: none; margin: 0; padding: 0; font-family: Archivo, Helvetica, Arial, sans-serif; } .ds-seq li { display: grid; grid-template-columns: 1fr; align-items: baseline; gap: 0.5rem 1.5rem; padding: 1.25rem 0; border-top: 1px solid var(--color-rule, #C9C3B6); } @media (min-width: 640px) { .ds-seq li { grid-template-columns: repeat(12, 1fr); } .ds-seq-n { grid-column: span 1; } .ds-seq-name { grid-column: span 4; } .ds-seq-line { grid-column: 6 / span 7; } } .ds-seq li:first-child { border-top: 2px solid var(--color-ink, #14161A); } .ds-seq li:last-child { border-bottom: 2px solid var(--color-ink, #14161A); } .ds-seq-n { font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 0.8125rem; color: var(--color-muted, #4E5A66); } .ds-seq-name { font-size: 1.375rem; font-weight: 600; color: var(--color-ink, #14161A); } .ds-seq-line { font-size: 0.9375rem; line-height: 1.5; color: var(--color-body, #3A434C); }"
+    },
+    {
+      "name": "Spine Band",
+      "kind": "custom",
+      "refersTo": "spine-marker",
+      "description": "The signature structure. A dated band hangs off a 2px ink rail; the 12px marker straddles the rule at right:-7px and lights ember as the band crosses mid-viewport. Day 0's marker does not ride, because that band spends its ember on the booking pill.",
+      "html": "<section class=\"ds-band-grid\"><div class=\"ds-rail\"><span class=\"ds-dot-spine\" data-rides></span><span class=\"ds-unit\">WEEK 1</span></div><div class=\"ds-band-body\"><h2>We measure, on a real network.</h2><p>Three to five of your devices, running your current firmware.</p></div></section>",
+      "css": ".ds-band-grid { display: grid; grid-template-columns: var(--spine-w, 5rem) 1fr; column-gap: clamp(1rem, 0.4rem + 2.4vw, 2.5rem); border-top: 2px solid var(--color-ink, #14161A); padding: 3.5rem 0; font-family: Archivo, Helvetica, Arial, sans-serif; } .ds-rail { position: relative; border-right: 2px solid var(--color-ink, #14161A); } .ds-dot-spine { position: absolute; top: 0; right: -7px; width: 12px; height: 12px; border-radius: 999px; background: var(--color-ink, #14161A); } @supports (animation-timeline: view()) { @media (prefers-reduced-motion: no-preference) { .ds-dot-spine[data-rides] { animation: ds-ember-hand linear both; animation-timeline: view(); animation-range: cover 42% cover 58%; } @keyframes ds-ember-hand { 0%, 100% { background: var(--color-ink, #14161A); transform: scale(1); } 50% { background: var(--color-ember, #E2632B); transform: scale(1.5); } } } } .ds-unit { display: block; padding: 1.5rem 0.75rem 0 0; font-family: 'IBM Plex Mono', ui-monospace, Menlo, monospace; font-size: 0.8125rem; line-height: 1.3; letter-spacing: 0.06em; color: var(--color-muted, #4E5A66); } .ds-band-body h2 { margin: 0 0 1.5rem; max-width: 14ch; text-wrap: balance; font-weight: 800; font-stretch: 112%; letter-spacing: -0.03em; font-size: 2.75rem; line-height: 1.05; color: var(--color-ink, #14161A); } .ds-band-body p { margin: 0; max-width: 40ch; color: var(--color-body, #3A434C); line-height: 1.55; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Calibrated Instrument",
+    "overview": "The system is built like the face of a precision measuring device. A bone faceplate, ink markings machined into it, and exactly one ember indicator lit at a time. Nothing glows, nothing floats, nothing is suggested — every edge is a real 2px border and every value that came from a measurement is set in mono, the way a readout is. The reason ember is rationed is not restraint for its own sake: an instrument with two lamps lit is an instrument you cannot read.\n\nThe homepage is built on a **spine**: one continuous 2px ink rule running down a narrow left rail, with each dated band hanging off it and a single marker riding it. The marker lights ember as its band crosses mid-viewport and goes back to ink as it leaves, so the accent is handed from one day to the next instead of being spent in several places at once. That hand-off is the only motion in the system and the only thing that moves.\n\nDensity is generous rather than packed. Sections are full-width bands separated by hairline-to-2px ink rules, and body copy is held to 34–44 characters so a reader working in a second language never loses the line. The type does the shouting: Archivo at weight 800 with its **width axis** pushed to 112% and tracking pulled to −0.03em, which is what makes headlines read as stamped rather than typed. Losing that width axis is the single fastest way to turn this into a generic template.\n\nThe imagery stance is documentary, not decorative. Real photographs, real power-profiler traces, real PCBs. Where a real asset does not exist yet, the system uses line diagrams drawn in the same 1.5–2px ink stroke as everything else — deliberate-looking placeholders that must eventually be replaced, never dressed up to pass as finished. Explicitly rejected: stock smart-city glow, AI brains and robots, runes and Viking imagery, and any flame anywhere near The Keep, since fire is the hazard it guards against.",
+    "keyCharacteristics": [
+      "Bone page, ink marks, and ember rationed across the whole viewport, not per component",
+      "One continuous ink spine with a single travelling ember marker",
+      "Zero shadows; depth is border weight and whole-surface inversion",
+      "Archivo display type carried by width, not weight alone",
+      "IBM Plex Mono reserved for measured values, labels and legal text",
+      "2px ink rules as the primary structural device",
+      "Icons are single-colour ink; ember is an event, not a detail",
+      "Two radii only: 26px cards and 999px pills"
+    ],
+    "rules": [
+      {
+        "name": "The One Ember Rule",
+        "body": "Ember is rationed across the *viewport*, not per component. On the homepage it is spent in exactly four places: the logo mark, the single audience indicator dot, the booking pill, and the travelling spine marker — and the marker only while its band is passing mid-screen. Everything else that could carry ember carries ink. No CSS enforces the count; it has to be checked by eye, by scrolling the page and asking how many lit points were visible at once.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink Icon Rule",
+        "body": "Icons render single-colour ink. The icon sprite ships an ember detail in every symbol, and `--eldr-ember` is aliased to ink at `:root` to neutralise it, because roughly twenty static ember marks on one scroll left the travelling marker reading as the twenty-first dot rather than an event. A single component may re-declare `--eldr-ember` locally to give one icon its ember back — deliberately, and never more than one per screen.",
+        "section": "colors"
+      },
+      {
+        "name": "The Indicator Rule",
+        "body": "Ember marks a single point of attention: a dot, a peak, one button, one bullet. It is never a surface, a gradient, a border on a large shape, or a background behind body copy.",
+        "section": "colors"
+      },
+      {
+        "name": "The Reserved Slate Rule",
+        "body": "Slate appears in data and diagrams and nowhere else. Slate text in running copy is a system violation, not a subtle choice.",
+        "section": "colors"
+      },
+      {
+        "name": "The Width Axis Rule",
+        "body": "Display type is Archivo with `font-stretch` set, not weight alone. Always use the `display-xl` / `display-lg` / `display-md` / `display-cta` utilities rather than writing type styles by hand — they exist precisely so a new section cannot silently drop the width axis. All four also set `text-wrap: balance`, so a wide, tightly tracked headline breaks into even lines instead of leaving one orphaned word.",
+        "section": "typography"
+      },
+      {
+        "name": "The Measured-Value Rule",
+        "body": "Any number that came from a measurement, a price, a duration, a date or a registration document is set in IBM Plex Mono. Prose numbers stay in Archivo. The mono face is how a reader tells a claim from a reading.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Voice Rule",
+        "body": "There is no second typeface. A decorative or \"friendlier\" face introduced anywhere in this system is a violation, not a variation.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ruled Section Rule",
+        "body": "Sections are separated by a 2px ink rule and nothing else — no background change, no spacing-only break, no card wrapper. Inverted ink surfaces are a card treatment, never a section treatment.",
+        "section": "layout"
+      },
+      {
+        "name": "The Spine Ends Rule",
+        "body": "The spine runs Day 0 → Week 1 → Week 2 → Day 14 → Day 44 and stops. Everything below is context, not more clock, and carries no rail and no marker. Extending the spine past the engagement dissolves the one thing it measures.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are flat. Before adding a shadow, name the element that is physically floating above the page; if you cannot, the answer is a border or an inversion.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Inversion-Is-Emphasis Rule",
+        "body": "The way to make a card louder is to flip it to ink, not to lift it, tint it, or outline it in ember. When a card inverts, its icon strokes invert with it via the `--eldr-ink` alias.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Two-Radius Rule",
+        "body": "26px or 999px. A value between them is a mistake, not a nuance.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** use the `display-xl` / `display-lg` / `display-md` / `display-cta` utilities for all display type, so the width axis survives.",
+      "**Do** set every measured value, price, duration, date and legal number in IBM Plex Mono.",
+      "**Do** invert a card to ink when it needs emphasis.",
+      "**Do** use `var(--color-ink)` in SVG strokes rather than `#14161A`, so icons follow the surface they sit on.",
+      "**Do** count the lit ember points in a full viewport before shipping a section. More than one at rest means the ration is broken.",
+      "**Do** build a comparison set as a ruled band before reaching for a card grid.",
+      "**Do** wrap any scroll-driven animation in both `@supports (animation-timeline: view())` and a `prefers-reduced-motion` query.",
+      "**Do** render an unset link as a visibly disabled control with `aria-disabled` — never an `href` to a bracketed placeholder.",
+      "**Do** keep body measure between 34ch and 44ch in sections, and honour `prefers-reduced-motion`, which is already wired globally.",
+      "**Do** leave placeholder assets obviously unfinished, and replace them with real photos and real traces."
+    ],
+    "donts": [
+      "**Don't** let a second ember point be visible at rest anywhere in the viewport. This is the rule that holds the identity together, and it is measured across the screen, not per component.",
+      "**Don't** give a sprite icon its ember back without deleting an ember elsewhere.",
+      "**Don't** extend the spine past Day 44, or give a marker `data-rides` in a band that already spends its ember.",
+      "**Don't** dim a disabled control to low contrast, or put its explanation inside the control.",
+      "**Don't** set an uppercase mono kicker above a heading. The heading carries its own weight; a label above it is a crutch.",
+      "**Don't** set display type with weight alone. Dropping `font-stretch` is the fastest route to a generic template.",
+      "**Don't** add a `box-shadow` to a component that is flat today.",
+      "**Don't** introduce a colour. The palette is closed; supporting greys already exist for every surface and state.",
+      "**Don't** use slate for text or UI — it belongs to data and diagrams.",
+      "**Don't** substitute white for bone, or bone for white.",
+      "**Don't** use a corner radius between 26px and 999px.",
+      "**Don't** add a second typeface, and don't put ember behind body copy.",
+      "**Don't** ever place a flame near The Keep, or use runes, stock smart-city imagery, or generic AI visuals."
+    ]
+  }
+}

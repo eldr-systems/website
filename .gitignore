@@ -6,3 +6,9 @@ hugo_stats.json
 .DS_Store
 # LinkedIn profile exports — source material only, contain personal emails
 assets/files/
+
+# Impeccable: transient session artifacts. The design-system sidecar
+# (.impeccable/design.json) and the surface briefs are durable and stay tracked.
+.impeccable/review/
+.impeccable/questions/
+.impeccable/config.local.json

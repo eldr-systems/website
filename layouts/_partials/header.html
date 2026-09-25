@@ -16,12 +16,11 @@
       <span class="label-mono">systems</span>
     </span>
   </a>
-  <nav class="flex flex-wrap items-center gap-[clamp(1rem,2vw,2rem)] text-[0.9375rem] font-medium" aria-label="Main">
-    <a href="/#offers">Offers</a>
-    <a href="/#layers">What we build</a>
+  <nav class="flex flex-wrap items-center gap-[clamp(1rem,2vw,2rem)] text-small font-medium" aria-label="Main">
+    <a href="/#audit">The audit</a>
+    <a href="/#offers" class="hidden sm:inline">Then we fix it</a>
     <a href="/notes/">Notes</a>
-    <a href="/#keep">The Keep</a>
-    <a href="/#team">Team</a>
+    <a href="/#keep" class="hidden sm:inline">The Keep</a>
     {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a call" "class" "pill-outline") }}
   </nav>
 </header>

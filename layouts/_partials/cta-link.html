@@ -1,6 +1,16 @@
-{{- /* Renders a link, or a non-clickable span when the URL param is unset.
+{{- /* Renders a link, or an honest unavailable state when the URL param is unset.
        The kit shipped href="[BOOKING LINK]", which a browser resolves as a
        relative path and serves a 404. This degrades safely instead.
+
+       Two rules the unavailable state has to keep:
+       1. It renders in the CALLER's class, so an unclassed caller (the footer's
+          social links) stays plain inline text and does not become a pill.
+       2. An ember pill downgrades to an outline pill — a dead control must not
+          wear the page's primary accent — but it keeps full contrast rather
+          than being dimmed to an unreadable ghost.
+       The bracket sits OUTSIDE the control so it cannot break the pill's shape
+       at phone widths.
+
        {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a call" "class" "pill-ember") }} */ -}}
 {{- $url := .url | default "" -}}
 {{- $text := .text -}}
@@ -8,5 +18,9 @@
 {{- if $url -}}
 <a href="{{ $url }}" class="{{ $class }}">{{ $text }}</a>
 {{- else -}}
-<span class="{{ $class }} opacity-50 cursor-not-allowed" aria-disabled="true" title="Not yet available">{{ $text }}</span>
+{{- $disabled := replace $class "pill-ember" "pill-outline" -}}
+<span class="inline-flex flex-wrap items-center gap-x-3 gap-y-1">
+  <span class="{{ $disabled }} cursor-not-allowed" aria-disabled="true" title="Not yet published">{{ $text }}</span>
+  <span class="font-mono text-label text-muted">[link pending]</span>
+</span>
 {{- end -}}

@@ -1,0 +1,10 @@
+{{- /* The rail column of a dated band. The marker rides the spine and lights
+       ember as its band crosses the middle of the viewport — see main.css.
+       Pass rides=false on any band that already spends its ember elsewhere. */ -}}
+{{- $unit := .unit -}}
+{{- $n := .n -}}
+{{- $rides := .rides | default false -}}
+<div class="spine-rail">
+  <span class="spine-dot"{{ if $rides }} data-rides{{ end }}></span>
+  <span class="label-mono block pr-3 pt-6 leading-[1.3] tracking-[0.06em]">{{ $unit }} {{ $n }}</span>
+</div>

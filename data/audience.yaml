@@ -1,8 +1,10 @@
-# ember: true marks the one secondary line. Exactly one entry may set it —
-# BRAND.md: one ember element per component, never two.
+# Lead market first — PRODUCT.md: the site headlines devices already failing in
+# the field. ember: true marks the one secondary line. Exactly one entry may set
+# it (BRAND.md: one ember element per component, never two).
+- text: Cellular devices that drain or drop off in the field
+  ember: true
+- text: Fleets facing a 2G or 3G shutdown date
 - text: Solar and battery installers
 - text: EV-charger and heat-pump companies
 - text: Energy management startups
 - text: Building operators
-- text: Cellular devices with battery or connection trouble
-  ember: true

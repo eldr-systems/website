@@ -1,5 +1,10 @@
 /* Eldr Systems.
-   Brand rule that CSS cannot enforce: ONE ember element per component, never two. */
+   Brand rule that CSS cannot enforce: ember is rationed across the VIEWPORT, not
+   per component. Icons render single-colour ink (see --eldr-ember below); ember
+   is spent only on the logo, the one audience indicator, the booking pill and
+   the travelling spine marker. Counting per component was what let ~20 static
+   ember dots onto one scroll. NOTE: eldr-systems-kit/BRAND.md still states the
+   older per-icon rule and needs updating to match. */
 @import "./fonts.css";
 @import "tailwindcss";
 @source "hugo_stats.json";
@@ -27,12 +32,14 @@
   --text-h3:    clamp(1.375rem, 1.10rem + 1.12vw, 1.75rem);  /* 22 -> 28 */
   --text-cta:   clamp(2.75rem, 1.16rem + 6.51vw, 5rem);      /* 44 -> 80 */
   --text-lead:  clamp(1.0625rem, 0.97rem + 0.38vw, 1.25rem); /* 17 -> 20 */
+  --text-small: 0.9375rem;  /* secondary body: card lines, list detail, nav */
   --text-label: 0.8125rem;
 
   --spacing-gutter:  clamp(1.25rem, 0.30rem + 3.90vw, 5rem); /* 20 -> 80 */
   --spacing-section: clamp(3.5rem, 2.36rem + 4.68vw, 5.5rem);/* 56 -> 88 */
 
   --radius-card: 26px;
+  --spine-w: clamp(3.75rem, 2.4rem + 5.4vw, 5rem);
   --container-page: 1440px;
 }
 
@@ -44,6 +51,7 @@
    ============================================================ */
 
 @utility display-xl {
+  text-wrap: balance;
   font-family: var(--font-display);
   font-weight: 800;
   font-stretch: 112%;
@@ -51,6 +59,7 @@
   line-height: 0.98;
 }
 @utility display-lg {
+  text-wrap: balance;
   font-family: var(--font-display);
   font-weight: 800;
   font-stretch: 112%;
@@ -58,6 +67,7 @@
   line-height: 1.05;
 }
 @utility display-md {
+  text-wrap: balance;
   font-family: var(--font-display);
   font-weight: 800;
   font-stretch: 108%;
@@ -65,6 +75,7 @@
   line-height: 1.05;
 }
 @utility display-cta {
+  text-wrap: balance;
   font-family: var(--font-display);
   font-weight: 850;
   font-stretch: 118%;
@@ -130,6 +141,78 @@
   }
 }
 
+/* ============================================================
+   The spine. The homepage is composed as a dated clock: every
+   band hangs off one continuous 2px ink rule running the page's
+   full height, and a single marker rides it.
+
+   THE TRAVELLING EMBER: the marker lights ember as its band
+   crosses the middle of the viewport and goes back to ink as it
+   leaves, so the accent is handed from one day to the next
+   instead of being spent in several places at once. Day 0 is
+   excluded — its ember is the booking pill, and one ember per
+   component means the marker there stays ink.
+
+   This site ships no JavaScript, so it is a CSS scroll-driven
+   animation. Browsers without `animation-timeline` never run it
+   and get a static ink marker, which is the honest fallback:
+   without the timeline the animation would otherwise fire once
+   on load, so the @supports guard is load-bearing, not polish.
+   ============================================================ */
+
+@utility band {
+  display: grid;
+  grid-template-columns: var(--spine-w) 1fr;
+  column-gap: clamp(1rem, 0.4rem + 2.4vw, 2.5rem);
+}
+
+@utility spine-rail {
+  position: relative;
+  border-right: 2px solid var(--color-ink);
+}
+
+@utility spine-dot {
+  position: absolute;
+  top: 0;
+  right: -7px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--color-ink);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .spine-dot[data-rides] {
+      animation: ember-hand linear both;
+      animation-timeline: view();
+      animation-range: cover 42% cover 58%;
+    }
+    @keyframes ember-hand {
+      0%, 100% {
+        background: var(--color-ink);
+        transform: scale(1);
+      }
+      50% {
+        background: var(--color-ember);
+        transform: scale(1.5);
+      }
+    }
+  }
+}
+
+/* ---- Hatch density carries emphasis, so a second accent is never
+       needed. Tight where the current is being spent, loose at rest. ---- */
+@utility hatch-tight {
+  stroke: var(--color-ink);
+  stroke-width: 1;
+  opacity: 0.55;
+}
+@utility hatch-loose {
+  stroke: var(--color-rule);
+  stroke-width: 1;
+}
+
 /* ---- Pills ---- */
 @utility pill-base {
   display: inline-flex;
@@ -165,10 +248,24 @@
        hardcoded fallbacks. Override --eldr-ink on a dark surface to
        invert an icon. */
     --eldr-ink: var(--color-ink);
-    --eldr-ember: var(--color-ember);
+    /* Icons render single-colour ink. The sprite ships an ember detail in every
+       symbol, which at page scale put ~20 static ember marks on one scroll and
+       left the travelling spine marker as the twenty-first dot rather than an
+       event. Ember is now spent only on the logo, the one audience indicator,
+       the booking pill and the marker. Re-declare --eldr-ember on a single
+       component to give any one icon its ember back. */
+    --eldr-ember: var(--color-ink);
+  }
+  /* The parts we did not draw still carry the design. */
+  ::selection {
+    background: var(--color-ember);
+    color: var(--color-ink);
   }
   html {
     -webkit-text-size-adjust: 100%;
+    scrollbar-color: var(--color-ink) var(--color-bone);
+    accent-color: var(--color-ember);
+    caret-color: var(--color-ember);
   }
   body {
     background: var(--color-bone);

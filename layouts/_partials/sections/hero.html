@@ -1,39 +1,39 @@
-<section class="grid grid-cols-12 items-center gap-x-6 gap-y-12 px-gutter pt-8 pb-section">
-  <div class="col-span-12 flex flex-col gap-8 lg:col-span-6">
-    <span class="label-mono">{{ .Params.eyebrow }}</span>
-    <h1 class="display-xl text-hero">{{ .Params.heading }}</h1>
+{{- /* No eyebrow: the heading carries its own weight, and no ember above the
+       fold either — the Day 0 band below owns it. Emphasis in the diagram is
+       carried by hatch frequency instead, which is why this page never needs a
+       second accent colour. */ -}}
+<section class="grid grid-cols-12 items-center gap-x-6 gap-y-12 px-gutter pt-10 pb-section">
+  <div class="col-span-12 flex flex-col gap-8 lg:col-span-7">
+    <h1 class="display-xl text-hero max-w-[15ch]">{{ .Params.heading }}</h1>
     <p class="max-w-[34ch] text-lead leading-normal text-body">{{ .Params.lead }}</p>
-    <div class="flex flex-wrap gap-3 pt-2">
-      {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a 20-minute call" "class" "pill-ember") }}
-      <a href="#offers" class="pill-outline">See our offers</a>
-    </div>
   </div>
-  <div class="col-span-12 flex justify-center lg:col-start-7 lg:col-span-6 lg:justify-end">
-    {{- /* Device on the ground, radio out to the cloud. Bespoke to the hero —
-           not an icon from the set. The device is the one ember element.
-           Labels are HTML in flow, not SVG <text>, so they keep the label
-           size at phone width instead of shrinking with the viewBox; the
-           viewBox is cropped to the cloud's top edge so "cloud" sits right
-           above it. */ -}}
-    <figure class="flex w-full max-w-[600px] flex-col gap-3">
-      <span class="label-mono pl-[81.7%]" aria-hidden="true">cloud</span>
-      <svg viewBox="0 100 600 470" class="h-auto w-full" role="img" aria-label="A device on the ground sending over NB-IoT or LTE-M to the cloud">
-        <g fill="none" stroke="var(--color-ink)" stroke-width="1.5">
-          {{- /* Signal: quarter-arcs centred on the device, ground to sky. */}}
-          <path d="M100,450 A70,70 0 0 1 170,520"/>
-          <path d="M100,380 A140,140 0 0 1 240,520"/>
-          <path d="M100,310 A210,210 0 0 1 310,520"/>
-          <path d="M100,240 A280,280 0 0 1 380,520"/>
-          <path d="M100,170 A350,350 0 0 1 450,520"/>
-          {{- /* Link: device centre to the near corner of the cloud. */}}
-          <path d="M100,520 L490,170" stroke-dasharray="2 5" stroke-linecap="round"/>
-          {{- /* Ground. */}}
-          <path d="M20,520 H580"/>
+  <div class="col-span-12 flex justify-center lg:col-start-8 lg:col-span-5 lg:justify-end">
+    {{- /* One complete duty cycle. The active window after the exchange is the
+           part nobody measures and the part that costs the year — so it is
+           hatched tight, while sleep is hatched loose. Labels are HTML in flow,
+           not SVG <text>, so they hold 13px at phone width. */ -}}
+    <figure class="flex w-full max-w-[560px] flex-col gap-4">
+      <svg viewBox="0 0 600 300" class="h-auto w-full" role="img"
+           aria-label="One duty cycle: the device sleeps, wakes, transmits a short burst, then stays reachable for an active window before sleeping again. The active window is the longest part.">
+        <g class="hatch-loose" fill="none">
+          {{- range $i := (seq 0 24 132) }}<path d="M{{ $i }},250 V262"/>{{ end }}
+          {{- range $i := (seq 384 24 600) }}<path d="M{{ $i }},250 V262"/>{{ end }}
         </g>
-        <rect x="490" y="100" width="70" height="70" rx="10" fill="var(--color-ink)"/>
-        <circle cx="100" cy="520" r="36" fill="var(--color-ember)"/>
+        <g class="hatch-tight" fill="none">
+          {{- range $i := (seq 186 7 370) }}<path d="M{{ $i }},176 V250"/>{{ end }}
+        </g>
+        <path fill="none" stroke="var(--color-ink)" stroke-width="2" stroke-linejoin="round"
+              d="M0,250 H132 L146,196 H168 L176,60 L184,60 L192,176 H370 L384,250 H600"/>
+        <path fill="none" stroke="var(--color-ink)" stroke-width="1.5" d="M0,262 H600"/>
+        {{- /* Span bracket under the active window. The region is named in the
+               drawing rather than by a label in a grid column: labels laid out
+               as equal thirds sat over the wrong features at every width. */ -}}
+        <path fill="none" stroke="var(--color-ink)" stroke-width="1.5" d="M192,276 V286 H370 V276"/>
       </svg>
-      <figcaption class="label-mono pl-[3.3%]" aria-hidden="true">device · NB-IoT / LTE-M</figcaption>
+      <figcaption class="text-small leading-normal text-body">
+        One duty cycle. The bracket marks the active window after each exchange —
+        brief per cycle, and where the year actually goes.
+      </figcaption>
     </figure>
   </div>
 </section>

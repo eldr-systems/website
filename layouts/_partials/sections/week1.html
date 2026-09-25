@@ -1,0 +1,27 @@
+<section class="band border-t-2 border-ink px-gutter py-section">
+  {{ partial "spine.html" (dict "unit" "WEEK" "n" "1" "rides" true) }}
+  <div class="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-12">
+    <div class="flex flex-col gap-6 lg:col-span-5">
+      <h2 class="display-lg text-h2 max-w-[14ch]">We measure, on a real network.</h2>
+      <p class="max-w-[40ch] text-lg leading-[1.55] text-body">
+        Three to five of your devices, running your current firmware. Numbers from a
+        bench and numbers from an operator's network differ, and the difference is
+        usually in the direction that costs you battery life.
+      </p>
+    </div>
+    <ul class="list-none m-0 p-0 lg:col-start-7 lg:col-span-6">
+      <li class="border-t-2 border-ink py-5">
+        <span class="text-xl font-bold">Power traces across a full duty cycle</span>
+        <p class="mt-2 max-w-[44ch] text-small leading-normal text-body">Wake through transmit to the next wake, with every peripheral in the state your firmware believes it is in.</p>
+      </li>
+      <li class="border-t border-rule py-5">
+        <span class="text-xl font-bold">Modem logs read against the granted timers</span>
+        <p class="mt-2 max-w-[44ch] text-small leading-normal text-body">T3412 and T3324 as the network actually returned them after attach, not as the firmware requested them.</p>
+      </li>
+      <li class="border-t border-rule border-b-2 border-b-ink py-5">
+        <span class="text-xl font-bold">Network tests in good coverage and poor</span>
+        <p class="mt-2 max-w-[44ch] text-small leading-normal text-body">Attach, reconnect and data transfer, on the operators and in the countries your fleet actually runs on.</p>
+      </li>
+    </ul>
+  </div>
+</section>

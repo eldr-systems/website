@@ -1,0 +1,25 @@
+{{- /* The persuasion peak. Emphasis is inversion to ink, never a lift and never
+       a second ember — DESIGN.md, the Inversion-Is-Emphasis rule. */ -}}
+<section class="band border-t-2 border-ink px-gutter py-section">
+  {{ partial "spine.html" (dict "unit" "DAY" "n" "14" "rides" true) }}
+  <div class="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-12">
+    <div class="flex flex-col gap-6 lg:col-span-5">
+      <h2 class="display-lg text-h2 max-w-[13ch]">The report, and an hour to walk you through it.</h2>
+      <p class="max-w-[40ch] text-lg leading-[1.55] text-body">
+        You keep the measurement scripts. Whether or not you hire us to implement
+        anything, you leave knowing what your fleet actually does.
+      </p>
+    </div>
+    <div class="flex flex-col gap-5 rounded-card bg-ink p-9 text-bone lg:col-start-7 lg:col-span-6 [--eldr-ink:var(--color-bone)]">
+      <p class="display-md text-h3 max-w-[18ch]">{{ .Params.guarantee }}</p>
+      <p class="max-w-[46ch] text-base leading-[1.55] text-on-ink">
+        This holds provided we receive the devices and information agreed at the scoping
+        call. The fee is credited in full against a fix implementation booked within 60
+        days.
+      </p>
+      <div class="mt-2 border-t border-rule-dark pt-4 font-mono text-label text-muted-ink">
+        We take {{ lower .Params.capacity }}.
+      </div>
+    </div>
+  </div>
+</section>

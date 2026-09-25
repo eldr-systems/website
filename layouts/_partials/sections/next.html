@@ -1,0 +1,44 @@
+{{- /* The clock has ended; the spine stops at Day 44. Everything below is the
+       work the audit leads to.
+
+       Deliberately NOT a card grid. The direction contract refuses "three equal
+       service cards" by name, so these are ruled bands in the same
+       spec-table-and-rule language as the Day 0 band: statement left, three
+       rigid slots right, hairlines between and 2px ink closing the block. */ -}}
+{{- $rest := where (where .Site.RegularPages "Section" "offers").ByWeight "Params.lead" "!=" true -}}
+<section class="border-t-2 border-ink px-gutter py-section" id="offers">
+  <div class="flex max-w-[46ch] flex-col gap-6">
+    <h2 class="display-lg text-h2">Then we fix it.</h2>
+    <p class="text-lg leading-[1.55] text-body">
+      Fixed scope agreed before we start. You own everything we produce — source,
+      schematics, build instructions and documentation. There is no lock-in.
+    </p>
+  </div>
+  <div class="mt-14">
+    {{ range $i, $o := $rest }}
+    <article class="grid grid-cols-1 gap-x-6 gap-y-6 py-9 lg:grid-cols-12 {{ if eq $i 0 }}border-t-2 border-ink{{ else }}border-t border-rule{{ end }} {{ if eq (add $i 1) (len $rest) }}border-b-2 border-b-ink{{ end }}">
+      <div class="flex flex-col gap-4 lg:col-span-6">
+        <h3 class="display-md text-h3">{{ .Title }}</h3>
+        <p class="max-w-[46ch] text-base leading-[1.55] text-body">{{ .Params.summary }}</p>
+        <a href="{{ .RelPermalink }}" class="self-start text-base font-bold">Details →</a>
+      </div>
+      <dl class="font-mono text-label lg:col-start-8 lg:col-span-5">
+        <div class="flex justify-between gap-4 border-t border-rule py-3 lg:border-t-0 lg:pt-0">
+          <dt class="text-muted">Duration</dt><dd class="text-right">{{ .Params.duration }}</dd>
+        </div>
+        <div class="flex justify-between gap-4 border-t border-rule py-3">
+          <dt class="text-muted">Price</dt><dd class="text-right">{{ .Params.price }}</dd>
+        </div>
+        <div class="flex justify-between gap-4 border-t border-rule py-3">
+          <dt class="text-muted">Guarantee</dt><dd class="max-w-[22ch] text-right">{{ .Params.guarantee }}</dd>
+        </div>
+      </dl>
+    </article>
+    {{ end }}
+  </div>
+  <p class="mt-10 max-w-[56ch] text-small leading-normal text-muted">
+    We also run edge-AI feasibility sprints — fitting a fault-detection model to your
+    microcontroller and measuring its accuracy, memory and power — and ongoing fleet care
+    once a build is live. Both are quoted from a call.
+  </p>
+</section>

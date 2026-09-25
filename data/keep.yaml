@@ -1,0 +1,18 @@
+# The Keep in four orthogonal views. BRAND.md: never one hero photo, never a flame.
+# Each view is a real artefact we must produce before launch.
+- view: Device
+  line: An NB-IoT home monitoring hub, in a real distribution box.
+  icon: dist-box
+  status: photo outstanding
+- view: Trace
+  line: One full duty cycle on a power profiler.
+  icon: current
+  status: measurement outstanding
+- view: Network
+  line: PSM and eDRX as the operator actually granted them.
+  icon: psm
+  status: published in the notes
+- view: Dashboard
+  line: What the device reports, and what we read from it.
+  icon: dashboard
+  status: screenshot outstanding
