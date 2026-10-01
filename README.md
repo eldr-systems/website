@@ -38,12 +38,12 @@ same script, so a build that breaks any of the above cannot deploy.
 | To change | Edit |
 |---|---|
 | Homepage headline, lead, The Keep figure | `content/_index.md` |
-| An offer, or add a new one | `content/offers/*.md` |
+| Past-work cards ("What we've built") | `data/work.yaml` |
+| Ways to work with us, project steps | `data/services.yaml`, `data/process.yaml` |
 | Publish a note | `content/notes/*.md` — new file, set `date` |
-| Five layers, audience list, process steps, team | `data/*.yaml` |
+| Five layers, The Keep views, team | `data/*.yaml` |
 | Booking link, email, social links, company details | `hugo.toml`, under `[params]` |
 
-Adding an offer file makes it appear on the homepage **and** generates its detail page.
 Publishing a note makes it appear in the homepage Proof section automatically.
 
 Unset links degrade safely: an empty `bookingUrl` renders a visibly disabled control

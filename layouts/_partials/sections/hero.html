@@ -1,38 +1,53 @@
-{{- /* No eyebrow: the heading carries its own weight, and no ember above the
-       fold either — the Day 0 band below owns it. Emphasis in the diagram is
-       carried by hatch frequency instead, which is why this page never needs a
-       second accent colour. */ -}}
+{{- /* The diagram is the claim: one signal path from a board on the left to a
+       chart on the right, every layer in between drawn as one unbroken line.
+       Emphasis is carried by hatch frequency, so the hero still needs no
+       second accent colour; the only ember above the fold is the button. */ -}}
 <section class="grid grid-cols-12 items-center gap-x-6 gap-y-12 px-gutter pt-10 pb-section">
   <div class="col-span-12 flex flex-col gap-8 lg:col-span-7">
     <h1 class="display-xl text-hero max-w-[15ch]">{{ .Params.heading }}</h1>
-    <p class="max-w-[34ch] text-lead leading-normal text-body">{{ .Params.lead }}</p>
+    <p class="max-w-[40ch] text-lead leading-normal text-body">{{ .Params.lead }}</p>
+    <div class="flex flex-wrap items-center gap-5">
+      {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a 20-minute call" "class" "pill-ember") }}
+      <a href="#work" class="text-[1.0625rem] font-bold">See what we've built →</a>
+    </div>
   </div>
   <div class="col-span-12 flex justify-center lg:col-start-8 lg:col-span-5 lg:justify-end">
-    {{- /* One complete duty cycle. The active window after the exchange is the
-           part nobody measures and the part that costs the year — so it is
-           hatched tight, while sleep is hatched loose. Labels are HTML in flow,
-           not SVG <text>, so they hold 13px at phone width. */ -}}
     <figure class="flex w-full max-w-[560px] flex-col gap-4">
       <svg viewBox="0 0 600 300" class="h-auto w-full" role="img"
-           aria-label="One duty cycle: the device sleeps, wakes, transmits a short burst, then stays reachable for an active window before sleeping again. The active window is the longest part.">
+           aria-label="A circuit board on the left connected by one continuous line, through a radio link and a cloud, to a chart on the right.">
+        {{- /* Board: loose hatch fill, chip in tight hatch. */ -}}
         <g class="hatch-loose" fill="none">
-          {{- range $i := (seq 0 24 132) }}<path d="M{{ $i }},250 V262"/>{{ end }}
-          {{- range $i := (seq 384 24 600) }}<path d="M{{ $i }},250 V262"/>{{ end }}
+          {{- range $i := (seq 36 12 168) }}<path d="M{{ $i }},84 V236"/>{{ end }}
         </g>
+        <rect x="24" y="72" width="156" height="176" rx="10" fill="none" stroke="var(--color-ink)" stroke-width="2"/>
+        <rect x="66" y="124" width="72" height="72" fill="var(--color-bone)" stroke="var(--color-ink)" stroke-width="2"/>
         <g class="hatch-tight" fill="none">
-          {{- range $i := (seq 186 7 370) }}<path d="M{{ $i }},176 V250"/>{{ end }}
+          {{- range $i := (seq 74 7 132) }}<path d="M{{ $i }},132 V188"/>{{ end }}
         </g>
+        <g fill="none" stroke="var(--color-ink)" stroke-width="2">
+          {{- range $y := (seq 136 16 184) }}<path d="M54,{{ $y }} H66 M138,{{ $y }} H150"/>{{ end }}
+        </g>
+        {{- /* The signal path: board → antenna → cloud → chart. */ -}}
         <path fill="none" stroke="var(--color-ink)" stroke-width="2" stroke-linejoin="round"
-              d="M0,250 H132 L146,196 H168 L176,60 L184,60 L192,176 H370 L384,250 H600"/>
-        <path fill="none" stroke="var(--color-ink)" stroke-width="1.5" d="M0,262 H600"/>
-        {{- /* Span bracket under the active window. The region is named in the
-               drawing rather than by a label in a grid column: labels laid out
-               as equal thirds sat over the wrong features at every width. */ -}}
-        <path fill="none" stroke="var(--color-ink)" stroke-width="1.5" d="M192,276 V286 H370 V276"/>
+              d="M180,160 H232 V96 M232,160 H300 M368,160 H392"/>
+        <g fill="none" stroke="var(--color-ink)" stroke-width="2" stroke-linecap="round">
+          <path d="M218,82 A20,20 0 0 1 246,82"/>
+          <path d="M208,70 A34,34 0 0 1 256,70"/>
+        </g>
+        <path fill="var(--color-bone)" stroke="var(--color-ink)" stroke-width="2" stroke-linejoin="round"
+              d="M308,178 H362 A18,18 0 0 0 360,142 A26,26 0 0 0 312,140 A20,20 0 0 0 308,178 Z"/>
+        {{- /* Chart: frame, a trace, tight hatch under the most recent stretch. */ -}}
+        <rect x="392" y="72" width="184" height="176" rx="10" fill="none" stroke="var(--color-ink)" stroke-width="2"/>
+        <path fill="none" stroke="var(--color-rule)" stroke-width="1.5" d="M408,212 H560 M408,176 H560 M408,140 H560 M408,104 H560"/>
+        <g class="hatch-tight" fill="none">
+          {{- range $i := (seq 500 7 556) }}<path d="M{{ $i }},150 V228"/>{{ end }}
+        </g>
+        <path fill="none" stroke="var(--color-ink)" stroke-width="2.5" stroke-linejoin="round"
+              d="M408,196 L428,184 L448,190 L468,160 L488,170 L508,132 L528,144 L548,112 L560,118"/>
+        <path fill="none" stroke="var(--color-ink)" stroke-width="1.5" d="M408,228 H560"/>
       </svg>
-      <figcaption class="text-small leading-normal text-body">
-        One duty cycle. The bracket marks the active window after each exchange —
-        brief per cycle, and where the year actually goes.
+      <figcaption class="flex flex-wrap gap-x-3 gap-y-1 font-mono text-label text-muted">
+        {{ range $i, $l := .Site.Data.layers }}{{ if $i }}<span aria-hidden="true">→</span>{{ end }}<span>{{ $l.name }}</span>{{ end }}
       </figcaption>
     </figure>
   </div>

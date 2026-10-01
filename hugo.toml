@@ -51,8 +51,8 @@ enableRobotsTXT = true
     disabled = true
 
 [params]
-  description = 'Eldr Systems builds low-power connected measurement devices end to end: electronics, firmware, NB-IoT/LTE-M connectivity, cloud and data analysis. Budapest.'
-  ogDescription = 'Low-power cellular IoT and energy monitoring, engineered end to end by a small team in Budapest.'
+  description = 'Eldr Systems builds connected devices for industry end to end: electronics, firmware, connectivity, cloud and dashboards, by one team in Budapest.'
+  ogDescription = 'From circuit board to dashboard. One team.'
   github = 'https://github.com/eldr-systems'
 
   # Unset on purpose. Anything empty renders as a disabled control,

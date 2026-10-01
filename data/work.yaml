@@ -1,0 +1,20 @@
+# "What we've built". The Keep is the featured entry and links to its own
+# section. The rest is past work, anonymised: never an employer or client name.
+#
+# summary and layers are left empty until the founders write them; the
+# template renders a bracketed placeholder that scripts/check.sh counts.
+# layers must use names from data/layers.yaml.
+- title: The Keep by Eldr Systems
+  featured: true
+  summary: An NB-IoT home monitoring hub for accident prevention. Our own product, every layer built in house, in the field from November 2026.
+  layers: [Electronics, Firmware, Connectivity, Cloud, Dashboards and data]
+  link: "#keep"
+- title: Machine maintenance CRM
+  summary: ""
+  layers: []
+- title: Machine condition monitoring
+  summary: ""
+  layers: []
+- title: Grid data collection and analysis
+  summary: ""
+  layers: []

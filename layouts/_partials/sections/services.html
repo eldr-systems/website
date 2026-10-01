@@ -1,0 +1,31 @@
+{{- /* Ways to work with us, then the steps every engagement follows. No
+       prices anywhere (PRODUCT.md): the statement column says so plainly
+       instead. Ruled bands, not three equal service cards. */ -}}
+<section class="border-t-2 border-ink px-gutter py-section" id="services">
+  <div class="grid grid-cols-12 gap-x-6 gap-y-10">
+    <div class="col-span-12 flex flex-col gap-6 lg:col-span-5">
+      <h2 class="display-lg text-h2">Ways to work with us</h2>
+      <p class="max-w-[40ch] text-lg leading-[1.55] text-body">
+        Start small or hand us the whole build. Every engagement is quoted per project
+        after a call. You own everything we produce.
+      </p>
+    </div>
+    <ul class="col-span-12 list-none m-0 p-0 lg:col-start-7 lg:col-span-6">
+      {{ range $i, $s := .Site.Data.services }}
+      <li class="flex flex-col gap-2 py-6 {{ if eq $i 0 }}border-t-2 border-ink{{ else }}border-t border-rule{{ end }} {{ if eq (add $i 1) (len $.Site.Data.services) }}border-b-2 border-b-ink{{ end }}">
+        <span class="text-[clamp(1.0625rem,0.85rem+0.9vw,1.375rem)] font-semibold">{{ $s.name }}</span>
+        <span class="text-small leading-normal text-body">{{ $s.line }}</span>
+      </li>
+      {{ end }}
+    </ul>
+  </div>
+  <ol class="mt-16 grid list-none gap-x-6 gap-y-8 m-0 p-0 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]" aria-label="How a project runs">
+    {{ range $i, $p := .Site.Data.process }}
+    <li class="flex flex-col gap-2 border-t-2 border-ink pt-5">
+      <span class="font-mono text-label text-muted">0{{ add $i 1 }}</span>
+      <span class="text-xl font-bold">{{ $p.step }}</span>
+      <span class="text-small leading-normal text-body">{{ $p.line }}</span>
+    </li>
+    {{ end }}
+  </ol>
+</section>

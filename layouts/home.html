@@ -1,20 +1,15 @@
 {{ define "main" }}
+{{- /* Ordered for a cold reader with a minute to spare (PRODUCT.md): what we
+       build end to end, then proof that we have built it, then how easy it is
+       to start, then who we are. */ -}}
 {{ partial "sections/hero.html" . }}
-{{- /* The clock: the two weeks the visitor is buying. The spine runs from Day 0
-       to Day 44 and stops there, so the engagement reads as one object and
-       everything below it is context rather than more process. */ -}}
-{{ partial "sections/day0.html" . }}
-{{ partial "sections/week1.html" . }}
-{{ partial "sections/week2.html" . }}
-{{ partial "sections/day14.html" . }}
-{{ partial "sections/day44.html" . }}
-{{- /* The spine has ended. */ -}}
-{{ partial "sections/next.html" . }}
-{{ partial "sections/audience.html" . }}
 {{ partial "sections/layers.html" . }}
+{{ partial "sections/why.html" . }}
+{{ partial "sections/work.html" . }}
 {{ partial "sections/keep.html" . }}
-{{ partial "sections/proof.html" . }}
+{{ partial "sections/services.html" . }}
 {{ partial "sections/team.html" . }}
+{{ partial "sections/proof.html" . }}
 {{ partial "sections/where.html" . }}
 {{ partial "sections/cta.html" . }}
 {{ end }}

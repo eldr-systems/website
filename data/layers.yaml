@@ -1,17 +1,17 @@
-# The five layers shown on the homepage. Icon names come from
-# eldr-systems-kit/icons/_index.json.
-- name: Sensor + PCB
-  line: Voltage, current and power, measured safely near mains.
-  icon: pcb
+# The five layers shown on the homepage, in signal order. owner is the founder
+# who answers for that layer — "a named owner for every layer" (PRODUCT.md).
+- name: Electronics
+  line: Sensors, circuit boards and enclosures. Voltage, current and power measured safely near mains.
+  owner: Boldizsar
 - name: Firmware
-  line: Sleep budgets, power-saving modes and OTA updates.
-  icon: firmware
-- name: NB-IoT / LTE-M
-  line: PSM and eDRX tuned for the operator and the site.
-  icon: nb-iot
+  line: Embedded C and C++. Sensor drivers, low-power sleep, updates over the air.
+  owner: Bence
+- name: Connectivity
+  line: NB-IoT and LTE-M for devices in the field. Modbus and PLC links for equipment already on site.
+  owner: Bence
 - name: Cloud
-  line: Ingest, storage, alerts and a simple dashboard.
-  icon: cloud
-- name: Analytics
-  line: We find faults in your device data.
-  icon: anomaly
+  line: Ingest, storage, alerts and APIs, in your cloud or ours.
+  owner: Vencel
+- name: Dashboards and data
+  line: Dashboards your team actually opens, and faults found in the data before they cost you.
+  owner: Vencel

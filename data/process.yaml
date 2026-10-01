@@ -1,0 +1,8 @@
+- step: Call
+  line: Twenty minutes. You describe the problem, we ask questions.
+- step: Scope
+  line: A written scope with named deliverables and a quote.
+- step: Build
+  line: Regular demos with working hardware and real data, not status reports.
+- step: Handover
+  line: Source code, schematics, build instructions and documentation. No lock-in.

@@ -1,0 +1,31 @@
+{{- /* The cost of splitting a connected product across vendors, set as a spec
+       table rather than a pros-and-cons card pair: same ruled language as the
+       layers above it. */ -}}
+{{- $rows := slice
+  (dict "topic" "Testing" "split" "Each vendor tests its own layer. The bugs live between layers." "eldr" "We test the whole chain, from the sensor reading to the number on screen.")
+  (dict "topic" "Ownership" "split" "When the data is wrong, every vendor points at another." "eldr" "One team owns the result.")
+  (dict "topic" "Change" "split" "A change touches three contracts and three schedules." "eldr" "A change is one conversation.")
+-}}
+<section class="border-t-2 border-ink px-gutter py-section" id="why">
+  <div class="flex max-w-[44ch] flex-col gap-6">
+    <h2 class="display-lg text-h2">Why one team</h2>
+    <p class="text-lg leading-[1.55] text-body">
+      A board house, a firmware contractor and a software agency can each do good work.
+      The trouble is the gaps between them.
+    </p>
+  </div>
+  <div class="mt-14" role="table" aria-label="Split across vendors compared with one team">
+    <div role="row" class="hidden gap-x-6 border-t-2 border-ink py-4 font-mono text-label text-muted sm:grid sm:grid-cols-12">
+      <span role="columnheader" class="sm:col-span-2"></span>
+      <span role="columnheader" class="sm:col-span-5">Split across vendors</span>
+      <span role="columnheader" class="sm:col-span-5">With Eldr Systems</span>
+    </div>
+    {{ range $i, $r := $rows }}
+    <div role="row" class="grid grid-cols-1 gap-x-6 gap-y-2 py-5 sm:grid-cols-12 {{ if eq $i 0 }}border-t-2 border-ink sm:border-t sm:border-rule{{ else }}border-t border-rule{{ end }} {{ if eq (add $i 1) (len $rows) }}border-b-2 border-b-ink{{ end }}">
+      <span role="rowheader" class="text-[clamp(1.0625rem,0.85rem+0.9vw,1.375rem)] font-semibold sm:col-span-2">{{ $r.topic }}</span>
+      <span role="cell" class="text-small leading-normal text-muted sm:col-span-5">{{ $r.split }}</span>
+      <span role="cell" class="text-small font-medium leading-normal sm:col-span-5">{{ $r.eldr }}</span>
+    </div>
+    {{ end }}
+  </div>
+</section>

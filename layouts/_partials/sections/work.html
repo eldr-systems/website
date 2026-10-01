@@ -1,0 +1,35 @@
+{{- /* Past work. The featured entry (The Keep) gets the inverted card; that
+       inversion is this section's one emphasis. Empty summaries and layer
+       lists render as bracketed placeholders that scripts/check.sh counts, so
+       an unwritten project cannot quietly ship looking finished. */ -}}
+<section class="border-t-2 border-ink px-gutter py-section" id="work">
+  <div class="flex max-w-[44ch] flex-col gap-6">
+    <h2 class="display-lg text-h2">What we've built</h2>
+    <p class="text-lg leading-[1.55] text-body">
+      Our own product, and work from our engineering careers so far. Client and
+      employer names are left out.
+    </p>
+  </div>
+  <div class="mt-14 grid grid-cols-1 gap-6 md:grid-cols-3">
+    {{ range $w := .Site.Data.work }}
+    {{- $faint := cond (eq $w.featured true) "text-muted-ink" "text-muted" -}}
+    <article class="flex flex-col gap-4 rounded-card border-2 border-ink p-7 {{ if $w.featured }}bg-ink text-bone md:col-span-3{{ end }}">
+      {{ if $w.featured }}<span class="font-mono text-label {{ $faint }}">Our product</span>{{ end }}
+      <h3 class="display-md text-h3">{{ $w.title }}</h3>
+      {{ with $w.summary }}
+      <p class="max-w-[52ch] text-small leading-normal">{{ . }}</p>
+      {{ else }}
+      <p class="font-mono text-label {{ $faint }}">[summary to be written]</p>
+      {{ end }}
+      <ul class="mt-auto flex list-none flex-wrap gap-2 m-0 p-0 pt-3">
+        {{ range $w.layers }}
+        <li class="rounded-full border px-3 py-1 font-mono text-label">{{ . }}</li>
+        {{ else }}
+        <li class="font-mono text-label {{ $faint }}">[layers to confirm]</li>
+        {{ end }}
+      </ul>
+      {{ with $w.link }}<a href="{{ . }}" class="self-start text-base font-bold text-bone">See The Keep →</a>{{ end }}
+    </article>
+    {{ end }}
+  </div>
+</section>

@@ -7,7 +7,7 @@
   <div class="flex flex-wrap items-center gap-5">
     {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a 20-minute call" "class" "pill-ember") }}
     <span class="text-[1.0625rem] text-body">
-      No pitch.{{ with .Site.Params.email }} Or email <a href="mailto:{{ . }}" class="underline underline-offset-4">{{ . }}</a>.{{ end }}
+      We reply within one working day.{{ with .Site.Params.email }} Or email <a href="mailto:{{ . }}" class="underline underline-offset-4">{{ . }}</a>.{{ end }}
     </span>
   </div>
 </section>

@@ -1,3 +1,5 @@
+> **Superseded 2026-10-01.** The founders reset direction to an end-to-end service company. `PRODUCT.md` is the source of truth; this brief is kept as history only.
+
 # Eldr Systems: Website Brief
 
 Single reference for building eldrsystems.com. Consolidated from the Brand Identity, Offers, Services Company Plan and Sales Playbook files (September 2026). Internal-only material (finances, founder transition, sales tactics) is left out.
