@@ -13,7 +13,15 @@ npm install     # installs Tailwind
 hugo server     # http://localhost:1313
 ```
 
-Node is a build-time dependency only. The site ships no JavaScript.
+Node is a build-time dependency only. The site's one script is the homepage
+journey (`assets/js/journey.js`, ~3 kB gzipped, no libraries), bundled by Hugo itself.
+It is a progressive enhancement: its CSS is gated on `(scripting: enabled)`, so
+with JavaScript off the page renders exactly as it would without it.
+
+Journey drawings live in `assets/journey/`: `stations/<name>.svg` are the desktop
+gutter stations (`stations/device.svg` is also the hero image), `icons/<name>.svg`
+the 32px icons on the narrow-screen rail. Edit them as supplied; the build strips
+their comments and C2PA metadata when inlining them.
 
 ## Checking a change
 

@@ -1,0 +1,18 @@
+{{- /* Inline one journey SVG from assets/journey/, ready for HTML.
+
+       The source files stay exactly as supplied. What is stripped here is
+       only what must not reach the page: the XML declaration, the doc
+       comments (they list animatable IDs for us, not for visitors) and the
+       embedded C2PA manifest, which is ~8 kB of base64 per file.
+
+       {{ partial "journey/svg.html" "stations/modem.svg" }} */ -}}
+{{- with resources.Get (printf "journey/%s" .) -}}
+{{- $s := .Content -}}
+{{- $s = replaceRE `<\?xml[^>]*\?>` "" $s -}}
+{{- $s = replaceRE `(?s)<!--.*?-->` "" $s -}}
+{{- $s = replaceRE `(?s)<metadata>.*?</metadata>` "" $s -}}
+{{- $s = replaceRE `\s*xmlns:c2pa="[^"]*"` "" $s -}}
+{{- trim $s " \n" | safeHTML -}}
+{{- else -}}
+{{- errorf "journey: missing SVG assets/journey/%s" . -}}
+{{- end -}}

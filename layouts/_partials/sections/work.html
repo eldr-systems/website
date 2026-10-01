@@ -2,7 +2,9 @@
        inversion is this section's one emphasis. Empty summaries and layer
        lists render as bracketed placeholders that scripts/check.sh counts, so
        an unwritten project cannot quietly ship looking finished. */ -}}
-<section class="border-t-2 border-ink px-gutter py-section" id="work">
+<section data-j-host class="border-t-2 border-ink px-gutter py-section" id="work">
+  {{ partial "journey/station.html" (dict "name" "backend" "variant" "strip") }}
+  {{ partial "journey/station.html" (dict "name" "backend" "variant" "station" "side" "left") }}
   <div class="flex max-w-[44ch] flex-col gap-6">
     <h2 class="display-lg text-h2">What we've built</h2>
     <p class="text-lg leading-[1.55] text-body">

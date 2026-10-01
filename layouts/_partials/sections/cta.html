@@ -2,9 +2,11 @@
        redundant with the header and footer marks. The ember now goes on
        the button — still one ember element in the section, and the
        closing ask stays the loudest thing on the page. */ -}}
-<section class="flex flex-col gap-7 border-t-2 border-ink px-gutter py-section">
+<section data-j-host class="flex flex-col gap-7 border-t-2 border-ink px-gutter py-section">
   <h2 class="display-cta max-w-[14ch] text-cta">Tell us what you need to measure.</h2>
-  <div class="flex flex-wrap items-center gap-5">
+  {{ partial "journey/station.html" (dict "name" "contact" "variant" "strip") }}
+  <div class="j-anchor flex flex-wrap items-center gap-5">
+    {{ partial "journey/station.html" (dict "name" "contact" "variant" "station" "side" "left") }}
     {{ partial "cta-link.html" (dict "url" .Site.Params.bookingUrl "text" "Book a 20-minute call" "class" "pill-ember") }}
     <span class="text-[1.0625rem] text-body">
       We reply within one working day.{{ with .Site.Params.email }} Or email <a href="mailto:{{ . }}" class="underline underline-offset-4">{{ . }}</a>.{{ end }}

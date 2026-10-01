@@ -6,7 +6,9 @@
   (dict "topic" "Ownership" "split" "When the data is wrong, every vendor points at another." "eldr" "One team owns the result.")
   (dict "topic" "Change" "split" "A change touches three contracts and three schedules." "eldr" "A change is one conversation.")
 -}}
-<section class="border-t-2 border-ink px-gutter py-section" id="why">
+<section data-j-host class="border-t-2 border-ink px-gutter py-section" id="why">
+  {{ partial "journey/station.html" (dict "name" "tower" "variant" "strip") }}
+  {{ partial "journey/station.html" (dict "name" "tower" "variant" "station" "side" "right") }}
   <div class="flex max-w-[44ch] flex-col gap-6">
     <h2 class="display-lg text-h2">Why one team</h2>
     <p class="text-lg leading-[1.55] text-body">

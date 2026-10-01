@@ -1,7 +1,9 @@
 {{- /* A ruled sequence, not a five-up icon grid: the contract refuses the
        icon-plus-heading-plus-text row as page structure, and these five are an
        ordered chain (board through dashboard) rather than five equal tiles. */ -}}
-<section class="border-t-2 border-ink px-gutter py-section" id="layers">
+<section data-j-host class="border-t-2 border-ink px-gutter py-section" id="layers">
+  {{ partial "journey/station.html" (dict "name" "modem" "variant" "strip") }}
+  {{ partial "journey/station.html" (dict "name" "modem" "variant" "station" "side" "left") }}
   <div class="flex max-w-[44ch] flex-col gap-6">
     <h2 class="display-lg text-h2">Five layers. One team.</h2>
     <p class="text-lg leading-[1.55] text-body">
