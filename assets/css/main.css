@@ -296,3 +296,154 @@
     }
   }
 }
+
+/* ============================================================
+   The journey. One ember dot carries a measurement down the
+   homepage along a PCB trace: the section dividers are its
+   horizontal runs, the gutters its vertical ones, and stations
+   sit in the gutters (desktop) or as strips on a left rail
+   (narrower screens). assets/js/journey.js draws it.
+
+   Everything here is gated on (scripting: enabled), so without
+   JavaScript the page lays out exactly as it did before and no
+   space is reserved for anything that will not render. Browsers
+   too old for the `scripting` feature get the same plain page;
+   the script checks the same queries and stays out.
+
+   The line is never ember. Only the dot is.
+   ============================================================ */
+
+.j-station,
+.j-strip,
+.j-overlay {
+  display: none;
+}
+/* The hero device is content, shown with or without JavaScript. */
+.j-device svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  color: var(--color-ink);
+}
+
+@media (scripting: enabled) {
+  .has-journey {
+    --j-untravelled: var(--color-slate);
+    --j-travelled: var(--color-ink);
+    --j-dot: var(--color-ember);
+  }
+  [data-journey] {
+    position: relative;
+    isolation: isolate;
+  }
+  [data-j-host],
+  .j-anchor {
+    position: relative;
+  }
+  /* Behind the content: z-index -1 inside the isolated wrapper paints above
+     the page background and below every section, so the trace can never sit
+     on top of text even if a measurement goes wrong. */
+  .j-overlay {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: visible;
+    pointer-events: none;
+    fill: none;
+    stroke-width: 2;
+  }
+  .j-station svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    color: var(--color-ink);
+  }
+
+  .j-u { stroke: var(--j-untravelled); opacity: 0.4; }
+  .j-t { stroke: var(--j-travelled); }
+  .j-rail .j-u { stroke-dasharray: 4 5; }
+  .j-u-epi,
+  .j-t-epi {
+    stroke-dasharray: 0 7;
+    stroke-linecap: round;
+    stroke-width: 2.5;
+  }
+  .j-u-epi { stroke: var(--j-untravelled); opacity: 0.55; }
+  .j-t-epi { stroke: var(--j-travelled); }
+  .j-via {
+    fill: var(--color-bone);
+    stroke-width: 1.5;
+  }
+  .j-via.j-u { opacity: 1; }
+  /* Things that switch on as the dot passes: vias and rail stubs. */
+  .j-lit {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+  }
+  .j-lit.is-on { opacity: 1; }
+  .j-dot {
+    fill: var(--j-dot);
+    stroke: none;
+  }
+}
+
+/* Desktop: widen the gutters so a station drawing (240 units wide, 11-unit
+   labels) renders at a readable size beside the text column. */
+@media (scripting: enabled) and (min-width: 1280px) {
+  .has-journey {
+    --spacing-gutter: clamp(12rem, 16vw, 15rem);
+    --j-station-w: calc(var(--spacing-gutter) - 2rem);
+  }
+  .j-station {
+    display: block;
+    position: absolute;
+    top: var(--spacing-section);
+    width: var(--j-station-w);
+  }
+  .j-station[data-side="left"] { left: calc((var(--spacing-gutter) - var(--j-station-w)) / 2); }
+  .j-station[data-side="right"] { right: calc((var(--spacing-gutter) - var(--j-station-w)) / 2); }
+  /* The divider above "Why one team" is the radio link: dashed, so the run
+     reads as interrupted. The overlay sits behind the border, so the wire
+     stubs at each end show through the gaps and the middle stays open. */
+  #why { border-top-style: dashed; }
+  /* Beside the booking button, in the left gutter, leaving a lane on its
+     left for the epilogue line to arrive at its left-centre port. */
+  .j-station[data-station="contact"] {
+    top: 50%;
+    left: auto;
+    right: calc(100% + 1.5rem);
+    width: calc(var(--spacing-gutter) - 4.5rem);
+    translate: 0 -50%;
+  }
+}
+
+/* Narrower screens: one rail at the left edge, stations as icon strips that
+   hang off it on short stubs. Text starts at 2rem so the rail at 14px never
+   touches it. */
+@media (scripting: enabled) and (max-width: 1279.98px) {
+  .has-journey {
+    --spacing-gutter: max(2rem, 0.30rem + 3.90vw);
+  }
+  .j-strip {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 2.5rem;
+    color: var(--color-ink);
+  }
+  .j-strip-icon,
+  .j-strip-icon svg {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+  }
+  .j-strip-label {
+    font-family: var(--font-mono);
+    font-size: var(--text-label);
+    color: var(--color-muted);
+  }
+  [data-j-host] > .j-strip:first-child { margin-bottom: 2rem; }
+}

@@ -5,7 +5,9 @@
        (PRODUCT.md, "Live plot"). It is drawn deliberately as a placeholder —
        dashed, unlabelled axes, a bracketed caption — so it can never be read
        as real data. scripts/check.sh counts the caption. */ -}}
-<section class="border-t-2 border-ink px-gutter py-section" id="keep">
+<section data-j-host class="border-t-2 border-ink px-gutter py-section" id="keep">
+  {{ partial "journey/station.html" (dict "name" "analysis" "variant" "strip") }}
+  {{ partial "journey/station.html" (dict "name" "analysis" "variant" "station" "side" "right") }}
   <div class="grid grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-12">
     <div class="flex flex-col gap-6 lg:col-span-5">
       <span class="label-mono">Our product</span>
@@ -22,6 +24,7 @@
       </div>
     </div>
     <div class="flex flex-col gap-6 lg:col-start-7 lg:col-span-6">
+      {{ partial "journey/station.html" (dict "name" "dashboard" "variant" "strip") }}
       <figure class="flex flex-col gap-4 rounded-card border-2 border-ink p-6" id="keep-live">
         <div class="flex flex-wrap items-baseline justify-between gap-3">
           <span class="text-xl font-bold">Battery voltage, live</span>
@@ -32,6 +35,7 @@
           <path fill="none" stroke="var(--color-rule)" stroke-width="1.5" d="M0,40 H520 M0,90 H520 M0,140 H520"/>
           <path fill="none" stroke="var(--color-ink)" stroke-width="1.5" d="M0,190 H520"/>
           <path fill="none" stroke="var(--color-muted)" stroke-width="2" stroke-dasharray="6 8" d="M0,70 C130,72 260,80 390,88 S500,96 520,98"/>
+          <circle data-j-land cx="520" cy="98" r="1" fill="none"/>
         </svg>
         <figcaption class="flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-4 font-mono text-label">
           <span class="text-muted">[Live data: The Keep public endpoint, connects November 2026]</span>

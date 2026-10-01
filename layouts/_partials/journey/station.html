@@ -1,0 +1,33 @@
+{{- /* One station of the journey, inlined so journey.js can read its ports and,
+       later, animate its parts by ID.
+
+       variant "station": the desktop drawing (assets/journey/stations/<name>.svg),
+       absolutely placed in a gutter ("side" left or right) of the nearest
+       positioned ancestor. Ports are the <name>-port-in/-out markers inside it.
+
+       variant "strip": the rail version (assets/journey/icons/<name>.svg), a
+       32px icon and a short label, in flow. Its port is its left-centre edge,
+       where the stub from the rail arrives.
+
+       Both are display:none unless (scripting: enabled) and the matching
+       width, so the page without JavaScript is unchanged. Decorative only:
+       every meaning stays in the HTML around them.
+
+       {{ partial "journey/station.html" (dict "name" "modem" "variant" "station" "side" "left") }} */ -}}
+{{- $labels := dict
+  "device" "Device"
+  "modem" "Modem"
+  "tower" "Tower"
+  "backend" "Backend"
+  "analysis" "Analysis"
+  "dashboard" "Dashboard"
+  "contact" "Your device, next"
+-}}
+{{- if eq .variant "strip" }}
+<div class="j-strip" data-strip="{{ .name }}" aria-hidden="true">
+  <span class="j-strip-icon">{{ partial "journey/svg.html" (printf "icons/%s.svg" .name) }}</span>
+  <span class="j-strip-label">{{ index $labels .name }}</span>
+</div>
+{{- else }}
+<div class="j-station" data-station="{{ .name }}" data-side="{{ .side }}" aria-hidden="true">{{ partial "journey/svg.html" (printf "stations/%s.svg" .name) }}</div>
+{{- end -}}

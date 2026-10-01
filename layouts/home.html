@@ -2,6 +2,10 @@
 {{- /* Ordered for a cold reader with a minute to spare (PRODUCT.md): what we
        build end to end, then proof that we have built it, then how easy it is
        to start, then who we are. */ -}}
+{{- /* data-journey: the scroll-driven journey (assets/js/journey.js) draws its
+       trace in the overlay below. Without JavaScript nothing here renders and
+       the page is the plain document above. */ -}}
+<div data-journey>
 {{ partial "sections/hero.html" . }}
 {{ partial "sections/layers.html" . }}
 {{ partial "sections/why.html" . }}
@@ -12,4 +16,9 @@
 {{ partial "sections/proof.html" . }}
 {{ partial "sections/where.html" . }}
 {{ partial "sections/cta.html" . }}
+<svg class="j-overlay" aria-hidden="true" focusable="false"></svg>
+</div>
+{{ with resources.Get "js/journey.js" | js.Build (dict "minify" hugo.IsProduction "target" "es2019") | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}
 {{ end }}
