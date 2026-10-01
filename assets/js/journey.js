@@ -12,10 +12,14 @@
    ScrollTrigger would have done here, at a fraction of the weight. */
 
 const CHAMFER = 10; //    px. PCB corners are cut at 45°, never rounded.
-const CROSS = 160; //     desktop: scroll px given to each horizontal crossing
+const CROSS = 420; //     desktop: scroll px per horizontal crossing (at most
+//                        CROSS_VH of the viewport, so the dot stays on screen)
+const CROSS_VH = 0.45;
+const WAVE_W = 120; //    desktop: length of the wave packet the line turns into, px
+const WAVE_A = 7; //      and its amplitude, px
+const WAVE_RAMP = 80; //  path px over which the dot opens into the wave
 const STUB = 40; //       rail: scroll px for its short horizontal stubs
 const LINGER = 200; //    desktop: extra scroll px the dot spends in a station
-const HOP = 18; //        desktop: height of the arc over the radio gap
 const RADIO_STUB = 28; // desktop: wire left at each end of the radio gap
 const RAIL_X = 14; //     rail distance from the left edge
 const BAND = 0.5; //      where in the viewport the dot rides
@@ -51,6 +55,9 @@ function init() {
   function measure() {
     const desk = mq.desk.matches;
     g = null;
+    // Dividers the overlay redraws (see build) give up their own border, but
+    // only while it is drawn; reset first so a failed build leaves the CSS.
+    for (const e of root.querySelectorAll('.j-div')) e.classList.remove('j-div');
     if (desk || mq.rail.matches) {
       const o = root.getBoundingClientRect();
       const route = (desk ? routeDesktop : routeRail)(o);
@@ -75,13 +82,23 @@ function init() {
     const band = vh * BAND;
     const S = pts.map((p) => p.y - band);
     const flat = (k) => pts[k].s !== 'gap' && Math.abs(pts[k].y - pts[k - 1].y) < 0.5 && L[k] > L[k - 1];
+    // Per segment: the crossing it belongs to, and how the dot rides it.
+    // Wire crossings carry it as a wave in the line; the radio link as a
+    // wavefront in the air, opening toward the tower.
+    const wave = [];
     for (let k = 1; k < n; k++) {
       if (!flat(k)) continue;
       const a = k - 1;
       while (k + 1 < n && flat(k + 1)) k++;
-      const share = desk ? CROSS : STUB;
+      const share = desk ? Math.min(CROSS, vh * CROSS_VH) : STUB;
       const s0 = pts[a].y - band - share / 2;
       for (let j = a; j <= k; j++) S[j] = s0 + (share * (L[j] - L[a])) / (L[k] - L[a]);
+      if (desk) {
+        const seg = pts.slice(a + 1, k + 1);
+        const kind = seg.every((p) => p.s === 'wire') ? 'wave' : seg.some((p) => p.s === 'radio') ? 'radio' : null;
+        const run = { kind, L0: L[a], L1: L[k], dir: Math.sign(pts[k].x - pts[a].x) || 1 };
+        if (kind) for (let j = a; j < k; j++) wave[j] = run;
+      }
     }
     if (desk) {
       for (let k = 1; k < n; k++) {
@@ -157,40 +174,104 @@ function init() {
       marks.push({ L: L[k], els: [].concat(p.reach || []), lit, on: null });
     });
 
+    // Dividers the dot crosses are redrawn here, in the overlay, so the wave
+    // can replace the line and the radio wavefront can sit on top of it: a
+    // section's own border paints above the overlay. Same 2px ink, same place.
+    const lines = el('g', {});
+    for (const { host, dashed } of raw.divs || []) {
+      const y = host.getBoundingClientRect().top - o.top + 1;
+      el('path', { d: `M0 ${r(y)}H${r(o.width)}`, class: dashed ? 'j-divider j-dashed' : 'j-divider' }, lines);
+      host.classList.add('j-div');
+    }
+
+    // The wave packet: three cycles of a sine under a cosine envelope, drawn
+    // once at unit scale. The envelope meets the line with zero slope, so the
+    // joint is smooth, without the long flat tails a squared envelope leaves.
+    // On a crossing the dot opens into it and the line under it is cut away,
+    // exactly as wide as the wave, so the line itself seems to turn into it.
+    // Moved and morphed by transform and opacity alone.
+    const wp = [];
+    for (let i = 0; i <= 96; i++) {
+      const u = (i / 96) * 2 - 1;
+      const env = Math.cos((u * Math.PI) / 2);
+      wp.push(`${i ? 'L' : 'M'}${r((u * WAVE_W) / 2)} ${r(-Math.sin(u * Math.PI * 3) * env * WAVE_A)}`);
+    }
+    const cut = el('rect', { x: r(-WAVE_W / 2), y: -3, width: WAVE_W, height: 6, class: 'j-cut' });
+    const waveEl = el('path', { d: wp.join(''), class: 'j-wave' });
+    // The radio wavefront: three concentric arcs opening along +x (flipped
+    // by scale when the tower is to the left). It leaves the line, so the
+    // dashed divider under it is not cut.
+    const arcs = [6, 11, 16].map((R) => {
+      const dy = r(R * Math.SQRT1_2);
+      const dx = r(R * Math.SQRT1_2 - 8);
+      return `M${dx} ${-dy}A${R} ${R} 0 0 1 ${dx} ${dy}`;
+    });
+    const radioEl = el('path', { d: arcs.join(''), class: 'j-wave j-radio' });
     const dot = el('circle', { r: 5, class: 'j-dot' });
     svg.setAttribute('viewBox', `0 0 ${r(o.width)} ${r(o.height)}`);
     svg.classList.toggle('j-rail', !desk);
-    svg.replaceChildren(defs, under, over, dot);
-    return { pts, L, S, mainEnd, runs, marks, dot };
+    svg.replaceChildren(defs, under, over, lines, cut, waveEl, radioEl, dot);
+    return { pts, L, S, mainEnd, runs, marks, dot, wave, waveEl, radioEl, cut, m: -1, kind: null };
+  }
+
+  // Scroll position → length along the trace. Reduced motion: the end, so
+  // the whole trace is travelled and every station final.
+  function lenAt(s) {
+    const { L, S } = g;
+    const n = L.length;
+    if (mq.still.matches || s >= S[n - 1]) return L[n - 1];
+    if (s <= S[0]) return 0;
+    let lo = 0;
+    let hi = n - 1;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (S[m] <= s) lo = m; else hi = m; }
+    return L[lo] + ((s - S[lo]) / (S[lo + 1] - S[lo])) * (L[lo + 1] - L[lo]);
   }
 
   function render() {
     if (!g) return;
-    const { pts, L, S, mainEnd } = g;
-    const n = pts.length;
-    // Reduced motion: the whole trace travelled, every station final, the dot
-    // resting where the journey ends.
-    const s = mq.still.matches ? Infinity : cur;
-    let k = 0;
-    let t = 0;
-    if (s >= S[n - 1]) { k = n - 2; t = 1; }
-    else if (s > S[0]) {
-      let lo = 0;
-      let hi = n - 1;
-      while (hi - lo > 1) { const m = (lo + hi) >> 1; if (S[m] <= s) lo = m; else hi = m; }
-      k = lo;
-      t = (s - S[k]) / (S[k + 1] - S[k]);
-    }
-    const len = L[k] + t * (L[k + 1] - L[k]);
+    const { pts, L, mainEnd } = g;
+    const len = lenAt(cur);
+    let lo = 0;
+    let hi = L.length - 1;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (L[m] <= len) lo = m; else hi = m; }
+    let k = lo;
+    let t = L[k + 1] > L[k] ? Math.min((len - L[k]) / (L[k + 1] - L[k]), 1) : 1;
 
     // The dot stops at the chart; only the line carries on into the epilogue.
     if (k >= mainEnd) { k = mainEnd - 1; t = 1; }
     const a = pts[k];
     const b = pts[k + 1];
     const x = a.x + (b.x - a.x) * t;
-    let y = a.y + (b.y - a.y) * t;
-    if (b.s === 'radio') y -= HOP * 4 * t * (1 - t);
-    g.dot.style.transform = `translate(${r(x)}px,${r(y)}px)`;
+    const y = a.y + (b.y - a.y) * t;
+    // On a crossing, open into the wave or the radio wavefront away from the
+    // corners: m runs 0 → 1 over WAVE_RAMP px after the start and back to 0
+    // before the end.
+    const w = g.wave[k];
+    let m = 0;
+    if (w) {
+      const ramp = Math.min(WAVE_RAMP, (w.L1 - w.L0) / 3);
+      const e = Math.min(Math.max(Math.min(len - w.L0, w.L1 - len) / ramp, 0), 1);
+      m = e * e * (3 - 2 * e);
+    }
+    const kind = m ? w.kind : null;
+    const at = `translate(${r(x)}px,${r(y)}px)`;
+    g.dot.style.transform = m ? `${at} scale(${(1 - 0.6 * m).toFixed(3)})` : at;
+    if (m !== g.m || kind !== g.kind) {
+      const o = m.toFixed(3);
+      g.dot.style.opacity = (1 - m).toFixed(3);
+      g.waveEl.style.opacity = g.cut.style.opacity = kind === 'wave' ? o : 0;
+      g.radioEl.style.opacity = kind === 'radio' ? o : 0;
+      g.m = m;
+      g.kind = kind;
+    }
+    if (kind === 'wave') {
+      const sx = (0.15 + 0.85 * m).toFixed(3);
+      g.waveEl.style.transform = `${at} scale(${sx},${m.toFixed(3)})`;
+      g.cut.style.transform = `${at} scale(${sx},1)`;
+    } else if (kind === 'radio') {
+      const sc = 0.2 + 0.8 * m;
+      g.radioEl.style.transform = `${at} scale(${(sc * w.dir).toFixed(3)},${sc.toFixed(3)})`;
+    }
 
     for (const run of g.runs) {
       const v = r(run.len - Math.min(Math.max(len - run.L0, 0), run.len));
@@ -219,7 +300,9 @@ function init() {
 
   addEventListener('scroll', () => {
     target = scrollY;
-    if (!raf && g && !mq.still.matches) raf = requestAnimationFrame(tick);
+    if (!g) return;
+    if (mq.still.matches) { cur = target; render(); return; }
+    if (!raf) raf = requestAnimationFrame(tick);
   }, { passive: true });
 
   // Rebuild on anything that moves the layout: width, fonts, images. Mobile
@@ -251,6 +334,7 @@ function init() {
     let prev = port('device-port-out');
     if (!prev || !land || !fig) return null;
 
+    const divs = [];
     const pts = [];
     const go = (p, s, extra) => pts.push({ x: p.x, y: p.y, s, ...extra });
     go(prev, null, { via: true, reach: st('device') });
@@ -258,10 +342,12 @@ function init() {
       const pin = port(`${name}-port-in`);
       const pout = port(`${name}-port-out`);
       if (!pin || !pout) return null;
-      const y = top(st(name).closest('[data-j-host]'));
+      const host = st(name).closest('[data-j-host]');
+      const y = top(host);
+      divs.push({ host, dashed: name === 'tower' });
       go({ x: prev.x, y }, 'wire');
       if (name === 'tower') {
-        // The radio link: an interrupted run the dot hops across.
+        // The radio link: an interrupted run the dot crosses as a wavefront.
         const dir = Math.sign(pin.x - prev.x);
         go({ x: prev.x + dir * RADIO_STUB, y }, 'wire');
         go({ x: pin.x - dir * RADIO_STUB, y }, 'radio');
@@ -296,6 +382,7 @@ function init() {
       go({ x: lane, y: cin.y }, 'epi');
       go(cin, 'epi', { via: true, reach: st('contact') });
     }
+    pts.divs = divs;
     return pts;
   }
 

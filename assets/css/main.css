@@ -388,6 +388,29 @@
     fill: var(--j-dot);
     stroke: none;
   }
+  /* A divider the overlay has taken over (journey.js adds .j-div only once
+     its replacement is drawn): the border keeps its width, so nothing moves,
+     and only its colour goes. */
+  .j-div { border-top-color: transparent; }
+  .j-divider { stroke: var(--color-ink); }
+  .j-dashed { stroke-dasharray: 6 6; }
+  /* The gap under the wave. Page-background coloured: when dark mode lands,
+     this follows the page background token. */
+  .j-cut {
+    fill: var(--color-bone);
+    stroke: none;
+    opacity: 0;
+  }
+  /* The dot, opened into a wave packet while it crosses a divider. Same ember, same
+     2px as the line; non-scaling so the morph never thickens it. */
+  .j-wave {
+    stroke: var(--j-dot);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    opacity: 0;
+  }
+  .j-radio { stroke-linecap: round; }
 }
 
 /* Desktop: widen the gutters so a station drawing (240 units wide, 11-unit
@@ -406,8 +429,9 @@
   .j-station[data-side="left"] { left: calc((var(--spacing-gutter) - var(--j-station-w)) / 2); }
   .j-station[data-side="right"] { right: calc((var(--spacing-gutter) - var(--j-station-w)) / 2); }
   /* The divider above "Why one team" is the radio link: dashed, so the run
-     reads as interrupted. The overlay sits behind the border, so the wire
-     stubs at each end show through the gaps and the middle stays open. */
+     reads as interrupted, and the dot crosses it as a radio wavefront. The
+     overlay sits behind the border, so the wire stubs at each end show
+     through the gaps and the middle stays open. */
   #why { border-top-style: dashed; }
   /* Beside the booking button, in the left gutter, leaving a lane on its
      left for the epilogue line to arrive at its left-centre port. */
