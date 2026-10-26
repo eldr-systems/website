@@ -42,12 +42,30 @@
           <span>not yet connected</span>
         </figcaption>
       </figure>
-      {{- /* Collapsed to a rule until the file exists: a 16:9 black void read as
-             a rendering fault rather than as an honest gap. */ -}}
-      <div class="flex flex-wrap items-center justify-between gap-3 border-t-2 border-b-2 border-ink py-4 font-mono text-label">
-        <span class="text-muted">[Demo video: The Keep by Eldr Systems, 2 min]</span>
-        <span>not yet published</span>
-      </div>
+      {{- /* The Keep assembling itself, drawn from our CAD by Blender's Line Art
+             (scripts/3d/render_assembly.py, then encoded at 960 wide). It is a
+             drawing that moves, not a film: muted, looping, no controls. With
+             reduced motion the video never shows; its poster stands in. */ -}}
+      {{ $video := resources.Get "keep/assembly.mp4" | fingerprint }}
+      {{ $poster := resources.Get "keep/assembly.jpg" | fingerprint }}
+      <figure class="flex flex-col gap-4 rounded-card border-2 border-ink p-6">
+        <div class="flex flex-wrap items-baseline justify-between gap-3">
+          <span class="text-xl font-bold">How it goes together</span>
+          <span class="font-mono text-label text-muted">Board · sensor · case</span>
+        </div>
+        <video src="{{ $video.RelPermalink }}" poster="{{ $poster.RelPermalink }}"
+               width="960" height="720" autoplay muted loop playsinline
+               class="h-auto w-full motion-reduce:hidden" aria-hidden="true"></video>
+        <img src="{{ $poster.RelPermalink }}" width="960" height="720" loading="lazy"
+             class="hidden h-auto w-full motion-reduce:block"
+             alt="Line drawing of The Keep's lid turned over, with the sensor board sliding into the pocket on its ceiling.">
+        <figcaption class="flex flex-col gap-1 border-t border-rule pt-4 text-small leading-normal text-body">
+          The LilyGO board flips onto its screw posts, its antenna facing the slot in the case.
+          The lid turns over so the temperature and pressure sensor can slide into the
+          pocket in its ceiling, then closes over both.
+          <span class="font-mono text-label text-muted">Drawn from our case CAD</span>
+        </figcaption>
+      </figure>
       <div class="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
       {{ range .Site.Data.keep }}
       <figure class="flex flex-col gap-4 rounded-card border-2 border-ink p-7">

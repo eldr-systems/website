@@ -158,7 +158,7 @@ camera_key(HOLD, 1)
 # Frame 2*HOLD-1 is frame 1 again: stop one short so the loop has no double frame.
 studio.output(scene, out_dir, 1, 2 * HOLD - 2)
 if style in ("lineart", "strokes"):
-    lines = studio.lineart(scene, list(parts.values()), radius=0.32)
+    lines = studio.lineart(scene, list(parts.values()), radius=0.55)
 else:
     studio.shaded(scene)
 

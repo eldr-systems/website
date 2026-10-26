@@ -132,7 +132,8 @@ The homepage is built on a **spine**: one continuous 2px ink rule running down a
 left rail, with each dated band hanging off it and a single marker riding it. The marker
 lights ember as its band crosses mid-viewport and goes back to ink as it leaves, so the
 accent is handed from one day to the next instead of being spent in several places at
-once. That hand-off is the only motion in the system and the only thing that moves.
+once. That hand-off is the only motion in the system's chrome. The one other thing that
+moves is The Keep's assembly drawing (see Assembly Drawing): content, not decoration.
 
 Density is generous rather than packed. Sections are full-width bands separated by
 hairline-to-2px ink rules, and body copy is held to 34–44 characters so a reader working
@@ -453,6 +454,15 @@ The parts the system did not draw still carry it. Selection is ember with ink te
 3px ember outline at 3px offset, applied globally through `:focus-visible` — the one
 place ember appears without counting against the ration, because it is transient and
 user-summoned.
+
+### Assembly Drawing
+
+The Keep putting itself together, in The Keep section: a muted, looping, control-less
+video of Blender Line Art rendered from our own CAD — ink lines on flat bone, no shading,
+no colour, no ember. It is a technical drawing that moves, so it obeys the drawing rules,
+not the photo rules. Shown in an ink-bordered card like the live chart, captioned with
+what happens in it. Under `prefers-reduced-motion: reduce` the video is not shown at all
+and its poster stands in as a still image. Regenerating it: see the README.
 
 ### Line Diagrams
 

@@ -85,6 +85,27 @@ rsvg-convert -w 1200 -h 630 static/graphics/og-image-1200x630.svg -o static/grap
 The source SVG uses live text, so Archivo must be installed locally for this to render
 correctly — see the note in `eldr-systems-kit/README.md`.
 
+## Regenerating The Keep's assembly drawing
+
+`assets/keep/assembly.mp4` and its poster `assembly.jpg` are Blender Line Art renders
+of the case CAD and the board and sensor models in `3d-models/`. Needs FreeCAD,
+Blender and ffmpeg; `scripts/3d/blender.sh` runs Blender headless on the NVIDIA GPU.
+
+```bash
+FreeCADCmd scripts/3d/step_to_mesh.py          # CAD sources -> 3d-models/meshes/
+scripts/3d/blender.sh --python scripts/3d/assemble.py   # -> 3d-models/keep.blend
+scripts/3d/blender.sh 3d-models/keep.blend --python scripts/3d/render_assembly.py -- OUT lineart
+ffmpeg -framerate 30 -i OUT/f%04d.png -vf "scale=960:-2:flags=lanczos,format=yuv420p" \
+  -an -c:v libx264 -crf 32 -preset veryslow -tune animation -movflags +faststart \
+  assets/keep/assembly.mp4
+magick OUT/f0162.png -resize 960x -quality 82 assets/keep/assembly.jpg
+```
+
+Part placements come from the CAD (screw posts, antenna slot, lid pocket) and are
+documented in `assemble.py`; the motion is in `render_assembly.py`. Earlier drafts,
+including a studio-render version and a scroll-driven SVG flipbook, are in
+`3d-models/drafts/`.
+
 ## Brand rules the code cannot enforce
 
 - **One ember element per component, never two.** Ember is rationed; that is why the

@@ -130,7 +130,9 @@ titles: Vencel Koczka (clients, cloud and data, the contact person), Bence Schob
 C-titles. Names without Hungarian accents, as supplied. Do not "correct" them.
 
 **Imagery: real photographs only.** Our boards, The Keep, the bench, the three of us.
-Never stock, never AI brains or robots.
+Never stock, never AI brains or robots. The one exception is The Keep's assembly drawing:
+line art rendered from our own CAD, so it is a drawing of the real parts, never a render
+pretending to be a photo.
 
 **Binding visual constraints** live in `DESIGN.md` and `eldr-systems-kit/BRAND.md`
 (colour tokens, one ember element per component, the Archivo width axis).
