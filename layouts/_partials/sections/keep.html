@@ -59,12 +59,7 @@
         <img src="{{ $poster.RelPermalink }}" width="960" height="720" loading="lazy"
              class="hidden h-auto w-full motion-reduce:block"
              alt="Line drawing of The Keep's lid turned over, with the sensor board sliding into the pocket on its ceiling.">
-        <figcaption class="flex flex-col gap-1 border-t border-rule pt-4 text-small leading-normal text-body">
-          The LilyGO board flips onto its screw posts, its antenna facing the slot in the case.
-          The lid turns over so the temperature and pressure sensor can slide into the
-          pocket in its ceiling, then closes over both.
-          <span class="font-mono text-label text-muted">Drawn from our case CAD</span>
-        </figcaption>
+        <figcaption class="border-t border-rule pt-4 font-mono text-label text-muted">Drawn from our case CAD</figcaption>
       </figure>
       <div class="grid gap-6 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
       {{ range .Site.Data.keep }}

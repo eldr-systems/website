@@ -460,8 +460,8 @@ user-summoned.
 The Keep putting itself together, in The Keep section: a muted, looping, control-less
 video of Blender Line Art rendered from our own CAD — ink lines on flat bone, no shading,
 no colour, no ember. It is a technical drawing that moves, so it obeys the drawing rules,
-not the photo rules. Shown in an ink-bordered card like the live chart, captioned with
-what happens in it. Under `prefers-reduced-motion: reduce` the video is not shown at all
+not the photo rules. Shown in an ink-bordered card like the live chart, with no prose
+caption: the motion explains itself, and the only label is where it comes from. Under `prefers-reduced-motion: reduce` the video is not shown at all
 and its poster stands in as a still image. Regenerating it: see the README.
 
 ### Line Diagrams
