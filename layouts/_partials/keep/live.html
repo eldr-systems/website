@@ -39,7 +39,7 @@
 {{- end -}}
 {{- $labels := slice -}}
 {{- range $cfg.devices }}{{ $labels = $labels | append (strings.TrimPrefix "Device " .label) }}{{ end -}}
-<figure class="flex flex-col gap-5 rounded-card border-2 border-ink p-6" id="keep-live"
+<figure class="flex flex-col gap-4 rounded-card border-2 border-ink p-4 sm:gap-5 sm:p-6" id="keep-live"
         data-keep-live data-api="{{ $cfg.api }}" data-days="{{ $days }}"
         data-snapshot="{{ cond (gt (len $snap) 0) "ok" "none" }}">
   <div class="flex flex-wrap items-baseline justify-between gap-3">
@@ -48,13 +48,13 @@
   </div>
   {{- /* Hidden without JavaScript: there is nothing to switch, and the
          readouts below already carry the battery figures. */ -}}
-  <div class="kl-js flex flex-wrap gap-2" role="group" aria-label="Measurement">
-    {{- range slice (slice "battery" "Battery") (slice "temp" "Temperature") (slice "rssi" "Signal") }}
+  <div class="kl-js grid grid-cols-3 gap-2 sm:flex" role="group" aria-label="Measurement">
+    {{- range slice (slice "battery" "Battery" "Battery") (slice "temp" "Temperature" "Temp.") (slice "rssi" "Signal" "Signal") }}
     <button type="button" data-kl-metric="{{ index . 0 }}" aria-pressed="{{ cond (eq (index . 0) "battery") "true" "false" }}"
-            class="cursor-pointer rounded-full border-2 border-ink px-4 py-1.5 font-mono text-label aria-pressed:bg-ink aria-pressed:text-bone">{{ index . 1 }}</button>
+            class="cursor-pointer rounded-full border-2 border-ink px-2 py-1.5 font-mono text-label aria-pressed:bg-ink aria-pressed:text-bone sm:px-4"><span class="sm:hidden">{{ index . 2 }}</span><span class="hidden sm:inline">{{ index . 1 }}</span></button>
     {{- end }}
   </div>
-  <ul class="kl-js flex flex-wrap gap-x-6 gap-y-2 font-mono text-label" data-kl-legend aria-hidden="true">
+  <ul class="kl-js flex flex-wrap gap-x-5 gap-y-2 font-mono text-label" data-kl-legend aria-hidden="true">
     {{- range $i, $d := $cfg.devices }}
     <li class="flex items-center gap-2"><svg width="22" height="8" aria-hidden="true"><path d="M1,4 H21" stroke="var(--kl-s{{ $i }})" stroke-width="2"{{ if $i }} stroke-dasharray="5 3"{{ end }}/></svg>{{ $d.label }}</li>
     {{- end }}
@@ -67,12 +67,12 @@
          aria-label="Chart of battery voltage from The Keep. The latest readings are listed below it."></svg>
     <div class="kl-tip" data-kl-tip hidden></div>
   </div>
-  <dl class="grid gap-4 border-t border-rule pt-4 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]" data-kl-readouts aria-live="polite">
+  <dl class="grid gap-4 border-t border-rule pt-4 grid-cols-2" data-kl-readouts aria-live="polite">
     {{- range $d := $cfg.devices }}
     {{- $pts := slice }}{{ with $snap.battery }}{{ with index .series $d.id }}{{ $pts = .v }}{{ end }}{{ end }}
     <div class="flex flex-col gap-1" data-kl-device="{{ .id }}">
       <dt class="font-mono text-label text-muted">{{ .label }}</dt>
-      <dd class="font-mono text-2xl font-medium tracking-[-0.02em]" data-kl-value>
+      <dd class="font-mono text-xl font-medium sm:text-2xl tracking-[-0.02em]" data-kl-value>
         {{- with $pts }}{{ printf "%.2f V" (div (index . (sub (len .) 1)) 1000.0) }}{{ else }}—{{ end -}}
       </dd>
       <dd class="font-mono text-label text-muted" data-kl-at>{{ if $pts }}latest 15-minute mean{{ else }}no reading this week{{ end }}</dd>

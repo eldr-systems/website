@@ -10,7 +10,7 @@
    Hand-rolled SVG, no library: two lines, a few ticks and a crosshair. */
 
 const H = 220;
-const M = { top: 12, right: 30, bottom: 26, left: 72 };
+const M = { top: 24, right: 30, bottom: 26, left: 40 };
 const REFRESH = 15 * 60 * 1000; // ms. The API's buckets are 15 minutes.
 const NS = 'http://www.w3.org/2000/svg';
 
@@ -105,7 +105,7 @@ function init(fig) {
       const pts = d?.series[dev.id] || [];
       const last = pts[pts.length - 1];
       row.querySelector('[data-kl-value]').textContent = last ? fmt(last[1]) : '—';
-      row.querySelector('[data-kl-at]').textContent = last ? `at ${timeFmt.format(tsOf(d, last[0]))}` : `no reading in ${days} days`;
+      row.querySelector('[data-kl-at]').textContent = last ? stampFmt.format(tsOf(d, last[0])) : `no reading in ${days} days`;
     }
   }
 
@@ -139,12 +139,14 @@ function init(fig) {
     for (let v = lo; v <= hi + step / 2; v += step) {
       const py = H - M.bottom - ((v - lo) / (hi - lo)) * (H - M.top - M.bottom);
       if (v > lo) el('path', { d: `M${M.left},${py} H${W - M.right}`, class: 'kl-grid' }, svg);
-      // The unit rides on the top tick only.
-      const label = v.toFixed(METRICS[metric].dp).replace('-', '−');
-      el('text', { x: M.left - 8, y: py + 4, 'text-anchor': 'end', class: 'kl-tick' }, svg).textContent =
-        v + step > hi + step / 2 ? `${label} ${METRICS[metric].unit}` : label;
+      el('text', { x: M.left - 8, y: py + 4, 'text-anchor': 'end', class: 'kl-tick' }, svg).textContent = v
+        .toFixed(METRICS[metric].dp)
+        .replace('-', '−');
     }
     el('path', { d: `M${M.left},${H - M.bottom} H${W - M.right}`, class: 'kl-base' }, svg);
+    // The unit sits above the axis rather than on a tick, so the tick
+    // column stays narrow enough for a phone.
+    el('text', { x: 0, y: 10, class: 'kl-tick' }, svg).textContent = METRICS[metric].unit;
 
     // Day ticks at local midnight; every other day when narrow.
     const every = W < 440 ? 2 : 1;
