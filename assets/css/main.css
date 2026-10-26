@@ -411,6 +411,16 @@
     opacity: 0;
   }
   .j-radio { stroke-linecap: round; }
+
+  /* The liquid in a station: journey.js lays an ember copy of the station's
+     drawing over it and shows it through a band that follows the dot. Only
+     the ink takes the ember; slate detail and labels are dropped from the
+     copy, so they stay as they are underneath. */
+  .j-fill { color: var(--color-ember); }
+  .j-fill [stroke]:not([stroke="currentColor"]),
+  .j-fill [fill]:not([fill="currentColor"]):not([fill="none"]) { display: none; }
+  /* Parts that light up while they hold the measurement. */
+  [data-station] [id] { transition: color 0.3s ease-out; }
 }
 
 /* Desktop: widen the gutters so a station drawing (240 units wide, 11-unit

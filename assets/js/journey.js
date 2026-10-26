@@ -9,7 +9,13 @@
 
    No library: the trace is straight segments and 45° chamfers, so a point
    at a given length is plain arithmetic. That is all GSAP's MotionPath and
-   ScrollTrigger would have done here, at a fraction of the weight. */
+   ScrollTrigger would have done here, at a fraction of the weight.
+
+   Inside a station the dot follows the drawing's own route (its
+   <name>-dot-path), the station plays its moment as a pure function of how
+   far along that route the dot is, and an ember copy of the station's ink
+   shows through a band that follows the dot down, like liquid poured in at
+   the top and draining out of the bottom. */
 
 const CHAMFER = 10; //    px. PCB corners are cut at 45°, never rounded.
 const CROSS = 420; //     desktop: scroll px per horizontal crossing (at most
@@ -23,10 +29,82 @@ const LINGER = 200; //    desktop: extra scroll px the dot spends in a station
 const RADIO_STUB = 28; // desktop: wire left at each end of the radio gap
 const RAIL_X = 14; //     rail distance from the left edge
 const LANE = 12; //       desktop: run beside the chart, half the grid gap
+const FILL_TAIL = 0.35; // liquid: band height, share of the station's height
+const FILL_LEAD = 4; //   and how far its front runs ahead of the dot, units
+const FILL_A = 2.5; //    amplitude of its wavy edges, units
+const FILL_L = 36; //     and their wavelength, units
 const BAND = 0.5; //      where in the viewport the dot rides
 const TAU = 0.09; //      scroll smoothing time constant, s
 const ORDER = ['modem', 'tower', 'backend', 'analysis'];
 const NS = 'http://www.w3.org/2000/svg';
+
+// What each station does as the dot passes through it. route gives the dot's
+// path in the station's viewBox (a point flagged hide is reached under a
+// part, so the dot is hidden on the way); play sets the station's state from
+// u, the units travelled along that route. play is a pure function of u, so
+// scrolling back runs every station backwards.
+const STATIONS = {
+  device: {
+    // Sensor, under the MCU, under the modem, out. The trace's subpaths are
+    // exactly the visible stretches.
+    route: (svg) => parsePath(svg.querySelector('#device-trace-out').getAttribute('d')),
+    play(u, s) {
+      s.op('device-reading', ramp(u, 0, 30));
+      s.ember('device-antenna', u > 165 && u < 240);
+    },
+  },
+  modem: {
+    // In at the top, under the module while the firmware runs, out at the
+    // bottom. Meanwhile the profiler draws the current it measured, the
+    // transmit spike flashing as the drawing crosses it.
+    route: () => [{ x: 120, y: 0 }, { x: 120, y: 20 }, { x: 120, y: 156, hide: true }, { x: 120, y: 180 }],
+    setup(s) {
+      const clip = s.add('clipPath', { id: 'j-clip-modem', clipPathUnits: 'userSpaceOnUse' });
+      s.clip = s.add('rect', { x: 0, y: 0, width: 0, height: 180 }, clip);
+      for (const e of s.$('modem-trace')) e.setAttribute('clip-path', 'url(#j-clip-modem)');
+    },
+    play(u, s) {
+      const x = 24 + 192 * ramp(u, 30, 150);
+      s.clip.setAttribute('width', r(x));
+      s.op('modem-spike', ramp(x, 140, 146) * (1 - ramp(x, 160, 190)));
+      s.op('modem-tx-label', ramp(x, 140, 150));
+    },
+  },
+  tower: {
+    route: (svg) => dotPath(svg, 'tower'),
+    play(u, s) {
+      s.op('tower-rx-arc-outer', ramp(u, 4, 12));
+      s.op('tower-rx-arc-mid', ramp(u, 14, 22));
+      s.op('tower-rx-arc-inner', ramp(u, 24, 32));
+      s.ember('tower-antenna-active', u > 34 && u < 90);
+      s.op('tower-psm', ramp(u, 80, 120));
+    },
+  },
+  backend: {
+    // The packet rides the queue to its exit under the dot, a worker takes
+    // it, the raw bytes turn into fields and a new row lands in the table.
+    route: (svg) => dotPath(svg, 'backend'),
+    play(u, s) {
+      s.tf('backend-packet', `translateX(${r(48 * ramp(u, 20, 68))}px)`);
+      s.op('backend-packet', 1 - ramp(u, 70, 84));
+      s.ember('backend-worker-2', u > 160 && u < 200);
+      s.op('backend-raw-bytes', 1 - ramp(u, 175, 200));
+      s.op('backend-fields', ramp(u, 185, 215));
+      const row = ramp(u, 262, 288);
+      s.op('backend-row-new', row);
+      s.tf('backend-row-new', `translateY(${r(12 * (1 - row))}px)`);
+    },
+  },
+  analysis: {
+    // Down the now cursor: the new point lands on it, then the verdict.
+    route: (svg) => dotPath(svg, 'analysis'),
+    play(u, s) {
+      s.op('analysis-new-point', ramp(u, 138, 150));
+      s.ember('analysis-new-point', u > 138 && u < 190);
+      s.op('analysis-status-ok', ramp(u, 165, 190));
+    },
+  },
+};
 
 const root = document.querySelector('[data-journey]');
 const svg = root && root.querySelector('.j-overlay');
@@ -40,6 +118,11 @@ const mq = {
 if (svg && (mq.desk.matches || mq.rail.matches)) init();
 
 function init() {
+  const stations = {};
+  for (const name in STATIONS) {
+    const s = root.querySelector(`[data-station="${name}"] svg`);
+    if (s) stations[name] = station(name, s, STATIONS[name]);
+  }
   let g = null; //    geometry from the last measure
   let vw = innerWidth;
   let vh = innerHeight;
@@ -64,7 +147,12 @@ function init() {
       const route = (desk ? routeDesktop : routeRail)(o);
       if (route) g = build(route, o, desk);
     }
-    if (!g) { svg.replaceChildren(); return; }
+    if (!g) {
+      svg.replaceChildren();
+      // Leave every station in its final state, as if the dot had passed.
+      for (const name in stations) { const s = stations[name]; s.u = s.total; s.play(s.total); s.flow(null); }
+      return;
+    }
     cur = target = scrollY;
     render();
   }
@@ -84,7 +172,7 @@ function init() {
     // level gets at least its own length in scroll, so the dot never jumps.
     const band = vh * BAND;
     const S = pts.map((p) => p.y - band);
-    const flat = (k) => pts[k].s !== 'gap' && Math.abs(pts[k].y - pts[k - 1].y) < 0.5 && L[k] > L[k - 1];
+    const flat = (k) => pts[k].s !== 'gap' && pts[k].s !== 'station' && Math.abs(pts[k].y - pts[k - 1].y) < 0.5 && L[k] > L[k - 1];
     // Per segment: the crossing it belongs to, and how the dot rides it.
     // Wire crossings carry it as a wave in the line; the radio link as a
     // wavefront in the air, opening toward the tower.
@@ -106,14 +194,25 @@ function init() {
         if (kind) for (let j = a; j < k; j++) wave[j] = run;
       }
     }
-    if (desk) {
-      for (let k = 1; k < n; k++) {
-        if (pts[k].s === 'station') { S[k - 1] -= LINGER / 2; S[k] += LINGER / 2; }
-      }
+    // A station: LINGER extra scroll, spread evenly along its route.
+    const spans = [];
+    pts.forEach((p, k) => {
+      if (!p.st) return;
+      const last = spans[spans.length - 1];
+      if (last && last.st === p.st) last.b = k;
+      else spans.push({ st: p.st, a: k, b: k });
+    });
+    for (const sp of spans) {
+      const { a, b } = sp;
+      const s0 = Math.max(S[a] - LINGER / 2, 0);
+      const s1 = Math.max(S[b] + LINGER / 2, s0 + LINGER);
+      for (let j = a; j <= b; j++) S[j] = s0 + ((s1 - s0) * (L[j] - L[a])) / (L[b] - L[a]);
+      sp.L0 = L[a];
+      sp.L1 = L[b];
     }
     S[0] = Math.max(S[0], 0);
     for (let k = 1; k < n; k++) {
-      const climb = pts[k].s !== 'gap' && !crossed[k] && pts[k].y <= pts[k - 1].y + 0.5;
+      const climb = pts[k].s !== 'gap' && pts[k].s !== 'station' && !crossed[k] && pts[k].y <= pts[k - 1].y + 0.5;
       S[k] = Math.max(S[k], S[k - 1] + (climb ? L[k] - L[k - 1] : 0.01));
     }
     // Mobile toolbars change the real maximum by up to ~100px; stay inside it.
@@ -220,7 +319,8 @@ function init() {
     svg.setAttribute('viewBox', `0 0 ${r(o.width)} ${r(o.height)}`);
     svg.classList.toggle('j-rail', !desk);
     svg.replaceChildren(defs, under, over, lines, cut, waveEl, radioEl, dot);
-    return { pts, L, S, mainEnd, runs, marks, dot, wave, waveEl, radioEl, cut, m: -1, kind: null };
+    for (const sp of spans) sp.st.u = null;
+    return { pts, L, S, mainEnd, runs, marks, dot, wave, waveEl, radioEl, cut, spans, m: -1, kind: null, hid: false };
   }
 
   // Scroll position → length along the trace. Reduced motion: the end, so
@@ -263,15 +363,24 @@ function init() {
       m = e * e * (3 - 2 * e);
     }
     const kind = m ? w.kind : null;
+    // Under a part of a station, the dot is hidden.
+    const hid = !!b.hide;
     const at = `translate(${r(x)}px,${r(y)}px)`;
     g.dot.style.transform = m ? `${at} scale(${(1 - 0.6 * m).toFixed(3)})` : at;
-    if (m !== g.m || kind !== g.kind) {
+    if (m !== g.m || kind !== g.kind || hid !== g.hid) {
       const o = m.toFixed(3);
-      g.dot.style.opacity = (1 - m).toFixed(3);
+      g.dot.style.opacity = hid ? 0 : (1 - m).toFixed(3);
       g.waveEl.style.opacity = g.cut.style.opacity = kind === 'wave' ? o : 0;
       g.radioEl.style.opacity = kind === 'radio' ? o : 0;
       g.m = m;
       g.kind = kind;
+      g.hid = hid;
+    }
+    for (const sp of g.spans) {
+      const s = sp.st;
+      const u = s.total * Math.min(Math.max((len - sp.L0) / (sp.L1 - sp.L0), 0), 1);
+      if (u !== s.u) { s.u = u; s.play(u); }
+      s.flow({ x, y });
     }
     if (kind === 'wave') {
       const sx = (0.15 + 0.85 * m).toFixed(3);
@@ -330,6 +439,20 @@ function init() {
   for (const q of [mq.desk, mq.rail, mq.still]) q.addEventListener('change', measureSoon);
   measure();
 
+  // A station's route, in the overlay's coordinates. Also keeps the mapping
+  // both ways, for its liquid.
+  function through(o, name) {
+    const s = stations[name];
+    const m = s && s.svg.getScreenCTM();
+    if (!m) return null;
+    s.toO = new DOMMatrix().translate(-o.left, -o.top).multiply(m);
+    s.toL = s.toO.inverse();
+    return s.route.map((p, i) => {
+      const q = s.toO.transformPoint(p);
+      return { x: q.x, y: q.y, s: i ? 'station' : null, hide: p.hide, st: s };
+    });
+  }
+
   // Desktop: device → (divider, gutter) → modem → … → analysis → chart, then
   // a dotted epilogue branching off down the right gutter, across and down
   // the left gutter to the contact outline beside the booking button.
@@ -340,17 +463,18 @@ function init() {
     const top = (e) => e.getBoundingClientRect().top - o.top + 1;
     const land = root.querySelector('[data-j-land]');
     const fig = document.getElementById('keep-live');
-    let prev = port('device-port-out');
-    if (!prev || !land || !fig) return null;
+    const dev = through(o, 'device');
+    if (!dev || !land || !fig) return null;
 
     const divs = [];
     const pts = [];
     const go = (p, s, extra) => pts.push({ x: p.x, y: p.y, s, ...extra });
-    go(prev, null, { via: true, reach: st('device') });
+    pts.push({ ...dev[0], reach: st('device') }, ...dev.slice(1));
+    let prev = Object.assign(pts[pts.length - 1], { via: true });
     for (const name of ORDER) {
-      const pin = port(`${name}-port-in`);
-      const pout = port(`${name}-port-out`);
-      if (!pin || !pout) return null;
+      const route = through(o, name);
+      if (!route) return null;
+      const pin = route[0];
       const host = st(name).closest('[data-j-host]');
       const y = top(host);
       divs.push({ host, dashed: name === 'tower' });
@@ -362,9 +486,8 @@ function init() {
         go({ x: pin.x - dir * RADIO_STUB, y }, 'radio');
       }
       go({ x: pin.x, y }, 'wire');
-      go(pin, 'wire', { via: true, reach: st(name) });
-      go(pout, 'station', { via: true });
-      prev = pout;
+      pts.push({ ...pin, s: 'wire', via: true, reach: st(name) }, ...route.slice(1));
+      prev = Object.assign(pts[pts.length - 1], { via: true });
     }
 
     // Into The Keep from the left, where the chart's line starts: down the
@@ -400,7 +523,6 @@ function init() {
   // stubs; the dot only ever travels the rail. It starts at the hero device,
   // which on these widths sits below the headline and buttons.
   function routeRail(o) {
-    const port = svgPort(o);
     const strip = (name) => root.querySelector(`[data-strip="${name}"]`);
     // A strip's port is its left-centre edge. A stub is drawn only when the
     // strip starts at the content edge: on wide tablets some sections are
@@ -411,9 +533,10 @@ function init() {
       const p = { x: b.left - o.left, y: b.top + b.height / 2 - o.top };
       return { ...p, stub: p.x < 64 ? p : null };
     };
-    const dev = port('device-port-out');
+    const route = through(o, 'device');
     const hero = root.querySelector('[data-station="device"]');
-    if (!dev || !hero) return null;
+    if (!route || !hero) return null;
+    const dev = route[route.length - 1];
 
     const pts = [];
     const go = (p, s, extra) => pts.push({ x: p.x, y: p.y, s, ...extra });
@@ -421,7 +544,7 @@ function init() {
     // the hero, so the run never crosses the headline column beside it.
     const text = hero.closest('[data-j-host]').firstElementChild.getBoundingClientRect();
     const y0 = Math.max(dev.y, text.bottom - o.top) + 20;
-    go(dev, null, { reach: hero });
+    pts.push({ ...route[0], reach: hero }, ...route.slice(1));
     go({ x: dev.x, y: y0 }, 'wire');
     go({ x: RAIL_X, y: y0 }, 'wire');
     for (const name of ORDER) {
@@ -444,6 +567,102 @@ function init() {
     }
     return pts;
   }
+}
+
+// One station: its route, its liquid and its moving parts. The liquid is an
+// ember copy of the station's ink (CSS hides everything in it that is not
+// currentColor), shown through a mask: a band with wavy edges whose front
+// runs just ahead of the dot. The parts play() moves are moved in the copy
+// too, by data-jid, so the two never disagree.
+function station(name, svg, def) {
+  const vb = svg.viewBox.baseVal;
+  const add = (tag, attrs, parent = svg) => {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    parent.appendChild(e);
+    return e;
+  };
+  const kids = [...svg.children].filter((e) => !/^(defs|mask|metadata)$/.test(e.tagName) && !/-(dot-path|port-in|port-out)$/.test(e.id));
+  const mask = add('mask', { id: `j-fill-${name}`, maskUnits: 'userSpaceOnUse', x: -10, y: -10, width: vb.width + 20, height: vb.height + 20 });
+  const band = add('path', { d: 'M0 0', fill: '#fff' }, mask);
+  const copy = add('g', { class: 'j-fill', mask: `url(#j-fill-${name})` });
+  for (const e of kids) {
+    const c = e.cloneNode(true);
+    for (const x of [c, ...c.querySelectorAll('[id]')]) {
+      if (x.id) { x.setAttribute('data-jid', x.id); x.removeAttribute('id'); }
+    }
+    copy.appendChild(c);
+  }
+
+  const route = def.route(svg);
+  let total = 0;
+  for (let k = 1; k < route.length; k++) total += dist(route[k - 1], route[k]);
+  let d0 = null;
+  const s = {
+    svg,
+    route,
+    total,
+    add,
+    $: (id) => [svg.querySelector(`#${id}`), copy.querySelector(`[data-jid="${id}"]`)].filter(Boolean),
+    op: (id, v) => { for (const e of s.$(id)) e.style.opacity = v.toFixed(3); },
+    tf: (id, v) => { for (const e of s.$(id)) e.style.transform = v; },
+    // A part that lights up while it holds the measurement. Only the
+    // original: the copy is ember already.
+    ember: (id, on) => { const e = svg.querySelector(`#${id}`); if (e) e.style.color = on ? 'var(--color-ember)' : ''; },
+    play: (u) => def.play(u, s),
+    // The band, from where the dot is (overlay coordinates); null drains it.
+    flow(p) {
+      let d = '';
+      if (p && s.toL) {
+        const q = s.toL.transformPoint(p);
+        const front = q.y + FILL_LEAD;
+        const tail = front - vb.height * FILL_TAIL;
+        if (front > -FILL_A && tail < vb.height + FILL_A) {
+          // The phase follows the level, so the surface moves only as the
+          // reader scrolls.
+          const ph = (q.x + q.y) * 0.09;
+          const k = (2 * Math.PI) / FILL_L;
+          const xs = [];
+          for (let x = -8; x <= vb.width + 8; x += 8) xs.push(x);
+          const edge = (y, f) => xs.map((x) => `${x} ${r(y + FILL_A * Math.sin(x * k + f))}`);
+          d = `M${edge(front, ph).join('L')}L${edge(tail, 2 - ph).reverse().join('L')}Z`;
+        }
+      }
+      if (d !== d0) { d0 = d; band.setAttribute('d', d || 'M0 0'); }
+    },
+  };
+  if (def.setup) def.setup(s);
+  return s;
+}
+
+// A station's suggested dot route, from its never-drawn <name>-dot-path.
+function dotPath(svg, name) {
+  return parsePath(svg.querySelector(`#${name}-dot-path`).getAttribute('d'));
+}
+
+// Absolute M, H, V and L only, which is all the station drawings use for
+// their routes. A move starts a stretch the dot travels hidden.
+function parsePath(d) {
+  const out = [];
+  const t = d.match(/[MHVLZ]|-?\d*\.?\d+/g) || [];
+  let c = 'M';
+  let x = 0;
+  let y = 0;
+  for (let i = 0; i < t.length;) {
+    if (/[A-Z]/.test(t[i])) { c = t[i++]; if (c === 'Z') continue; }
+    if (c === 'H') x = +t[i++];
+    else if (c === 'V') y = +t[i++];
+    else { x = +t[i++]; y = +t[i++]; }
+    out.push({ x, y, hide: c === 'M' && out.length > 0 });
+    if (c === 'M') c = 'L';
+  }
+  return out;
+}
+
+// 0 → 1 as v goes from a to b, eased at both ends.
+function ramp(v, a, b) {
+  const e = Math.min(Math.max((v - a) / (b - a), 0), 1);
+  return e * e * (3 - 2 * e);
 }
 
 // Ports are r=0 circles inside the station SVGs, which have no layout box of
@@ -479,7 +698,7 @@ function chamfer(pts) {
     const u1 = { x: (b.x - a.x) / l1, y: (b.y - a.y) / l1 };
     const u2 = { x: (c.x - b.x) / l2, y: (c.y - b.y) / l2 };
     const straight = Math.abs(u1.x * u2.y - u1.y * u2.x) < 1e-3;
-    if (b.s === 'gap' || c.s === 'gap' || !l1 || !l2 || straight) { out.push(b); continue; }
+    if (b.s === 'gap' || c.s === 'gap' || b.s === 'station' || c.s === 'station' || !l1 || !l2 || straight) { out.push(b); continue; }
     const k = Math.min(CHAMFER, l1 / 2, l2 / 2);
     out.push({ x: b.x - u1.x * k, y: b.y - u1.y * k, s: b.s });
     out.push({ ...b, x: b.x + u2.x * k, y: b.y + u2.y * k });
