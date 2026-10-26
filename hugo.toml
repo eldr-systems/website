@@ -22,6 +22,14 @@ enableRobotsTXT = true
   [security.exec]
     allow = ['^(dart-)?sass$', '^go$', '^git$', '^node$', '^npx$', '^postcss$', '^tailwindcss$']
 
+# The Keep's live chart fetches a build-time snapshot with resources.GetRemote.
+# Hugo's default maxAge for remote resources is -1 (cache forever), which would
+# freeze the snapshot on a local machine; CI starts cold either way.
+[caches]
+  [caches.getresource]
+    dir = ':cacheDir/:project'
+    maxAge = '10m'
+
 [module]
   # Declaring ANY mount for a target component replaces Hugo's defaults for
   # it. The 'static -> static' line below is the default, restated: without
@@ -69,3 +77,17 @@ enableRobotsTXT = true
     regNo = ''
     taxNo = ''
     vatNo = ''
+
+  # The Keep's public endpoint (PRODUCT.md, "Live plot"). Devices are in real
+  # homes: the chart shows them only by label, never by place.
+  # The API answers CORS for eldrsystems.com only, so on localhost the chart
+  # shows the build-time snapshot and says so.
+  [params.keepLive]
+    api = 'https://api.eldrsystems.com'
+    days = 7
+    [[params.keepLive.devices]]
+      id = 'keep-0004'
+      label = 'Device A'
+    [[params.keepLive.devices]]
+      id = 'keep-0005'
+      label = 'Device B'

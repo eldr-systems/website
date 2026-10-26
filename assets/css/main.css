@@ -471,3 +471,41 @@
   }
   [data-j-host] > .j-strip:first-child { margin-bottom: 2rem; }
 }
+
+/* ---- The Keep's live chart (assets/js/keep-live.js) ----
+   Two series in ink and slate, never ember: ember is the travelling marker,
+   and it lands on this chart. Device B is also dashed so identity is never
+   carried by shade alone. The SVG is drawn by script, so its parts are
+   styled here rather than with utilities Tailwind would never see. */
+#keep-live {
+  --kl-s0: var(--color-ink);
+  --kl-s1: var(--color-slate);
+}
+@media (scripting: none) {
+  .kl-js { display: none !important; }
+}
+[data-kl-svg]:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 4px; }
+[data-kl-plot].is-loading [data-kl-svg] { opacity: 0.45; transition: opacity 0.2s; }
+.kl-grid  { stroke: var(--color-rule); stroke-width: 1; }
+.kl-base  { stroke: var(--color-ink); stroke-width: 1.5; }
+.kl-tick  { font-family: var(--font-mono); font-size: 11px; fill: var(--color-muted); }
+.kl-end   { font-family: var(--font-mono); font-size: 11px; fill: var(--color-ink); }
+.kl-cross { stroke: var(--color-ink); stroke-width: 1; }
+.kl-empty { font-family: var(--font-mono); font-size: 13px; fill: var(--color-muted); }
+.kl-tip {
+  position: absolute;
+  top: 0;
+  pointer-events: none;
+  min-width: 9.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--color-ink);
+  border-radius: 10px;
+  background: var(--color-bone);
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  line-height: 1.5;
+}
+.kl-tip-time { color: var(--color-muted); }
+.kl-tip-row  { display: flex; align-items: center; gap: 0.5rem; }
+.kl-tip-row b { font-weight: 500; color: var(--color-ink); }
+.kl-tip-row span { color: var(--color-muted); }

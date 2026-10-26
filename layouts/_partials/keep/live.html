@@ -1,0 +1,89 @@
+{{- /* The Keep's live chart (PRODUCT.md, "Live plot").
+
+       At build time every metric is fetched once and embedded as a compact
+       snapshot: bucket indices and values in two arrays, so a week of 15-minute
+       buckets for both devices is a few kB gzipped. assets/js/keep-live.js
+       draws from the snapshot at once, then replaces it with live data. If
+       the endpoint is down, at build or in the browser, the chart keeps the
+       last data it has and says how old it is. A metric that failed at build
+       is simply absent from the snapshot; scripts/check.sh warns on that. */ -}}
+{{- $cfg := site.Params.keepLive -}}
+{{- $days := int $cfg.days -}}
+{{- $snap := dict -}}
+{{- range $m := slice "battery" "temp" "rssi" -}}
+  {{- $series := dict -}}
+  {{- $meta := dict -}}
+  {{- range $d := $cfg.devices -}}
+    {{- $u := printf "%s/public/v1/%s?device=%s&days=%d" $cfg.api $m $d.id $days -}}
+    {{- with try (resources.GetRemote $u) -}}
+      {{- with .Err -}}
+        {{- warnf "keep-live: %s: %s" $u . -}}
+      {{- else with .Value -}}
+        {{- $j := . | transform.Unmarshal -}}
+        {{- $start := (time.AsTime $j.start).Unix -}}
+        {{- /* Two flat arrays: Hugo's append cannot build a slice of pairs. */ -}}
+        {{- $is := slice -}}
+        {{- $vs := slice -}}
+        {{- range $j.points -}}
+          {{- $is = $is | append (div (sub (time.AsTime .ts).Unix $start) $j.bucket_s) -}}
+          {{- $vs = $vs | append (div (math.Round (mul .value 100)) 100) -}}
+        {{- end -}}
+        {{- $series = merge $series (dict $d.id (dict "i" $is "v" $vs)) -}}
+        {{- $meta = dict "start" $j.start "end" $j.end "bucket" $j.bucket_s -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- with $meta -}}
+    {{- $snap = merge $snap (dict $m (merge . (dict "series" $series))) -}}
+  {{- end -}}
+{{- end -}}
+{{- $labels := slice -}}
+{{- range $cfg.devices }}{{ $labels = $labels | append (strings.TrimPrefix "Device " .label) }}{{ end -}}
+<figure class="flex flex-col gap-5 rounded-card border-2 border-ink p-6" id="keep-live"
+        data-keep-live data-api="{{ $cfg.api }}" data-days="{{ $days }}"
+        data-snapshot="{{ cond (gt (len $snap) 0) "ok" "none" }}">
+  <div class="flex flex-wrap items-baseline justify-between gap-3">
+    <span class="text-xl font-bold" data-kl-title>Battery voltage</span>
+    <span class="font-mono text-label text-muted">Devices {{ delimit $labels ", " }} · last {{ $days }} days</span>
+  </div>
+  {{- /* Hidden without JavaScript: there is nothing to switch, and the
+         readouts below already carry the battery figures. */ -}}
+  <div class="kl-js flex flex-wrap gap-2" role="group" aria-label="Measurement">
+    {{- range slice (slice "battery" "Battery") (slice "temp" "Temperature") (slice "rssi" "Signal") }}
+    <button type="button" data-kl-metric="{{ index . 0 }}" aria-pressed="{{ cond (eq (index . 0) "battery") "true" "false" }}"
+            class="cursor-pointer rounded-full border-2 border-ink px-4 py-1.5 font-mono text-label aria-pressed:bg-ink aria-pressed:text-bone">{{ index . 1 }}</button>
+    {{- end }}
+  </div>
+  <ul class="kl-js flex flex-wrap gap-x-6 gap-y-2 font-mono text-label" data-kl-legend aria-hidden="true">
+    {{- range $i, $d := $cfg.devices }}
+    <li class="flex items-center gap-2"><svg width="22" height="8" aria-hidden="true"><path d="M1,4 H21" stroke="var(--kl-s{{ $i }})" stroke-width="2"{{ if $i }} stroke-dasharray="5 3"{{ end }}/></svg>{{ $d.label }}</li>
+    {{- end }}
+  </ul>
+  <div class="kl-js relative" data-kl-plot>
+    {{- /* Where the journey's ember dot lands (assets/js/journey.js). It sits
+           outside the redrawn SVG so a redraw never moves the target. */ -}}
+    <span data-j-land class="absolute top-1/2 right-0 h-px w-px" aria-hidden="true"></span>
+    <svg class="block w-full" height="220" role="img" tabindex="0" data-kl-svg
+         aria-label="Chart of battery voltage from The Keep. The latest readings are listed below it."></svg>
+    <div class="kl-tip" data-kl-tip hidden></div>
+  </div>
+  <dl class="grid gap-4 border-t border-rule pt-4 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]" data-kl-readouts aria-live="polite">
+    {{- range $d := $cfg.devices }}
+    {{- $pts := slice }}{{ with $snap.battery }}{{ with index .series $d.id }}{{ $pts = .v }}{{ end }}{{ end }}
+    <div class="flex flex-col gap-1" data-kl-device="{{ .id }}">
+      <dt class="font-mono text-label text-muted">{{ .label }}</dt>
+      <dd class="font-mono text-2xl font-medium tracking-[-0.02em]" data-kl-value>
+        {{- with $pts }}{{ printf "%.2f V" (div (index . (sub (len .) 1)) 1000.0) }}{{ else }}—{{ end -}}
+      </dd>
+      <dd class="font-mono text-label text-muted" data-kl-at>{{ if $pts }}latest 15-minute mean{{ else }}no reading this week{{ end }}</dd>
+    </div>
+    {{- end }}
+  </dl>
+  <figcaption class="flex flex-wrap items-center justify-between gap-3 border-t border-rule pt-4 font-mono text-label">
+    <span class="text-muted">15-minute means from The Keep's public endpoint</span>
+    <span data-kl-status>
+      {{- with $snap.battery }}snapshot · {{ time.Format "2 Jan, 15:04 UTC" (time.AsTime .end) }}{{ else }}[no data at build time]{{ end -}}
+    </span>
+  </figcaption>
+  <script type="application/json" data-kl-data>{{ dict "devices" $cfg.devices "snapshot" $snap | jsonify | safeJS }}</script>
+</figure>

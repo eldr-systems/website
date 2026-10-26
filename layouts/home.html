@@ -21,4 +21,7 @@
 {{ with resources.Get "js/journey.js" | js.Build (dict "minify" hugo.IsProduction "target" "es2019") | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
 {{ end }}
+{{ with resources.Get "js/keep-live.js" | js.Build (dict "minify" hugo.IsProduction "target" "es2020") | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}
 {{ end }}

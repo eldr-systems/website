@@ -93,7 +93,7 @@ flag() { warn "$1"; n=$((n + 1)); }
 grep -rq 'roleA\|roleB\|roleC'  public/ && flag "team titles still roleA/roleB/roleC"
 grep -rq '\[X\] µA'             public/ && flag "The Keep current figure not measured"
 grep -rq 'Demo video:'          public/ && flag "The Keep demo video not embedded"
-grep -rq 'Live data:'           public/ && flag "The Keep live chart not connected"
+grep -q 'data-snapshot=none'   public/index.html && flag "The Keep live chart: no snapshot at build — API unreachable?"
 n_w=$(grep -roE '\[(summary to be written|layers to confirm)\]' public/index.html | wc -l)
 [ "$n_w" -gt 0 ] && flag "$n_w past-work placeholder(s) unwritten"
 n_out=$(grep -ro '\[[a-z ]*outstanding\]' public/ | wc -l)
