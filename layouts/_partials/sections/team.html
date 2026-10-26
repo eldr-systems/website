@@ -10,7 +10,7 @@
     {{ range $i, $m := .Site.Data.team }}
     <article class="grid grid-cols-1 items-start gap-x-6 gap-y-5 py-8 sm:grid-cols-12 {{ if eq $i 0 }}border-t-2 border-ink{{ else }}border-t border-rule{{ end }} {{ if eq (add $i 1) (len $.Site.Data.team) }}border-b-2 border-b-ink{{ end }}">
       {{ with resources.Get $m.photo }}
-      {{ $photo := .Fill "320x320 webp q85" }}
+      {{ $photo := .Fill "320x320 webp q85" | images.Filter images.Grayscale }}
       <img src="{{ $photo.RelPermalink }}" alt="" width="320" height="320" loading="lazy"
            class="w-28 h-28 object-cover rounded-card border-2 border-ink bg-bone sm:col-span-2 sm:w-full sm:h-auto sm:aspect-square">
       {{ end }}
