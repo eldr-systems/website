@@ -34,7 +34,7 @@ with a failure and a deadline.
 **OWN-WORLD:** Bone ground, ink rules, one ember. A dated mono spine runs the page's full
 height and every band hangs off it. Emphasis tightens rule frequency rather than spending
 a second accent; offers carry one rigid spec label — duration, price, capacity — in
-identical slots; The Keep appears in four orthogonal views, never one photo. No shadows;
+identical slots; The Keep is shown layer by layer, each by a real artefact (live chart, measured current, PSM note, CAD drawing), never one photo and never cards that only point at those. No shadows;
 emphasis is inversion to ink.
 
 **STORY:** The visitor understands their fleet is dying because nobody logged the timers

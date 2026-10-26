@@ -96,8 +96,10 @@ grep -rq 'Demo video:'          public/ && flag "The Keep demo video not embedde
 grep -q 'data-snapshot=none'   public/index.html && flag "The Keep live chart: no snapshot at build — API unreachable?"
 n_w=$(grep -roE '\[(summary to be written|layers to confirm)\]' public/index.html | wc -l)
 [ "$n_w" -gt 0 ] && flag "$n_w past-work placeholder(s) unwritten"
-n_out=$(grep -ro '\[[a-z ]*outstanding\]' public/ | wc -l)
-[ "$n_out" -gt 0 ] && flag "$n_out Keep view artefact(s) outstanding"
+# The Keep's board and case are shown by the CAD drawing until there is a
+# photo of the device in a real distribution box. Nothing on the page says
+# the photo is missing, so this is the only place it is remembered.
+ls assets/keep/photo.* >/dev/null 2>&1 || flag "The Keep photo in a real distribution box not taken (assets/keep/photo.*)"
 grep -rq 'portrait-placeholder' public/ && flag "team photos still placeholders"
 grep -rq 'Reg. no. —'           public/ && flag "Kft. registration details not filled"
 d=$(grep -rho 'aria-disabled' public/index.html 2>/dev/null | wc -l)
