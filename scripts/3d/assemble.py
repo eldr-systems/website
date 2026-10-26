@@ -1,8 +1,8 @@
 # scripts/3d/blender.sh --python scripts/3d/assemble.py
 #
 # Builds 3d-models/keep.blend from the meshes step_to_mesh.py writes: The Keep
-# closed, centred on the origin, Z up, case length along X. Positions are a first
-# guess; correct them by hand in keep.blend and the render scripts pick that up.
+# closed, centred on the origin, Z up, case length along X. Every part is placed
+# from its CAD: the board on its screw posts, the sensor in the lid's pocket.
 import math, os
 import bpy
 from mathutils import Matrix, Vector
@@ -49,42 +49,54 @@ case_mat = material("case", "#F4F1EA", 0.55)   # bone: printed PLA
 board_mat = material("board", "#14161A", 0.4)  # ink: PCB and parts
 sensor_mat = material("sensor", "#5B6B7A", 0.4)  # slate
 
-# Base: open top, floor on z=0, centred on X/Y.
+# Case features, read off the FreeCAD sketches in casing/*.FCStd. The base's own
+# coordinates run x 0..131, y -52..0, floor at z=0; centring it puts it here:
+BASE_TO_WORLD = Matrix.Translation((-65.5, 26, 0))
+POST_CENTRE = BASE_TO_WORLD @ Vector((65.5, -26, 30))  # Sketch002/Pad002: four
+#   board posts at x 12/119, y -12/-40, rising to z=30 (5 floor + 25)
+# The big end-wall slot (Sketch003, x=0, z 30-40) keeps the case off the board's
+# PCB antenna; the small round hole (Sketch007) is in the opposite end, x=131.
+
+# The lid is printed upside down (z=0 is its outer top face, 27.5 tall). Flipped
+# about X and centred, it sits on the base rim:
+LID_TO_WORLD = Matrix.Translation((-1.6, 4.7, 72.5)) @ Matrix.Rotation(math.pi, 4, "X")
+# Sensor pocket on the lid's ceiling (Sketch006/007): a block x -50.9..-30.9 with
+# a slot through it, y -3.8..13.2, z 5..8. Its open face towards the middle of
+# the lid, the slot's centre line, and its floor (z=8, away from the ceiling):
+SLOT_FACE = LID_TO_WORLD @ Vector((-30.9, 4.7, 8))
+
+def place(o, rotation, anchor, target):
+    """Rotate o's mesh, then move it so the point anchor (in the mesh's own
+    coordinates, before rotating) lands on target."""
+    bake(o, rotation)
+    bake(o, Matrix.Translation(target - rotation @ anchor))
+
 base = load("case-base")
-lo, hi = bounds(base)
-bake(base, Matrix.Translation(-(lo + hi) / 2 * Vector((1, 1, 0)) - Vector((0, 0, lo.z))))
-base_hi = bounds(base)[1]
-
-# Lid: printed upside down. Flip about X so its sensor chamber stays at -X with
-# the base's, then seat it on the base rim.
+bake(base, BASE_TO_WORLD)
 top = load("case-top")
-bake(top, Matrix.Rotation(math.pi, 4, "X"))
-lo, hi = bounds(top)
-bake(top, Matrix.Translation(-(lo + hi) / 2 * Vector((1, 1, 0)) + Vector((0, 0, base_hi.z - lo.z))))
+bake(top, LID_TO_WORLD)
 
-# Board: exported standing on edge with the 18650 holder towards +Y. Lay it flat,
-# holder down on the case floor and header pins up, pushed to the +X end away from the sensor chamber.
+# Board, in the STEP's coordinates: PCB in the XZ plane, underside at y=105.9,
+# 18650 holder towards -Y, mounting holes at x -60.0/46.9 and z 14.3/43.5, and
+# the ESP32-WROVER's PCB antenna at the +X end. Battery down (-Y to -Z), and
+# turned end for end so the antenna faces the big slot at -X; the holes' centre
+# lands on the posts' centre, the underside on the post tops.
 board = load("lilygo")
-bake(board, Matrix.Rotation(math.pi / 2, 4, "X"))
-lo, hi = bounds(board)
-wall, floor = 3.0, 3.0
-bake(board, Matrix.Translation(Vector((
-    base_hi.x - wall - hi.x,
-    -(lo.y + hi.y) / 2,
-    floor - lo.z))))
+place(board, Matrix.Rotation(math.pi, 4, "Z") @ Matrix.Rotation(math.pi / 2, 4, "X"),
+      Vector(((-60.0 + 46.9) / 2, 105.9, (14.3 + 43.5) / 2)), POST_CENTRE)
 dec = board.modifiers.new("decimate", "DECIMATE")
 dec.ratio = 0.3
 bpy.context.view_layer.objects.active = board
 bpy.ops.object.modifier_apply(modifier=dec.name)
 
-# Sensor: a vertical plate in the -X chamber, pins pointing +X towards the board.
+# Sensor, in the STEP's coordinates: 15 x 15 plate in the XZ plane, PCB y 0..1.6
+# with the chips on -Y, a straight header along the z=0..3 edge, pins out of +Y.
+# It lies flat in the lid's slot, chips up towards the ceiling, pins hanging
+# down towards the board, header edge just out of the slot's open face (towards
+# the small-hole end, as the designer asked); the sensing end sits at the vents.
 sensor = load("sensor")
-bake(sensor, Matrix.Rotation(-math.pi / 2, 4, "Z"))
-lo, hi = bounds(sensor)
-bake(sensor, Matrix.Translation(Vector((
-    bounds(base)[0].x + wall + 4 - lo.x,
-    -(lo.y + hi.y) / 2,
-    floor + 8 - lo.z))))
+place(sensor, Matrix(((0, 0, -1), (1, 0, 0), (0, -1, 0))).to_4x4(),  # x->y, y->-z, z->-x
+      Vector((7.5, 1.6, 3.0)), SLOT_FACE)
 
 for o, m in ((base, case_mat), (top, case_mat), (board, board_mat), (sensor, sensor_mat)):
     o.data.materials.append(m)

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Keep: assembly preview</title>
+<style>
+  :root { --ink: #14161A; --bone: #F4F1EA; --muted: #4E5A66; --rule: #C9C3B6; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 48px 16px; background: var(--bone); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  .label { font: 500 13px/1.4 ui-monospace, monospace; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  header { max-width: 1180px; margin: 0 auto 32px; display: flex; flex-direction: column; gap: 8px; }
+  h1 { margin: 0; font-size: 28px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 40px; max-width: 1180px; margin: 0 auto; }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 16px; border: 2px solid var(--ink); border-radius: 12px; padding: 24px; }
+  figure h2 { margin: 0; font-size: 20px; }
+  video { width: 100%; height: auto; aspect-ratio: 4 / 3; display: block; border-radius: 4px; background: var(--bone); }
+  figcaption { border-top: 1px solid var(--rule); padding-top: 14px; font-size: 15px; color: var(--muted); }
+  .scroll-room { height: 65vh; display: grid; place-items: center; text-align: center; }
+  .solo { max-width: 760px; margin: 0 auto; }
+  .keep-flipbook { width: 100%; height: auto; display: block; }
+
+  /* Option A, scroll-driven: one frame visible at a time. Without scroll
+     timelines, or with reduced motion, the .rest frame stands still. */
+  .keep-flipbook .f { visibility: hidden; }
+  .keep-flipbook .f.rest { visibility: visible; }
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .keep-flipbook { view-timeline: --keep-flip block; }
+      /* Each frame owns its --from..--to slice of the stretch where the drawing
+         travels from 15% to 70% of the way through the viewport. */
+      .keep-flipbook .f, .keep-flipbook .f.rest {
+        visibility: hidden;
+        animation: keep-flip-frame linear none;
+        animation-timeline: --keep-flip;
+        animation-range: cover calc(15% + var(--from) * .55) cover calc(15% + var(--to) * .55);
+      }
+      .keep-flipbook .f:first-child { animation-fill-mode: backwards; }
+      .keep-flipbook .f:last-child { animation-fill-mode: forwards; }
+      @keyframes keep-flip-frame { from, to { visibility: visible; } }
+    }
+  }
+</style>
+<body>
+<header>
+  <span class="label">Draft 02 · assembly</span>
+  <h1>The Keep, putting itself together</h1>
+  <p class="label">Parts on the table, seen from above → board flips onto its screw posts → lid turns over, sensor slides into its pocket → lid turns back and closes → plays back</p>
+</header>
+<div class="grid">
+  <figure>
+    <span class="label">Option A · line drawing</span>
+    <h2>Ink on bone</h2>
+    <video autoplay muted loop playsinline poster="assembly-lineart.jpg">
+      <source src="assembly-lineart.webm" type="video/webm">
+      <source src="assembly-lineart.mp4" type="video/mp4">
+    </video>
+    <figcaption>Blender Line Art over flat bone fills, orthographic camera. A video now: parts turn in 3D, which a static SVG can't show.</figcaption>
+  </figure>
+  <figure>
+    <span class="label">Option B · rendered</span>
+    <h2>Studio render</h2>
+    <video autoplay muted loop playsinline poster="assembly-shaded.jpg">
+      <source src="assembly-shaded.webm" type="video/webm">
+      <source src="assembly-shaded.mp4" type="video/mp4">
+    </video>
+    <figcaption>Blender EEVEE, soft light and contact shadows, 70 mm perspective camera.</figcaption>
+  </figure>
+</div>
+
+<div class="scroll-room"><p class="label">Option A, scroll-driven ↓<br>Scroll down to assemble · scroll up to take it apart</p></div>
+<figure class="solo">
+  <span class="label">Option A · line drawing, scroll-driven</span>
+  <h2>Ink on bone, under your thumb</h2>
+  %%FLIPBOOK%%
+  <figcaption>Inline SVG flipbook: %%FRAMES%% frames of Blender Line Art, %%KB%% kB (%%GZ%% kB gzipped). No JavaScript: a CSS scroll timeline shows one frame at a time. Without scroll timelines (Firefox by default) or with reduced motion it rests on the frame where the sensor slides into the lid.</figcaption>
+</figure>
+<div class="scroll-room"><p class="label">End of preview</p></div>
+</body>
+</html>

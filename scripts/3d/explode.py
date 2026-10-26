@@ -7,16 +7,13 @@ from mathutils import Vector
 OFFSETS = {
     "case-top": Vector((0, 0, 92)),     # lid lifts straight off
     "lilygo":   Vector((0, 0, 48)),     # board rises out of the base
-    "sensor":   Vector((-46, -8, 64)),  # sensor drifts out past the chamber end
+    "sensor":   Vector((0, 0, 62)),     # drops out of the lid's pocket, hangs between
     "case-base": Vector((0, 0, 0)),
 }
 
 # Stops on the way, so a part clears the walls instead of passing through them.
-# The sensor sits low in its chamber (top at z=26, rim at z=45): straight up
-# until it clears the rim, then out.
-WAYPOINTS = {
-    "sensor": [Vector((0, 0, 44))],
-}
+# None needed now: the sensor sits in the lid and every part moves straight up.
+WAYPOINTS = {}
 
 # Seen from the front-right, a little above: the lid, board and sensor all read.
 CAMERA_TARGET = Vector((-8, 0, 80))
