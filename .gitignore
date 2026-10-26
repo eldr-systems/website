@@ -12,3 +12,11 @@ assets/files/
 .impeccable/review/
 .impeccable/questions/
 .impeccable/config.local.json
+
+# 3D pipeline (scripts/3d): meshes are rebuilt by step_to_mesh.py; Blender
+# autosaves and Python caches are noise. The .SLDASM assemblies need SolidWorks
+# and their missing .SLDPRT parts, so they can't be opened; the STEP is the source.
+3d-models/meshes/
+*.blend1
+__pycache__/
+*.SLDASM

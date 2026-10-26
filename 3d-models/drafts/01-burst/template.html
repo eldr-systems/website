@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Keep: burst preview</title>
+<style>
+  :root { --ink: #14161A; --bone: #F4F1EA; --muted: #4E5A66; --rule: #C9C3B6; --ember: #E2632B; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bone); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+  .label { font: 500 13px/1.4 ui-monospace, monospace; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .spacer { height: 70vh; display: grid; place-items: center; text-align: center; padding: 0 16px; }
+  .spacer.end { height: 90vh; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr)); gap: 40px; max-width: 1180px; margin: 0 auto; padding: 0 16px; }
+  figure { margin: 0; display: flex; flex-direction: column; gap: 16px; border: 2px solid var(--ink); border-radius: 12px; padding: 24px; }
+  figure h2 { margin: 0; font-size: 20px; }
+  figcaption { border-top: 1px solid var(--rule); padding-top: 14px; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--muted); }
+  .stage { aspect-ratio: 4 / 3; display: grid; place-items: center; }
+  .stage > * { width: 100%; height: 100%; object-fit: contain; display: block; }
+  video { border-radius: 4px; }
+  .stage-svg { aspect-ratio: auto; }
+  .stage-svg > svg { height: auto; max-height: 560px; }
+
+  /* Option A: the drawing rests exploded; scrolling it into view brings it from
+     closed to open. The same guards DESIGN.md asks for. */
+  .keep-burst .fill { fill: var(--bone); }
+  .keep-burst .lines { fill: none; stroke: var(--ink); stroke-linecap: round; stroke-linejoin: round; }
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .keep-burst .part {
+        animation: keep-burst linear both;
+        animation-timeline: --keep-burst;
+        animation-timing-function: cubic-bezier(.55, 0, .25, 1);
+        animation-range: entry 70% cover 48%;
+      }
+      .keep-burst { view-timeline: --keep-burst block; }
+      /* Stagger: lid first, sensor last. */
+      .keep-burst .part[data-part="case-top"] { animation-range: entry 60% cover 42%; }
+      .keep-burst .part[data-part="sensor"]   { animation-range: entry 85% cover 54%; }
+      @keyframes keep-burst { from { translate: var(--tx) var(--ty); } to { translate: 0 0; } }
+      /* Up out of its chamber first, then out: never through the wall. */
+      .keep-burst .part[data-legs="2"] { animation-name: keep-burst-legs; }
+      @keyframes keep-burst-legs {
+        from { translate: var(--tx) var(--ty); }
+        50%  { translate: var(--mx) var(--my); }
+        to   { translate: 0 0; }
+      }
+    }
+  }
+</style>
+<body>
+<div class="spacer"><p class="label">Scroll down ↓<br>A bursts open as it scrolls in · B loops on its own</p></div>
+<div class="grid">
+  <figure>
+    <span class="label">Option A · line drawing, CSS</span>
+    <h2>The Keep, opened up</h2>
+    <div class="stage stage-svg">%%SVG%%</div>
+    <figcaption>
+      <span>Inline SVG, %%SVG_KB%% kB. No JavaScript, no library. Driven by scroll position: scroll back up and it closes again.</span>
+      <span class="label">Static and fully open with reduced motion or in older browsers</span>
+    </figcaption>
+  </figure>
+  <figure>
+    <span class="label">Option B · rendered video</span>
+    <h2>The Keep, opened up</h2>
+    <div class="stage">
+      <video autoplay muted loop playsinline poster="keep-burst.jpg">
+        <source src="keep-burst.webm" type="video/webm">
+        <source src="keep-burst.mp4" type="video/mp4">
+      </video>
+    </div>
+    <figcaption>
+      <span>Blender EEVEE render, 5.3 s seamless loop. webm %%WEBM_KB%% kB · mp4 %%MP4_KB%% kB.</span>
+      <span class="label">Poster frame shown with reduced motion (wired up when it goes in the site)</span>
+    </figcaption>
+  </figure>
+</div>
+<div class="spacer end"><p class="label">End of preview</p></div>
+
+</body>
+</html>
