@@ -49,9 +49,17 @@
         <figcaption class="border-t border-rule pt-4 font-mono text-label text-muted">Drawn from our case CAD</figcaption>
       </figure>
       <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:col-start-8 lg:col-span-5">
-      {{ range .Site.Data.keep }}
+      {{ range $v := .Site.Data.keep }}
       <figure class="flex flex-col gap-3 rounded-card border-2 border-ink p-4 sm:gap-4 sm:p-6">
+        {{ with .image }}
+        {{ with (resources.Get .).Resize "480x webp q80" }}
+        <img src="{{ .RelPermalink }}" width="{{ .Width }}" height="{{ .Height }}" loading="lazy"
+             class="h-auto w-full rounded-[10px] border border-rule" alt="{{ $v.imageAlt }}">
+        {{ end }}
+        <span class="-mt-1 font-mono text-label text-muted">{{ $v.imageNote }}</span>
+        {{ else }}
         {{ partial "icon.html" (dict "name" .icon "class" "w-11 h-11 sm:w-14 sm:h-14") }}
+        {{ end }}
         <figcaption class="flex flex-col gap-2">
           <span class="text-xl font-bold">{{ .view }}</span>
           <span class="text-small leading-normal text-body">{{ .line }}</span>

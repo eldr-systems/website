@@ -4,6 +4,11 @@
 - view: Board
   line: The device, in a real distribution box.
   icon: dist-box
+  # A render from our CAD stands in until the photo exists. It is labelled
+  # as a render on the page, and the photo stays counted as outstanding.
+  image: keep/render.jpg
+  imageAlt: Render of The Keep's case, opened in two halves, with the board in the base and the sensor in the lid.
+  imageNote: CAD render
   status: photo outstanding
 - view: Firmware
   line: One full duty cycle on a power profiler.
