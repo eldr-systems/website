@@ -20,6 +20,7 @@ const WAVE_A = 7; //      and its amplitude, px
 const WAVE_RAMP = 80; //  path px over which the dot opens into the wave
 const STUB = 40; //       rail: scroll px for its short horizontal stubs
 const LINGER = 200; //    desktop: extra scroll px the dot spends in a station
+const SQUEEZE = 2; //     at most this many asked-for scroll px to each real one
 const RADIO_STUB = 28; // desktop: wire left at each end of the radio gap
 const RAIL_X = 14; //     rail distance from the left edge
 const BAND = 0.5; //      where in the viewport the dot rides
@@ -84,13 +85,18 @@ function init() {
     for (let k = 1; k < n; k++) L[k] = L[k - 1] + dist(pts[k - 1], pts[k]);
     const mainEnd = pts.findIndex((p) => p.end);
 
-    // Scroll position at which the dot reaches each vertex. By default the dot
-    // rides at BAND of the viewport, so S = y − band. Horizontal runs get a
-    // fixed share of scroll centred on that, stations get extra, and the
-    // result is forced monotonic and reachable.
+    // Scroll position at which the dot reaches each vertex. Every segment asks
+    // for scroll: a horizontal run a fixed share of a crossing, a station its
+    // length and LINGER more, the jump to the epilogue none, anything else its
+    // length, so the dot rides level at BAND of the viewport. Each crossing is
+    // pinned there, centred on its divider; between pins the scroll is dealt
+    // out in proportion to what was asked. A stretch that is short of scroll
+    // speeds up evenly along its length, never in one short run alone.
     const band = vh * BAND;
-    const S = pts.map((p) => p.y - band);
+    const share = desk ? Math.min(CROSS, vh * CROSS_VH) : STUB;
+    const ask = L.map((l, k) => (k && pts[k].s !== 'gap' ? l - L[k - 1] : 0));
     const flat = (k) => pts[k].s !== 'gap' && Math.abs(pts[k].y - pts[k - 1].y) < 0.5 && L[k] > L[k - 1];
+    const cross = [];
     // Per segment: the crossing it belongs to, and how the dot rides it.
     // Wire crossings carry it as a wave in the line; the radio link as a
     // wavefront in the air, opening toward the tower.
@@ -99,9 +105,8 @@ function init() {
       if (!flat(k)) continue;
       const a = k - 1;
       while (k + 1 < n && flat(k + 1)) k++;
-      const share = desk ? Math.min(CROSS, vh * CROSS_VH) : STUB;
-      const s0 = pts[a].y - band - share / 2;
-      for (let j = a; j <= k; j++) S[j] = s0 + (share * (L[j] - L[a])) / (L[k] - L[a]);
+      for (let j = a + 1; j <= k; j++) ask[j] = (share * (L[j] - L[j - 1])) / (L[k] - L[a]);
+      cross.push([a, k]);
       if (desk) {
         const seg = pts.slice(a + 1, k + 1);
         const kind = seg.every((p) => p.s === 'wire') ? 'wave' : seg.some((p) => p.s === 'radio') ? 'radio' : null;
@@ -109,19 +114,30 @@ function init() {
         if (kind) for (let j = a; j < k; j++) wave[j] = run;
       }
     }
-    if (desk) {
-      for (let k = 1; k < n; k++) {
-        if (pts[k].s === 'station') { S[k - 1] -= LINGER / 2; S[k] += LINGER / 2; }
-      }
-    }
-    S[0] = Math.max(S[0], 0);
-    for (let k = 1; k < n; k++) S[k] = Math.max(S[k], S[k - 1] + 0.01);
-    // Mobile toolbars change the real maximum by up to ~100px; stay inside it.
+    if (desk) for (let k = 1; k < n; k++) if (pts[k].s === 'station') ask[k] += LINGER;
+    const C = [0];
+    for (let k = 1; k < n; k++) C[k] = C[k - 1] + ask[k];
+    const pins = [
+      { c: 0, s: pts[0].y - band },
+      ...cross.map(([a, k]) => ({ c: (C[a] + C[k]) / 2, s: pts[a].y - band })),
+      { c: C[n - 1], s: pts[n - 1].y - band },
+    ];
+    // Pins in order and reachable, with at most SQUEEZE times less scroll
+    // than asked between them. Mobile toolbars change the real maximum by up
+    // to ~100px; stay inside it.
     const maxS = document.documentElement.scrollHeight - vh - (mq.coarse.matches ? 120 : 4);
-    if (S[n - 1] > maxS) {
-      S[n - 1] = maxS;
-      for (let k = n - 2; k >= 0; k--) S[k] = Math.min(S[k], S[k + 1] - 0.01);
-    }
+    const least = (i) => (pins[i].c - pins[i - 1].c) / SQUEEZE;
+    pins[0].s = Math.max(pins[0].s, 0);
+    for (let i = 1; i < pins.length; i++) pins[i].s = Math.max(pins[i].s, pins[i - 1].s + least(i));
+    pins[pins.length - 1].s = Math.min(pins[pins.length - 1].s, maxS);
+    for (let i = pins.length - 2; i >= 0; i--) pins[i].s = Math.min(pins[i].s, pins[i + 1].s - least(i + 1));
+    let i = 0;
+    const S = C.map((c) => {
+      while (i < pins.length - 2 && pins[i + 1].c <= c) i++;
+      const p = pins[i];
+      const q = pins[i + 1];
+      return p.s + ((q.s - p.s) * (c - p.c)) / (q.c - p.c || 1);
+    });
 
     // Draw. Untravelled and travelled copies of every run; the travelled copy
     // is revealed with stroke-dashoffset. Station interiors, the radio gap and
