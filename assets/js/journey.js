@@ -189,20 +189,10 @@ function init() {
       host.classList.add('j-div');
     }
 
-    // The wave packet: three cycles of a sine under a cosine envelope, drawn
-    // once at unit scale. The envelope meets the line with zero slope, so the
-    // joint is smooth, without the long flat tails a squared envelope leaves.
-    // On a crossing the dot opens into it and the line under it is cut away,
-    // exactly as wide as the wave, so the line itself seems to turn into it.
-    // Moved and morphed by transform and opacity alone.
-    const wp = [];
-    for (let i = 0; i <= 96; i++) {
-      const u = (i / 96) * 2 - 1;
-      const env = Math.cos((u * Math.PI) / 2);
-      wp.push(`${i ? 'L' : 'M'}${r((u * WAVE_W) / 2)} ${r(-Math.sin(u * Math.PI * 3) * env * WAVE_A)}`);
-    }
+    // The wave packet (see wavePath): the line under it is cut away, exactly
+    // as wide as the packet, so the line itself seems to turn into it.
     const cut = el('rect', { x: r(-WAVE_W / 2), y: -3, width: WAVE_W, height: 6, class: 'j-cut' });
-    const waveEl = el('path', { d: wp.join(''), class: 'j-wave' });
+    const waveEl = el('path', { d: '', class: 'j-wave' });
     // The radio wavefront: three concentric arcs opening along +x (flipped
     // by scale when the tower is to the left). It leaves the line, so the
     // dashed divider under it is not cut.
@@ -260,19 +250,29 @@ function init() {
     }
     const kind = m ? w.kind : null;
     const at = `translate(${r(x)}px,${r(y)}px)`;
-    g.dot.style.transform = m ? `${at} scale(${(1 - 0.6 * m).toFixed(3)})` : at;
+    // The wave is centred on the dot's place on the line; the dot itself is
+    // its source, at the back edge while the wave ripples out ahead of it
+    // and at the front while it ripples back in, shrinking away as the wave
+    // grows, never faded. The radio wavefront leaves the line instead, so
+    // there the dot fades as it opens.
+    const out = w && len - w.L0 < w.L1 - len ? 1 : -1;
+    const dx = kind === 'wave' ? -out * w.dir * ((m * WAVE_W) / 2) : 0;
+    const ds = kind === 'wave' ? 1 - m : 1 - 0.6 * m;
+    const dat = `translate(${r(x + dx)}px,${r(y)}px)`;
+    g.dot.style.transform = m ? `${dat} scale(${ds.toFixed(3)})` : at;
     if (m !== g.m || kind !== g.kind) {
       const o = m.toFixed(3);
-      g.dot.style.opacity = (1 - m).toFixed(3);
-      g.waveEl.style.opacity = g.cut.style.opacity = kind === 'wave' ? o : 0;
+      g.dot.style.opacity = kind === 'radio' ? (1 - m).toFixed(3) : 1;
+      g.waveEl.style.opacity = g.cut.style.opacity = kind === 'wave' ? 1 : 0;
       g.radioEl.style.opacity = kind === 'radio' ? o : 0;
       g.m = m;
       g.kind = kind;
     }
     if (kind === 'wave') {
-      const sx = (0.15 + 0.85 * m).toFixed(3);
-      g.waveEl.style.transform = `${at} scale(${sx},${m.toFixed(3)})`;
-      g.cut.style.transform = `${at} scale(${sx},1)`;
+      const wk = `${m} ${out * w.dir}`;
+      if (wk !== g.wk) { g.waveEl.setAttribute('d', wavePath(m, out, w.dir)); g.wk = wk; }
+      g.waveEl.style.transform = at;
+      g.cut.style.transform = `${at} scale(${m.toFixed(3)},1)`;
     } else if (kind === 'radio') {
       const sc = 0.2 + 0.8 * m;
       g.radioEl.style.transform = `${at} scale(${(sc * w.dir).toFixed(3)},${sc.toFixed(3)})`;
@@ -460,6 +460,27 @@ function svgPort(o) {
     const p = new DOMPoint(+c.getAttribute('cx'), +c.getAttribute('cy')).matrixTransform(m);
     return { x: p.x - o.left, y: p.y - o.top };
   };
+}
+
+// The wave packet the dot opens into, m from 0 (a point) to 1 (full): three
+// cycles of a sine under a cosine envelope, WAVE_W wide at full, travelling
+// in dir (±1 in x). It widens at a fixed wavelength from the dot at one edge,
+// so it is never squeezed, and the envelope always meets the line with zero
+// slope. The phase is pinned to the edge away from the dot: rippling out
+// (out = 1) the crests ride the front edge away from it, rippling back in
+// (out = −1) they ride the back edge into it. A packet three wavelengths
+// wide has the same phase from either edge, so the two meet seamlessly.
+function wavePath(m, out, dir) {
+  const h = (m * WAVE_W) / 2;
+  const k = (6 * Math.PI) / WAVE_W;
+  let d = '';
+  for (let i = 0; i <= 64; i++) {
+    const u = (i / 64) * 2 - 1;
+    const xi = u * h;
+    const y = -Math.sin(k * (xi - out * h)) * Math.cos((u * Math.PI) / 2) * WAVE_A * m;
+    d += `${i ? 'L' : 'M'}${r(dir * xi)} ${r(y)}`;
+  }
+  return d;
 }
 
 // Cut every corner at 45°. A corner is replaced by two points; the flags of

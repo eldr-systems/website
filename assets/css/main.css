@@ -407,10 +407,10 @@
     stroke: var(--j-dot);
     stroke-width: 2;
     stroke-linejoin: round;
+    stroke-linecap: round;
     vector-effect: non-scaling-stroke;
     opacity: 0;
   }
-  .j-radio { stroke-linecap: round; }
 }
 
 /* Desktop: widen the gutters so a station drawing (240 units wide, 11-unit
