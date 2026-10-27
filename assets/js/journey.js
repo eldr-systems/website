@@ -29,6 +29,9 @@ const NS = 'http://www.w3.org/2000/svg';
 
 const root = document.querySelector('[data-journey]');
 const svg = root && root.querySelector('.j-overlay');
+// Vias and the dot sit on a twin layer above the content, so the stations'
+// own lines never cross them; the line stays behind (see .j-top).
+const top = svg && svg.cloneNode(false);
 const mq = {
   desk: matchMedia('(scripting: enabled) and (min-width: 1280px)'),
   rail: matchMedia('(scripting: enabled) and (max-width: 1279.98px)'),
@@ -39,6 +42,8 @@ const mq = {
 if (svg && (mq.desk.matches || mq.rail.matches)) init();
 
 function init() {
+  top.classList.add('j-top');
+  svg.after(top);
   let g = null; //    geometry from the last measure
   let vw = innerWidth;
   let vh = innerHeight;
@@ -47,6 +52,9 @@ function init() {
   let raf = 0;
   let last = 0;
   let queued = 0;
+  // Desktop intro (see boot). Skipped when the page opens scrolled or under
+  // reduced motion; cut short as soon as the reader scrolls.
+  const intro = mq.desk.matches && !mq.still.matches && scrollY < 1 ? boot() : null;
 
   const measureSoon = () => {
     if (!queued) queued = requestAnimationFrame(() => { queued = 0; measure(); });
@@ -64,7 +72,7 @@ function init() {
       const route = (desk ? routeDesktop : routeRail)(o);
       if (route) g = build(route, o, desk);
     }
-    if (!g) { svg.replaceChildren(); return; }
+    if (!g) { svg.replaceChildren(); top.replaceChildren(); return; }
     cur = target = scrollY;
     render();
   }
@@ -160,12 +168,14 @@ function init() {
     // Marks: a station plays once the dot reaches it, and its via (desktop)
     // or stub (rail) switches to the travelled colour.
     const marks = [];
+    const viaU = el('g', {});
+    const viaT = el('g', {});
     pts.forEach((p, k) => {
       if (!p.reach && !p.via && !p.stub) return;
       const lit = [];
       if (p.via) {
-        el('circle', { cx: r(p.x), cy: r(p.y), r: 4, class: 'j-via j-u' }, under);
-        lit.push(el('circle', { cx: r(p.x), cy: r(p.y), r: 4, class: 'j-via j-t j-lit' }, over));
+        el('circle', { cx: r(p.x), cy: r(p.y), r: 4, class: 'j-via j-u' }, viaU);
+        lit.push(el('circle', { cx: r(p.x), cy: r(p.y), r: 4, class: 'j-via j-t j-lit' }, viaT));
       }
       if (p.stub) {
         const sd = `M${r(p.x)} ${r(p.y)}H${r(p.stub.x)}`;
@@ -203,9 +213,12 @@ function init() {
     });
     const radioEl = el('path', { d: arcs.join(''), class: 'j-wave j-radio' });
     const dot = el('circle', { r: 5, class: 'j-dot' });
-    svg.setAttribute('viewBox', `0 0 ${r(o.width)} ${r(o.height)}`);
+    for (const e of [svg, top]) e.setAttribute('viewBox', `0 0 ${r(o.width)} ${r(o.height)}`);
     svg.classList.toggle('j-rail', !desk);
-    svg.replaceChildren(defs, under, over, lines, cut, waveEl, radioEl, dot);
+    svg.replaceChildren(defs, under, over, lines, cut, waveEl, radioEl);
+    top.replaceChildren(viaU, viaT, dot);
+    // The intro's dot, while it plays, rides above everything, vias included.
+    if (intro && intro.live) top.append(intro.el);
     return { pts, L, S, mainEnd, runs, marks, dot, wave, waveEl, radioEl, cut, m: -1, kind: null };
   }
 
@@ -304,6 +317,7 @@ function init() {
   }
 
   addEventListener('scroll', () => {
+    if (intro) intro.stop();
     target = scrollY;
     if (!g) return;
     if (mq.still.matches) { cur = target; render(); return; }
@@ -448,6 +462,84 @@ function init() {
     }
     return pts;
   }
+}
+
+// The intro: the hero's modem chip lights with ember, gathers itself into the
+// dot at its pin and runs the board's own trace down to the port, where the
+// scroll-driven dot is waiting to take over. Time-driven, once, on load. It
+// plays on the top layer, in board units through the board's own transform,
+// so it stays above the vias like the dot it becomes.
+const GLOW = [400, 1200]; //  ms: the chip lights
+const GATHER = [1500, 2100]; // the chip draws into the dot at its pin
+const RUN = [2400, 3400]; //    after a beat, the dot runs the trace to the port
+
+function boot() {
+  const src = document.getElementById('device-modem-fill');
+  const trace = document.getElementById('device-trace-out');
+  const m = src && trace && src.ownerSVGElement.getScreenCTM();
+  if (!m) return null;
+  const chip = src.cloneNode(false);
+  chip.removeAttribute('id');
+  top.append(chip);
+  // The last subpath of the trace: modem pin to port.
+  const d = trace.getAttribute('d');
+  const path = document.createElementNS(NS, 'path');
+  path.setAttribute('d', d.slice(d.lastIndexOf('M')));
+  path.setAttribute('visibility', 'hidden');
+  src.before(path);
+  const total = path.getTotalLength();
+  const pin = path.getPointAtLength(0);
+  const R = 5 / m.a; // the overlay dot's radius, in board units
+  const box = ['x', 'y', 'width', 'height'].map((k) => +chip.getAttribute(k));
+  const set = (x, y, w, h, rx) => {
+    chip.setAttribute('x', r(x));
+    chip.setAttribute('y', r(y));
+    chip.setAttribute('width', r(w));
+    chip.setAttribute('height', r(h));
+    chip.setAttribute('rx', r(rx));
+  };
+  const at = (t, [a, b]) => ease(Math.min(Math.max((t - a) / (b - a), 0), 1));
+
+  top.classList.add('j-charging');
+  const t0 = performance.now();
+  let raf = requestAnimationFrame(step);
+
+  function step(now) {
+    const t = now - t0;
+    // The board can move under the intro as fonts and images land.
+    const b = src.ownerSVGElement.getScreenCTM();
+    const o = top.getBoundingClientRect();
+    chip.setAttribute('transform', `matrix(${b.a} ${b.b} ${b.c} ${b.d} ${r(b.e - o.left)} ${r(b.f - o.top)})`);
+    chip.style.opacity = at(t, GLOW).toFixed(3);
+    if (t < RUN[0]) {
+      const u = at(t, GATHER);
+      const [x, y, w, h] = box;
+      const cx = x + w / 2 + (pin.x - x - w / 2) * u;
+      const cy = y + h / 2 + (pin.y - y - h / 2) * u;
+      const W = w + (2 * R - w) * u;
+      const H = h + (2 * R - h) * u;
+      set(cx - W / 2, cy - H / 2, W, H, R * u);
+    } else {
+      const p = path.getPointAtLength(total * at(t, RUN));
+      set(p.x - R, p.y - R, 2 * R, 2 * R, R);
+    }
+    if (t < RUN[1]) raf = requestAnimationFrame(step);
+    else stop();
+  }
+  function stop() {
+    if (!api.live) return;
+    api.live = false;
+    cancelAnimationFrame(raf);
+    chip.remove();
+    path.remove();
+    top.classList.remove('j-charging');
+  }
+  const api = { el: chip, live: true, stop };
+  return api;
+}
+
+function ease(u) {
+  return u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2;
 }
 
 // Ports are r=0 circles inside the station SVGs, which have no layout box of

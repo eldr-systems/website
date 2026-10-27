@@ -355,6 +355,10 @@
     fill: none;
     stroke-width: 2;
   }
+  /* The twin layer for the vias and the dot: above the content, so they
+     cover the stations' own lines. Both are small and sit only at ports
+     and on the trace. */
+  .j-overlay.j-top { z-index: 1; }
   .j-station svg {
     display: block;
     width: 100%;
@@ -388,6 +392,14 @@
     fill: var(--j-dot);
     stroke: none;
   }
+  /* The intro (desktop, journey.js boot): the hero's modem chip lights with
+     ember and becomes the dot. Hidden at rest; the overlay's own dot waits
+     at the port until the intro hands over. */
+  .j-charge {
+    fill: var(--color-ember);
+    opacity: 0;
+  }
+  .j-charging .j-dot { visibility: hidden; }
   /* A divider the overlay has taken over (journey.js adds .j-div only once
      its replacement is drawn): the border keeps its width, so nothing moves,
      and only its colour goes. */

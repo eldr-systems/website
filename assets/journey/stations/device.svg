@@ -5,6 +5,7 @@
   device-sensor     g, sensor package and aperture, stroke inherits currentColor. Flash: set color to the Ember variable for about 300 ms, then back.
   device-reading    text, sensor value. Fades opacity 0 to 1 just after the sensor flash.
   device-trace-out  path, sensor to MCU to modem to port-out. The dot travels its length (getPointAtLength or offset-path). It has three subpaths; the zero-length movetos make the dot pass under the MCU and the modem.
+  device-modem-fill rect, inside the modem's shield can, unfilled by default. On load the page lights it with ember, gathers it into the dot at the module's pin (296,160) and runs it down device-trace-out to the port.
   device-antenna    g, meander antenna, optional. Set color to the Ember variable briefly as the dot leaves the modem (transmit).
   Static IDs: device-battery-v (battery voltage text), device-port-out (r=0 marker where the page trace connects).
   Colour variables carry brand fallbacks so the file also previews correctly on its own.
@@ -69,7 +70,6 @@
   <g stroke="var(--eldr-slate, #5B6B7A)">
     <path d="M268,98 H324 V150 H268 Z" vector-effect="non-scaling-stroke"/>
   </g>
-  <text x="296" y="128" text-anchor="middle" fill="var(--eldr-slate, #5B6B7A)">NB-IoT</text>
 
   <!-- PCB meander antenna -->
   <g id="device-antenna" stroke="currentColor">
@@ -77,11 +77,14 @@
   </g>
 
   <!-- Signal trace for the dot: sensor, MCU, modem, port-out -->
-  <path id="device-trace-out" stroke="currentColor" d="M108,80 H132 L156,104 H172 M228,120 H258 M284,160 V180 L256,208 H216 L200,224 V300" vector-effect="non-scaling-stroke"/>
+  <path id="device-trace-out" stroke="currentColor" d="M108,80 H132 L156,104 H172 M228,120 H258 M296,160 V180 L268,208 H216 L200,224 V300" vector-effect="non-scaling-stroke"/>
 
   <!-- Value labels -->
   <text id="device-battery-v" x="162" y="190" fill="var(--eldr-slate, #5B6B7A)">[X.XX] V</text>
   <text id="device-reading" x="76" y="46" fill="var(--eldr-slate, #5B6B7A)" opacity="0">[reading]</text>
+
+  <!-- Modem charge: inside the shield can, above everything so it can leave as the dot -->
+  <rect id="device-modem-fill" class="j-charge" x="269" y="99" width="54" height="50" stroke="none"/>
 
   <!-- Port -->
   <circle id="device-port-out" cx="200" cy="300" r="0"/>
