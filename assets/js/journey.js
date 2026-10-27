@@ -24,7 +24,7 @@ const RADIO_STUB = 28; // desktop: wire left at each end of the radio gap
 const RAIL_X = 14; //     rail distance from the left edge
 const BAND = 0.5; //      where in the viewport the dot rides
 const TAU = 0.09; //      scroll smoothing time constant, s
-const ORDER = ['modem', 'tower', 'backend', 'analysis'];
+const ORDER = ['modem', 'tower', 'backend'];
 const NS = 'http://www.w3.org/2000/svg';
 
 const root = document.querySelector('[data-journey]');
@@ -321,7 +321,7 @@ function init() {
   for (const q of [mq.desk, mq.rail, mq.still]) q.addEventListener('change', measureSoon);
   measure();
 
-  // Desktop: device → (divider, gutter) → modem → … → analysis → chart, then
+  // Desktop: device → (divider, gutter) → modem → … → backend → chart, then
   // a dotted epilogue from the chart down the left gutter to the contact
   // outline beside the booking button.
   function routeDesktop(o) {
@@ -358,7 +358,14 @@ function init() {
       prev = pout;
     }
 
-    // Into The Keep: across to the end of the chart's line.
+    // Into The Keep: along its divider to the right gutter, down and across
+    // to the end of the chart's line.
+    const keep = fig.closest('[data-j-host]');
+    const ky = top(keep);
+    divs.push({ host: keep, dashed: false });
+    go({ x: prev.x, y: ky }, 'wire');
+    prev = { x: o.width - prev.x, y: ky };
+    go(prev, 'wire');
     const end = at(land);
     const ey = Math.max(end.y, prev.y + 3 * CHAMFER);
     go({ x: prev.x, y: ey }, 'wire');
