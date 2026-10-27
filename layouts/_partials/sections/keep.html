@@ -28,6 +28,7 @@
       </div>
     </div>
     <div class="flex flex-col gap-6 lg:col-start-6 lg:col-span-7">
+      {{ partial "journey/station.html" (dict "name" "dashboard" "variant" "strip") }}
       {{ partial "keep/live.html" . }}
     </div>
     {{- /* The Keep assembling itself, drawn from our CAD by Blender's Line Art

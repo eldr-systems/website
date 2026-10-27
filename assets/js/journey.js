@@ -22,7 +22,6 @@ const STUB = 40; //       rail: scroll px for its short horizontal stubs
 const LINGER = 200; //    desktop: extra scroll px the dot spends in a station
 const RADIO_STUB = 28; // desktop: wire left at each end of the radio gap
 const RAIL_X = 14; //     rail distance from the left edge
-const LANE = 12; //       desktop: run beside the chart, half the grid gap
 const BAND = 0.5; //      where in the viewport the dot rides
 const TAU = 0.09; //      scroll smoothing time constant, s
 const ORDER = ['modem', 'tower', 'backend', 'analysis'];
@@ -78,10 +77,8 @@ function init() {
 
     // Scroll position at which the dot reaches each vertex. By default the dot
     // rides at BAND of the viewport, so S = y − band. Horizontal runs get a
-    // fixed share of scroll centred on that (on desktop, runs too short for
-    // the wave are left to the rule below), stations get extra, and the
-    // result is forced monotonic and reachable. A run that climbs or stays
-    // level gets at least its own length in scroll, so the dot never jumps.
+    // fixed share of scroll centred on that, stations get extra, and the
+    // result is forced monotonic and reachable.
     const band = vh * BAND;
     const S = pts.map((p) => p.y - band);
     const flat = (k) => pts[k].s !== 'gap' && Math.abs(pts[k].y - pts[k - 1].y) < 0.5 && L[k] > L[k - 1];
@@ -89,13 +86,10 @@ function init() {
     // Wire crossings carry it as a wave in the line; the radio link as a
     // wavefront in the air, opening toward the tower.
     const wave = [];
-    const crossed = [];
     for (let k = 1; k < n; k++) {
       if (!flat(k)) continue;
       const a = k - 1;
       while (k + 1 < n && flat(k + 1)) k++;
-      if (desk && L[k] - L[a] < 2 * WAVE_W) continue;
-      for (let j = a + 1; j <= k; j++) crossed[j] = true;
       const share = desk ? Math.min(CROSS, vh * CROSS_VH) : STUB;
       const s0 = pts[a].y - band - share / 2;
       for (let j = a; j <= k; j++) S[j] = s0 + (share * (L[j] - L[a])) / (L[k] - L[a]);
@@ -112,10 +106,7 @@ function init() {
       }
     }
     S[0] = Math.max(S[0], 0);
-    for (let k = 1; k < n; k++) {
-      const climb = pts[k].s !== 'gap' && !crossed[k] && pts[k].y <= pts[k - 1].y + 0.5;
-      S[k] = Math.max(S[k], S[k - 1] + (climb ? L[k] - L[k - 1] : 0.01));
-    }
+    for (let k = 1; k < n; k++) S[k] = Math.max(S[k], S[k - 1] + 0.01);
     // Mobile toolbars change the real maximum by up to ~100px; stay inside it.
     const maxS = document.documentElement.scrollHeight - vh - (mq.coarse.matches ? 120 : 4);
     if (S[n - 1] > maxS) {
@@ -331,8 +322,8 @@ function init() {
   measure();
 
   // Desktop: device → (divider, gutter) → modem → … → analysis → chart, then
-  // a dotted epilogue branching off down the right gutter, across and down
-  // the left gutter to the contact outline beside the booking button.
+  // a dotted epilogue from the chart down the left gutter to the contact
+  // outline beside the booking button.
   function routeDesktop(o) {
     const at = rel(o);
     const port = svgPort(o);
@@ -367,26 +358,25 @@ function init() {
       prev = pout;
     }
 
-    // Into The Keep from the left, where the chart's line starts: down the
-    // gutter, under the chart, up the grid gap beside it and in.
+    // Into The Keep: across to the end of the chart's line.
     const end = at(land);
-    const f = fig.getBoundingClientRect();
-    const by = Math.max(f.bottom - o.top + LANE, prev.y + 3 * CHAMFER);
-    const lx = f.left - o.left - LANE;
-    go({ x: prev.x, y: by }, 'wire');
-    go({ x: lx, y: by }, 'wire');
-    go({ x: lx, y: end.y }, 'wire');
-    go(end, 'wire', { end: true, reach: fig });
+    const ey = Math.max(end.y, prev.y + 3 * CHAMFER);
+    go({ x: prev.x, y: ey }, 'wire');
+    go({ x: end.x, y: ey }, 'wire');
+    if (ey !== end.y) go(end, 'wire');
+    Object.assign(pts[pts.length - 1], { end: true, reach: fig });
 
-    // Epilogue: branching off where the trace turns under the chart, down
-    // the right gutter, across on the next divider and down the left gutter
-    // to the contact outline.
+    // Epilogue: out of the chart's frame, down the right gutter, across on
+    // the next divider and down the left gutter to the contact outline.
     const cin = port('contact-port-in');
     const svc = document.getElementById('services');
     if (cin && svc) {
+      const f = fig.getBoundingClientRect();
+      const fy = f.bottom - o.top - 28;
       const y = top(svc);
       const lane = cin.x - 24;
-      go({ x: prev.x, y: by - CHAMFER }, 'gap', { via: true });
+      go({ x: f.right - o.left, y: fy }, 'gap');
+      go({ x: prev.x, y: fy }, 'epi');
       go({ x: prev.x, y }, 'epi');
       go({ x: lane, y }, 'epi');
       go({ x: lane, y: cin.y }, 'epi');
@@ -429,13 +419,11 @@ function init() {
       if (!p) return null;
       go({ x: RAIL_X, y: p.y }, 'wire', { reach: strip(name), stub: p.stub });
     }
-    // The dot stops level with the chart's plot, where its line starts.
+    // The dot stops level with the dashboard strip, above the chart.
     const fig = document.getElementById('keep-live');
-    const land = root.querySelector('[data-j-land]');
-    const f = left(fig);
-    if (!f || !land) return null;
-    const y = rel(o)(land).y;
-    go({ x: RAIL_X, y }, 'wire', { end: true, reach: fig, stub: f.stub && { x: f.x, y } });
+    const d = left(strip('dashboard'));
+    if (!d || !fig) return null;
+    go({ x: RAIL_X, y: d.y }, 'wire', { end: true, reach: [strip('dashboard'), fig], stub: d.stub });
 
     const c = left(strip('contact'));
     if (c) {
