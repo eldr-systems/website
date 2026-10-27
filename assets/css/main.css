@@ -486,6 +486,17 @@
 }
 [data-kl-svg]:focus-visible { outline: 2px solid var(--color-ink); outline-offset: 4px; }
 [data-kl-plot].is-loading [data-kl-svg] { opacity: 0.45; transition: opacity 0.2s; }
+/* On the homepage the journey's dot ends on this chart (journey.js adds
+   .j-gated, then .is-reached when the dot docks): the lines wait, then draw
+   in from the left. Insets are negative so stroke and labels are not cut. */
+.kl-series {
+  clip-path: inset(-12px -24px -12px -12px);
+  transition: clip-path 1.4s cubic-bezier(0.33, 0, 0.2, 1);
+}
+.j-gated:not(.is-reached) .kl-series {
+  clip-path: inset(-12px calc(100% + 24px) -12px -12px);
+  transition-duration: 0.4s;
+}
 .kl-grid  { stroke: var(--color-rule); stroke-width: 1; }
 .kl-base  { stroke: var(--color-ink); stroke-width: 1.5; }
 .kl-tick  { font-family: var(--font-mono); font-size: 11px; fill: var(--color-muted); }

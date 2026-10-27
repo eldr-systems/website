@@ -58,6 +58,7 @@ function init() {
     // Dividers the overlay redraws (see build) give up their own border, but
     // only while it is drawn; reset first so a failed build leaves the CSS.
     for (const e of root.querySelectorAll('.j-div')) e.classList.remove('j-div');
+    for (const e of document.querySelectorAll('.j-gated')) e.classList.remove('j-gated', 'is-reached');
     if (desk || mq.rail.matches) {
       const o = root.getBoundingClientRect();
       const route = (desk ? routeDesktop : routeRail)(o);
@@ -173,14 +174,18 @@ function init() {
       }
       marks.push({ L: L[k], els: [].concat(p.reach || []), lit, on: null });
     });
+    // What the dot ends on holds back until it arrives (see .j-gated).
+    for (const e of [].concat(pts.find((p) => p.end)?.reach || [])) e.classList.add('j-gated');
 
     // Dividers the dot crosses are redrawn here, in the overlay, so the wave
     // can replace the line and the radio wavefront can sit on top of it: a
     // section's own border paints above the overlay. Same 2px ink, same place.
     const lines = el('g', {});
-    for (const { host, dashed } of raw.divs || []) {
+    // A rule the trace runs the whole length of is not redrawn at all: the
+    // trace stands in for it, so it takes the trace's colours.
+    for (const { host, dashed, trace } of raw.divs || []) {
       const y = host.getBoundingClientRect().top - o.top + 1;
-      el('path', { d: `M0 ${r(y)}H${r(o.width)}`, class: dashed ? 'j-divider j-dashed' : 'j-divider' }, lines);
+      if (!trace) el('path', { d: `M0 ${r(y)}H${r(o.width)}`, class: dashed ? 'j-divider j-dashed' : 'j-divider' }, lines);
       host.classList.add('j-div');
     }
 
@@ -322,17 +327,17 @@ function init() {
   measure();
 
   // Desktop: device → (divider, gutter) → modem → … → backend → chart, then
-  // a dotted epilogue from the chart down the left gutter to the contact
-  // outline beside the booking button.
+  // a dotted epilogue from the chart down the right gutter, across and down
+  // the left gutter to the contact outline beside the booking button.
   function routeDesktop(o) {
-    const at = rel(o);
     const port = svgPort(o);
     const st = (name) => root.querySelector(`[data-station="${name}"]`);
     const top = (e) => e.getBoundingClientRect().top - o.top + 1;
-    const land = root.querySelector('[data-j-land]');
+    const rule = root.querySelector('[data-j-rule]');
     const fig = document.getElementById('keep-live');
+    const plot = fig && fig.querySelector('[data-kl-plot]');
     let prev = port('device-port-out');
-    if (!prev || !land || !fig) return null;
+    if (!prev || !rule || !plot) return null;
 
     const divs = [];
     const pts = [];
@@ -358,20 +363,23 @@ function init() {
       prev = pout;
     }
 
-    // Into The Keep: along its divider to the right gutter, down and across
-    // to the end of the chart's line.
-    const keep = fig.closest('[data-j-host]');
-    const ky = top(keep);
-    divs.push({ host: keep, dashed: false });
-    go({ x: prev.x, y: ky }, 'wire');
-    prev = { x: o.width - prev.x, y: ky };
-    go(prev, 'wire');
-    const end = at(land);
-    const ey = Math.max(end.y, prev.y + 3 * CHAMFER);
-    go({ x: prev.x, y: ey }, 'wire');
-    go({ x: end.x, y: ey }, 'wire');
-    if (ey !== end.y) go(end, 'wire');
-    Object.assign(pts[pts.length - 1], { end: true, reach: fig });
+    // Into The Keep from the left: on down the gutter, then along the rule
+    // between its text and its figures, across the grid gap to the chart's
+    // frame, level with its plot (or as near as the rule allows). The dot
+    // docks on the frame; the chart's lines draw in from there.
+    const rb = rule.getBoundingClientRect();
+    const pb = plot.getBoundingClientRect();
+    const ry = rb.top - o.top + 1;
+    const py = Math.min(Math.max(ry, pb.top - o.top + CHAMFER), pb.bottom - o.top - CHAMFER);
+    const fx = fig.getBoundingClientRect().left - o.left + 1;
+    const gx = (rb.right - o.left + fx) / 2;
+    divs.push({ host: rule, trace: true });
+    go({ x: prev.x, y: ry }, 'wire');
+    if (py !== ry) {
+      go({ x: gx, y: ry }, 'wire');
+      go({ x: gx, y: py }, 'wire');
+    }
+    go({ x: fx, y: py }, 'wire', { end: true, reach: fig });
 
     // Epilogue: out of the chart's frame, down the right gutter, across on
     // the next divider and down the left gutter to the contact outline.
@@ -382,9 +390,10 @@ function init() {
       const fy = f.bottom - o.top - 28;
       const y = top(svc);
       const lane = cin.x - 24;
+      const rx = o.width - prev.x;
       go({ x: f.right - o.left, y: fy }, 'gap');
-      go({ x: prev.x, y: fy }, 'epi');
-      go({ x: prev.x, y }, 'epi');
+      go({ x: rx, y: fy }, 'epi');
+      go({ x: rx, y }, 'epi');
       go({ x: lane, y }, 'epi');
       go({ x: lane, y: cin.y }, 'epi');
       go(cin, 'epi', { via: true, reach: st('contact') });
@@ -450,14 +459,6 @@ function svgPort(o) {
     if (!m) return null;
     const p = new DOMPoint(+c.getAttribute('cx'), +c.getAttribute('cy')).matrixTransform(m);
     return { x: p.x - o.left, y: p.y - o.top };
-  };
-}
-
-// Centre of an element, in the journey container's coordinates.
-function rel(o) {
-  return (e) => {
-    const b = e.getBoundingClientRect();
-    return { x: b.left + b.width / 2 - o.left, y: b.top + b.height / 2 - o.top };
   };
 }
 

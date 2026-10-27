@@ -161,6 +161,9 @@ function init(fig) {
 
     // One path per device, broken where the device went quiet: a gap longer
     // than three of its usual reporting intervals is not drawn across.
+    // The series, their end dots and labels in one group, so the journey can
+    // draw them in when its dot arrives (main.css, .j-gated).
+    const series = el('g', { class: 'kl-series' }, svg);
     const ends = [];
     const lines = devices.map((dev, n) => {
       const pts = d.series[dev.id] || [];
@@ -171,12 +174,12 @@ function init(fig) {
         path += `${cmd}${x(tsOf(d, i)).toFixed(1)},${y(v).toFixed(1)}`;
       });
       const stroke = `var(--kl-s${n})`;
-      el('path', { d: path, fill: 'none', stroke, 'stroke-width': 2, 'stroke-linejoin': 'round', ...(n ? { 'stroke-dasharray': '5 3' } : {}) }, svg);
+      el('path', { d: path, fill: 'none', stroke, 'stroke-width': 2, 'stroke-linejoin': 'round', ...(n ? { 'stroke-dasharray': '5 3' } : {}) }, series);
       const last = pts[pts.length - 1];
       if (last) {
         const px = x(tsOf(d, last[0]));
         const py = y(last[1]);
-        el('circle', { cx: px, cy: py, r: 3.5, fill: stroke, stroke: 'var(--color-bone)', 'stroke-width': 2 }, svg);
+        el('circle', { cx: px, cy: py, r: 3.5, fill: stroke, stroke: 'var(--color-bone)', 'stroke-width': 2 }, series);
         ends.push({ px, py, label: dev.label.replace(/^Device /, '') });
       }
       return { dev, pts, gap, stroke };
@@ -185,7 +188,7 @@ function init(fig) {
     // Direct labels at the line ends, nudged apart when they would collide.
     ends.sort((a, b) => a.py - b.py);
     for (let k = 1; k < ends.length; k++) ends[k].py = Math.max(ends[k].py, ends[k - 1].py + 12);
-    for (const e of ends) el('text', { x: e.px + 8, y: e.py + 4, class: 'kl-end' }, svg).textContent = e.label;
+    for (const e of ends) el('text', { x: e.px + 8, y: e.py + 4, class: 'kl-end' }, series).textContent = e.label;
 
     const cross = el('path', { d: '', class: 'kl-cross', visibility: 'hidden' }, svg);
     const times = [...new Set(lines.flatMap((l) => l.pts.map((p) => p[0])))].sort((a, b) => a - b);
